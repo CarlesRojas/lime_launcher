@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>.cls-1{fill:none;}.cls-2{fill:url(#New_Gradient_Swatch_3);}</style>
+  </defs>
+  <g id="Layer_2" data-name="Layer 2" style="" transform="matrix(0.373144, 0, 0, 0.373144, 160.475143, 160.475143)">
+    <g id="Logo">
+      <g id="logo-2" data-name="logo">
+        <rect class="cls-1" width="512" height="512"/>
+        <path id="Logo-3" data-name="Logo" class="cls-2" d="M 477.83 34.17 C 455.83 12.17 426.06 6.67 406.35 18.17 C 350.28 50.84 233.82 -32.35 100.72 100.75 C -32.38 233.85 50.81 350.28 18.14 406.35 C 6.67 426.06 12.14 455.85 34.14 477.83 C 56.14 499.81 85.91 505.33 105.62 493.83 C 161.69 461.17 278.15 544.36 411.25 411.26 C 544.35 278.16 461.16 161.7 493.83 105.63 C 505.33 85.94 499.82 56.15 477.83 34.17 Z" style="paint-order: fill; fill: rgb(116, 217, 0);"/>
+      </g>
+    </g>
+  </g>
+</svg>

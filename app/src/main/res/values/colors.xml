@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="black_low">#96000000</color>
+    <color name="black_extra_low">#64000000</color>
+
+    <color name="white">#FFFFFFFF</color>
+    <color name="white_low">#96FFFFFF</color>
+    <color name="white_extra_low">#64FFFFFF</color>
+
+    <color name="transparent">@android:color/transparent</color>
+
+    <color name="popup_background_black">#1E1E1E</color>
+    <color name="popup_background_white">#ECECEC</color>
+
+    <color name="primary">#88FF00</color>
+    <color name="primary_variant">#69C500</color>
+    <color name="secondary">#88FF00</color>
+    <color name="secondary_variant">#69C500</color>
+</resources>
