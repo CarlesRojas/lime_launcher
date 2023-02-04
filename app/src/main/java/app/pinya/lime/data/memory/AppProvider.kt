@@ -1,14 +1,13 @@
 package app.pinya.lime.data.memory
 
 import android.app.Application
-import app.pinya.lime.domain.model.AppModel
+import android.content.Context
 
-class AppState {
+class AppProvider {
     companion object {
 
         @Volatile
         lateinit var app: Application
-        var appList: MutableList<AppModel> = mutableListOf()
 
         fun initialize(application: Application) {
             if (!Companion::app.isInitialized) {
@@ -16,6 +15,10 @@ class AppState {
                     app = application
                 }
             }
+        }
+
+        fun getContext(): Context {
+            return app.applicationContext
         }
     }
 }
