@@ -39,7 +39,7 @@ class AppRepo @Inject constructor() {
                 app.system =
                     if (packageInfo != null) (packageInfo.flags and ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM else false
 
-                // TODO do this in the usecase
+                // TODO do this in the use case
                 //app.hidden = hiddenApps.find { it == packageName } != null
                 //app.home = homeApps.find { it == packageName } != null
                 //app.name = renamedApps[packageName] ?: app.originalName
