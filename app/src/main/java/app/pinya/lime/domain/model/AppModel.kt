@@ -1,4 +1,4 @@
-package app.pinya.lime.model
+package app.pinya.lime.domain.model
 
 import android.graphics.drawable.Drawable
 

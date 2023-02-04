@@ -1,13 +1,16 @@
-package app.pinya.lime.view
+package app.pinya.lime.ui.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import app.pinya.lime.R
+import app.pinya.lime.data.memory.AppState
 import app.pinya.lime.databinding.ActivityMainBinding
-import app.pinya.lime.viewmodel.AppViewModel
+import app.pinya.lime.ui.viewmodel.AppViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -18,6 +21,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(R.layout.activity_main)
+
+        AppState.initialize(this.application)
+
+        appViewModel.onCreate()
+
+
 
         appViewModel.appModel.observe(this, Observer { appList ->
             println("DONETE")
