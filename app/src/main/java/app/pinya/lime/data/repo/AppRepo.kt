@@ -47,6 +47,7 @@ class AppRepo @Inject constructor() {
                 if (!appList.contains(app)) appList.add(app)
             }
 
+            appList.sortBy { it.name.lowercase() }
             appList
         }
     }

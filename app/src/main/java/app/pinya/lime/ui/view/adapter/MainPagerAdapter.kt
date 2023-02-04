@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
 import app.pinya.lime.R
-import app.pinya.lime.domain.model.AppModel
 import app.pinya.lime.ui.viewmodel.AppViewModel
+import kotlinx.coroutines.*
 
 class MainPagerAdapter(private val context: Context, private val viewModel: AppViewModel) :
     PagerAdapter() {
@@ -70,14 +70,19 @@ class MainPagerAdapter(private val context: Context, private val viewModel: AppV
         return layout
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     fun onHomePageSelected() {
-        // TODO clear search bar text in drawer (change to use live data?)
-        // TODO hide keyboard (change to use live data?)
+        drawer?.hideKeyboard()
+
+        GlobalScope.launch(Dispatchers.Main) {
+            delay(400)
+            drawer?.clearText()
+        }
     }
 
     fun onDrawerPageSelected() {
-        // TODO clear search bar text in drawer (change to use live data?)
-        // TODO show keyboard (change to use live data?)
+        this.drawer?.clearText()
+        this.drawer?.showKeyboard()
         // TODO refresh list (change to use live data?)
         // TODO refresh alphabet (change to use live data?)
         // TODO show or hide elements according to settings (change to use live data?)
