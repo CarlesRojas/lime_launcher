@@ -14,12 +14,12 @@ class AppViewModel @Inject constructor(
     private val refreshAppList: RefreshAppList
 ) : ViewModel() {
 
-    val appModel = MutableLiveData<MutableList<AppModel>>()
+    val drawerList = MutableLiveData<MutableList<AppModel>>()
 
     fun onCreate() {
         viewModelScope.launch {
             val result = refreshAppList()
-            appModel.postValue(result)
+            drawerList.postValue(result)
         }
     }
 }

@@ -6,8 +6,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import app.pinya.lime.R
 import app.pinya.lime.ui.view.holder.ItemAppViewHolder
+import app.pinya.lime.ui.viewmodel.AppViewModel
 
-class HomeAdapter(context: Context, layout: ViewGroup) :
+class HomeAdapter(
+    private val context: Context,
+    private val layout: ViewGroup,
+    private val viewModel: AppViewModel
+) :
     RecyclerView.Adapter<ItemAppViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemAppViewHolder {

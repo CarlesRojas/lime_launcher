@@ -34,18 +34,29 @@ class MainActivity : AppCompatActivity() {
 
         appViewModel.onCreate()
 
-        appViewModel.appModel.observe(this) { appList ->
-            println(appList)
-        }
-
         linkAdapter()
         dimBackground()
+
+        appViewModel.drawerList.observe(this) { newAppList ->
+            customPageAdapter.drawer?.updateAppList(newAppList)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        // TODO update wallpaper daily
+        // TODO refetch installed apps
+        // TODO Hide any active menu
+        // TODO Show home Page
+        // TODO Dim background
+        // TODO Hide any active menu
     }
 
     private fun linkAdapter() {
         viewPager = findViewById(R.id.viewPager)
 
-        customPageAdapter = MainPagerAdapter(this).also { adapter ->
+        customPageAdapter = MainPagerAdapter(this, appViewModel).also { adapter ->
             viewPager.adapter = adapter
 
             viewPager.addOnPageChangeListener(object : OnPageChangeListener {
@@ -66,13 +77,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun dimBackground() {
-        val blackTextValue = false // TODO get from settings
-        val dimBackgroundValue = true
+        val isTextBlack = false // TODO get from settings
+        val shouldDimBackground = true
 
         viewPager.setBackgroundColor(
             ContextCompat.getColor(
                 this,
-                if (dimBackgroundValue) (if (blackTextValue) R.color.white_extra_low else R.color.black_extra_low) else R.color.transparent
+                if (shouldDimBackground) (if (isTextBlack) R.color.white_extra_low else R.color.black_extra_low) else R.color.transparent
             )
         )
     }

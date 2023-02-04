@@ -8,11 +8,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
 import app.pinya.lime.R
+import app.pinya.lime.domain.model.AppModel
+import app.pinya.lime.ui.viewmodel.AppViewModel
 
-class MainPagerAdapter(private val context: Context) : PagerAdapter() {
+class MainPagerAdapter(private val context: Context, private val viewModel: AppViewModel) :
+    PagerAdapter() {
 
-    private var home: HomeAdapter? = null
-    private var drawer: DrawerAdapter? = null
+    var home: HomeAdapter? = null
+    var drawer: DrawerAdapter? = null
 
 
     override fun instantiateItem(collection: ViewGroup, position: Int): Any {
@@ -42,10 +45,12 @@ class MainPagerAdapter(private val context: Context) : PagerAdapter() {
         val layout = inflater.inflate(R.layout.view_home, collection, false) as ViewGroup
         val viewHome = layout.findViewById<View>(R.id.homeAppList) as RecyclerView
 
-        this.home = HomeAdapter(context, layout).also { adapter ->
+        this.home = HomeAdapter(context, layout, viewModel).also { adapter ->
             viewHome.adapter = adapter
             viewHome.layoutManager = LinearLayoutManager(context)
         }
+
+        // TODO get how many apps can fit in the home screen
 
         collection.addView(layout)
         return layout
@@ -56,7 +61,7 @@ class MainPagerAdapter(private val context: Context) : PagerAdapter() {
         val layout = inflater.inflate(R.layout.view_drawer, collection, false) as ViewGroup
         val viewDrawer = layout.findViewById<View>(R.id.drawerAppList) as RecyclerView
 
-        this.drawer = DrawerAdapter(context, layout).also { adapter ->
+        this.drawer = DrawerAdapter(context, layout, viewModel).also { adapter ->
             viewDrawer.adapter = adapter
             viewDrawer.layoutManager = LinearLayoutManager(context)
         }
@@ -65,7 +70,16 @@ class MainPagerAdapter(private val context: Context) : PagerAdapter() {
         return layout
     }
 
-    fun onHomePageSelected() {}
+    fun onHomePageSelected() {
+        // TODO clear search bar text in drawer (change to use live data?)
+        // TODO hide keyboard (change to use live data?)
+    }
 
-    fun onDrawerPageSelected() {}
+    fun onDrawerPageSelected() {
+        // TODO clear search bar text in drawer (change to use live data?)
+        // TODO show keyboard (change to use live data?)
+        // TODO refresh list (change to use live data?)
+        // TODO refresh alphabet (change to use live data?)
+        // TODO show or hide elements according to settings (change to use live data?)
+    }
 }
