@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
@@ -186,6 +187,8 @@ class DrawerAdapter(
     fun initAlphabet() {
         alphabetLayout = layout.findViewById(R.id.alphabetLayout)
 
+        val currentLetter = layout.findViewById<TextView>(R.id.currentLetter)
+
         alphabetLayout?.setOnTouchListener { _, event ->
             clearText()
             hideKeyboard()
@@ -195,12 +198,25 @@ class DrawerAdapter(
             val letterHeight = 1f / (AlphabetModel.ALPHABET.size + 1)
             val currentSection = floor(perc / letterHeight).toInt()
 
+
             if (currentSection >= 0 && currentSection < currentAlphabet.size) {
                 val currentChar = currentAlphabet[currentSection]
+
+                currentLetter.visibility = View.VISIBLE
+                currentLetter.text = currentChar.uppercase()
+                currentLetter.animate()
+                    .y(event.rawY - (currentLetter.height / 2))
+                    .setDuration(0)
+                    .start();
+
+
                 filteringByAlphabet = true
                 searchBar?.setText(currentChar.toString())
                 lastFilterWasAlphabet = true
             }
+
+            if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL || event.action == MotionEvent.ACTION_OUTSIDE)
+                currentLetter.visibility = View.GONE
 
             true
         }

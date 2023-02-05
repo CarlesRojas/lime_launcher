@@ -58,6 +58,7 @@
 
 
     <string name="drawer_searchHint">Search Apps</string>
+    <string name="drawer_letter">B</string>
 
 
     <string name="placeholder_time">19:35</string>
