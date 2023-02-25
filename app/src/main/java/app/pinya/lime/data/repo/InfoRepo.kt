@@ -60,14 +60,14 @@ class InfoRepo @Inject constructor() {
 
 
     private fun getData(key: InfoDataKey, defaultValue: Int): Int {
-        return oldSharedPreferences.getInt(key.toString(), defaultValue)
+        return sharedPreferences.getInt(key.toString(), defaultValue)
     }
 
     private fun getData(
         key: InfoDataKey, defaultValue: MutableSet<String>
     ): MutableSet<String> {
         val jsonDefaultValue: String = Gson().toJson(defaultValue)
-        val result = this.oldSharedPreferences.getString(key.toString(), jsonDefaultValue)
+        val result = this.sharedPreferences.getString(key.toString(), jsonDefaultValue)
             ?: jsonDefaultValue
         val listType = object : TypeToken<MutableSet<String>>() {}.type
         return Gson().fromJson(result, listType)
@@ -77,7 +77,7 @@ class InfoRepo @Inject constructor() {
         key: InfoDataKey, defaultValue: MutableMap<String, String>
     ): MutableMap<String, String> {
         val jsonDefaultValue: String = Gson().toJson(defaultValue)
-        val result = this.oldSharedPreferences.getString(key.toString(), jsonDefaultValue)
+        val result = this.sharedPreferences.getString(key.toString(), jsonDefaultValue)
             ?: jsonDefaultValue
         val listType = object : TypeToken<MutableMap<String, String>>() {}.type
         return Gson().fromJson(result, listType)
