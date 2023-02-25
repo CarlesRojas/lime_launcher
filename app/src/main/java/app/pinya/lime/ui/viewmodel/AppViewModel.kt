@@ -150,24 +150,4 @@ class AppViewModel @Inject constructor(
         else filterDrawerAppListBySearchedText(lastSearchedText)
     }
 
-    // ########################################
-    //   VIBRATION
-    // ########################################
-
-    @Suppress("DEPRECATION")
-    fun vibrate(
-        context: Context,
-        timeInMs: Long = 1,
-        amplitude: Int = VibrationEffect.DEFAULT_AMPLITUDE
-    ) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val vibratorManager =
-                context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
-            val vibrator = vibratorManager.defaultVibrator
-            vibrator.vibrate(VibrationEffect.createOneShot(timeInMs, amplitude))
-        } else {
-            val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            vibrator.vibrate(VibrationEffect.createOneShot(timeInMs, amplitude))
-        }
-    }
 }

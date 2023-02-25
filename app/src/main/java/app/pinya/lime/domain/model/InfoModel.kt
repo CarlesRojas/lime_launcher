@@ -5,4 +5,5 @@ data class InfoModel(
     var hiddenApps: MutableSet<String> = mutableSetOf(),
     var renamedApps: MutableMap<String, String> = mutableMapOf(),
     var wallpaperLastUpdatedDate: Int = -1,
+    var maxNumberOfHomeApps: Int = 8
 )

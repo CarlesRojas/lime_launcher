@@ -21,6 +21,7 @@ import app.pinya.lime.domain.model.AppModel
 import app.pinya.lime.domain.model.SettingsModel
 import app.pinya.lime.domain.model.menus.AppMenu
 import app.pinya.lime.ui.utils.OnSwipeTouchListener
+import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.view.activity.SettingsActivity
 import app.pinya.lime.ui.view.holder.ItemAppViewHolder
 import app.pinya.lime.ui.viewmodel.AppViewModel
@@ -98,7 +99,7 @@ class HomeAdapter(
             }
 
             override fun onLongClick() {
-                viewModel.vibrate(context)
+                Utils.vibrate(context)
                 context.startActivity(Intent(context, SettingsActivity::class.java))
             }
         })
@@ -129,7 +130,7 @@ class HomeAdapter(
             }
 
             override fun onLongClick() {
-                viewModel.vibrate(context)
+                Utils.vibrate(context)
                 context.startActivity(Intent(context, SettingsActivity::class.java))
             }
         })
@@ -182,17 +183,10 @@ class HomeAdapter(
             }
 
             override fun onLongClick() {
-                viewModel.vibrate(context)
+                Utils.vibrate(context)
                 context.startActivity(Intent(context, SettingsActivity::class.java))
             }
         })
-/*
-        val appList = layout.findViewById<RecyclerView>(R.id.homeAppList)
-        appList.setOnTouchListener(object : OnSwipeTouchListener(context) {
-            override fun onFlingDown() {
-                expandNotificationBar()
-            }
-        })*/
     }
 
     @SuppressLint("WrongConstant", "PrivateApi")
@@ -261,7 +255,7 @@ class HomeAdapter(
 
             override fun onLongClick() {
                 if (contextMenuContainer != null) {
-                    viewModel.vibrate(context)
+                    Utils.vibrate(context)
                     viewModel.appMenu.postValue(AppMenu(currentApp, true, contextMenuContainer!!))
                 }
             }

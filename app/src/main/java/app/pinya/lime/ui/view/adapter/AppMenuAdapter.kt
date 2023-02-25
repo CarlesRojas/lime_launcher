@@ -145,8 +145,9 @@ class AppMenuAdapter(
     }
 
     private fun isHomeFull(): Boolean {
-        // TODO check if home is full
-        return false
+        val homeList = viewModel.homeList.value ?: mutableListOf()
+        val maxNumberOfHomeApps = viewModel.info.value?.maxNumberOfHomeApps ?: 8
+        return homeList.size >= maxNumberOfHomeApps
     }
 
     private fun dimBehindMenu(menu: PopupWindow?) {
