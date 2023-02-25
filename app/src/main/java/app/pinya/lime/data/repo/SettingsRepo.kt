@@ -8,11 +8,6 @@ import app.pinya.lime.domain.model.SettingsModel
 import com.google.gson.Gson
 import javax.inject.Inject
 
-private enum class SettingsDataKey {
-    SETTINGS,
-    OLD_SETTINGS_RETRIEVED,
-}
-
 class SettingsRepo @Inject constructor() {
     private val sharedPreferences: SharedPreferences
     private val oldSharedPreferences: SharedPreferences
@@ -20,6 +15,10 @@ class SettingsRepo @Inject constructor() {
     private val oldPreferencesName = "LimeLauncherPreferences"
     private val preferencesName = "LimeLauncherSharedPreferences"
 
+    private enum class SettingsDataKey {
+        SETTINGS,
+        OLD_SETTINGS_RETRIEVED,
+    }
 
     init {
         val context = AppProvider.getContext()
@@ -36,6 +35,8 @@ class SettingsRepo @Inject constructor() {
         val json: String =
             sharedPreferences.getString(SettingsDataKey.SETTINGS.toString(), "") ?: ""
         var settings = gson.fromJson(json, SettingsModel::class.java)
+
+        if (settings == null) settings = SettingsModel()
 
         settings = getOldPreferences(settings)
 

@@ -6,15 +6,18 @@ import javax.inject.Inject
 class FilterAppListByText @Inject constructor() {
     operator fun invoke(
         completeAppList: MutableList<AppModel>,
-        text: String
+        text: String,
+        showHiddenApps: Boolean
     ): MutableList<AppModel> {
         val filteredList = mutableListOf<AppModel>()
 
-        completeAppList.forEach {
-            val included =
-                if (text == "") true else it.name.contains(text, true)
+        completeAppList.forEach { app ->
+            if (showHiddenApps || !app.hidden) {
+                val included =
+                    if (text == "") true else app.name.contains(text, true)
 
-            if (included) filteredList.add(it)
+                if (included) filteredList.add(app)
+            }
         }
 
         return filteredList

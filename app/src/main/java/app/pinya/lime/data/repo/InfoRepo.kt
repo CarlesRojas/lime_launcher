@@ -6,22 +6,23 @@ import app.pinya.lime.data.memory.AppProvider
 import app.pinya.lime.domain.model.InfoModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import javax.inject.Inject
 
-private enum class InfoDataKey {
-    HOME_APPS,
-    HIDDEN_APPS,
-    RENAMED_APPS,
-    WALLPAPER_LAST_UPDATED_DATE,
-    OLD_INFO_RETRIEVED,
-}
 
-class InfoRepo {
+class InfoRepo @Inject constructor() {
     private val sharedPreferences: SharedPreferences
     private val oldSharedPreferences: SharedPreferences
 
     private val oldPreferencesName = "LimeLauncherPreferences"
     private val preferencesName = "LimeLauncherSharedPreferences"
 
+    private enum class InfoDataKey {
+        HOME_APPS,
+        HIDDEN_APPS,
+        RENAMED_APPS,
+        WALLPAPER_LAST_UPDATED_DATE,
+        OLD_INFO_RETRIEVED,
+    }
 
     init {
         val context = AppProvider.getContext()

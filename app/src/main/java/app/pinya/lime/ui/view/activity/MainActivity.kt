@@ -1,7 +1,10 @@
 package app.pinya.lime.ui.view.activity
 
+import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.view.Window
+import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -32,22 +35,22 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         makeNavbarTransparent()
-
         AppProvider.initialize(this.application)
-
         appViewModel.onCreate()
-
         linkAdapter()
     }
 
     override fun onResume() {
         super.onResume()
-        dimBackground()
 
         appViewModel.drawerList.observe(this) { newAppList ->
             customPageAdapter.drawer?.updateAppList(newAppList)
         }
 
+        appViewModel.settings.observe(this) { settings ->
+            showStatusBar(settings.generalShowStatusBar)
+            dimBackground(settings.generalDimBackground, settings.generalIsTextBlack)
+        }
 
         appViewModel.updateAppList()
         viewPager.setCurrentItem(0, false)
@@ -79,24 +82,36 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun dimBackground() {
-        val isTextBlack = false // TODO get from settings
-        val shouldDimBackground = true
-
+    private fun dimBackground(dimBackground: Boolean, isTextBlack: Boolean) {
         viewPager.setBackgroundColor(
             ContextCompat.getColor(
                 this,
-                if (shouldDimBackground) (if (isTextBlack) R.color.white_extra_low else R.color.black_extra_low) else R.color.transparent
+                if (dimBackground) (if (isTextBlack) R.color.white_extra_low else R.color.black_extra_low) else R.color.transparent
             )
         )
     }
 
     private fun makeNavbarTransparent() {
-        val window: Window = window
         window.setFlags(
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         )
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+    }
+
+    @Suppress("DEPRECATION")
+    private fun showStatusBar(showStatusBar: Boolean) {
+        if (showStatusBar) {
+            if (Build.VERSION.SDK_INT >= 30) window.decorView.windowInsetsController!!.show(
+                WindowInsets.Type.statusBars()
+            )
+            else window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+        } else {
+            if (Build.VERSION.SDK_INT >= 30) window.decorView.windowInsetsController!!.hide(
+                WindowInsets.Type.statusBars()
+            )
+            else window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+        }
+
     }
 }
