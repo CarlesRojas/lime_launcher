@@ -20,6 +20,7 @@ import app.pinya.lime.R
 import app.pinya.lime.domain.model.AppModel
 import app.pinya.lime.domain.model.SettingsModel
 import app.pinya.lime.domain.model.menus.AppMenu
+import app.pinya.lime.ui.utils.OnSwipeTouchListener
 import app.pinya.lime.ui.view.activity.SettingsActivity
 import app.pinya.lime.ui.view.holder.ItemAppViewHolder
 import app.pinya.lime.ui.viewmodel.AppViewModel
@@ -47,7 +48,7 @@ class HomeAdapter(
 
     init {
         initContextMenu()
-        // TODO initGestureDetector()
+        initGestureDetector()
     }
 
     // ########################################
@@ -71,53 +72,67 @@ class HomeAdapter(
     //   DATE & TIME
     // ########################################
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun addDateListeners(settings: SettingsModel) {
         date = layout.findViewById(R.id.homeDate)
-        date?.setOnClickListener {
-            when (val stateValue = settings.dateClickApp) {
-                "default" -> {
-                    val builder: Uri.Builder =
-                        CalendarContract.CONTENT_URI.buildUpon().appendPath("time")
-                    val intent = Intent(Intent.ACTION_VIEW).setData(builder.build())
-                    context.startActivity(intent)
-                }
-                "none" -> return@setOnClickListener
-                else -> {
-                    val launchAppIntent =
-                        context.packageManager.getLaunchIntentForPackage(stateValue)
-                    if (launchAppIntent != null) context.startActivity(launchAppIntent)
+        date?.setOnTouchListener(object : OnSwipeTouchListener(context) {
+            override fun onFlingDown() {
+                expandNotificationBar()
+            }
+
+            override fun onClick() {
+                when (val stateValue = settings.dateClickApp) {
+                    "default" -> {
+                        val builder: Uri.Builder =
+                            CalendarContract.CONTENT_URI.buildUpon().appendPath("time")
+                        val intent = Intent(Intent.ACTION_VIEW).setData(builder.build())
+                        context.startActivity(intent)
+                    }
+                    "none" -> return
+                    else -> {
+                        val launchAppIntent =
+                            context.packageManager.getLaunchIntentForPackage(stateValue)
+                        if (launchAppIntent != null) context.startActivity(launchAppIntent)
+                    }
                 }
             }
-        }
 
-        date?.setOnLongClickListener {
-            context.startActivity(Intent(context, SettingsActivity::class.java))
-            true
-        }
+            override fun onLongClick() {
+                viewModel.vibrate(context)
+                context.startActivity(Intent(context, SettingsActivity::class.java))
+            }
+        })
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun addTimeListeners(settings: SettingsModel) {
         time = layout.findViewById(R.id.homeTime)
-        time?.setOnClickListener {
-            when (val stateValue = settings.timeClickApp) {
-                "default" -> {
-                    val intent = Intent(AlarmClock.ACTION_SHOW_ALARMS)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    context.startActivity(intent)
-                }
-                "none" -> return@setOnClickListener
-                else -> {
-                    val launchAppIntent =
-                        context.packageManager.getLaunchIntentForPackage(stateValue)
-                    if (launchAppIntent != null) context.startActivity(launchAppIntent)
+        time?.setOnTouchListener(object : OnSwipeTouchListener(context) {
+            override fun onFlingDown() {
+                expandNotificationBar()
+            }
+
+            override fun onClick() {
+                when (val stateValue = settings.timeClickApp) {
+                    "default" -> {
+                        val intent = Intent(AlarmClock.ACTION_SHOW_ALARMS)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        context.startActivity(intent)
+                    }
+                    "none" -> return
+                    else -> {
+                        val launchAppIntent =
+                            context.packageManager.getLaunchIntentForPackage(stateValue)
+                        if (launchAppIntent != null) context.startActivity(launchAppIntent)
+                    }
                 }
             }
-        }
 
-        time?.setOnLongClickListener {
-            context.startActivity(Intent(context, SettingsActivity::class.java))
-            true
-        }
+            override fun onLongClick() {
+                viewModel.vibrate(context)
+                context.startActivity(Intent(context, SettingsActivity::class.java))
+            }
+        })
     }
 
     private fun startTimerToUpdateDateTime(settings: SettingsModel) {
@@ -155,7 +170,41 @@ class HomeAdapter(
         )
     }
 
-    // TODO expand notifications
+    // ########################################
+    //   GESTURES
+    // ########################################
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun initGestureDetector() {
+        layout.setOnTouchListener(object : OnSwipeTouchListener(context) {
+            override fun onFlingDown() {
+                expandNotificationBar()
+            }
+
+            override fun onLongClick() {
+                viewModel.vibrate(context)
+                context.startActivity(Intent(context, SettingsActivity::class.java))
+            }
+        })
+/*
+        val appList = layout.findViewById<RecyclerView>(R.id.homeAppList)
+        appList.setOnTouchListener(object : OnSwipeTouchListener(context) {
+            override fun onFlingDown() {
+                expandNotificationBar()
+            }
+        })*/
+    }
+
+    @SuppressLint("WrongConstant", "PrivateApi")
+    private fun expandNotificationBar() {
+        try {
+            val statusBarService = context.getSystemService("statusbar")
+            val statusBarManager = Class.forName("android.app.StatusBarManager")
+            val method = statusBarManager.getMethod("expandNotificationsPanel")
+            method.invoke(statusBarService)
+        } catch (_: Error) {
+        }
+    }
 
     // ########################################
     //   CONTEXT MENU
@@ -176,6 +225,7 @@ class HomeAdapter(
         )
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: ItemAppViewHolder, position: Int) {
         val currentApp = appList[position]
 
@@ -198,17 +248,24 @@ class HomeAdapter(
             )
         )
 
-        linearLayout.setOnClickListener {
-            val launchAppIntent =
-                context.packageManager.getLaunchIntentForPackage(currentApp.packageName)
-            if (launchAppIntent != null) context.startActivity(launchAppIntent)
-        }
+        linearLayout.setOnTouchListener(object : OnSwipeTouchListener(context) {
+            override fun onFlingDown() {
+                expandNotificationBar()
+            }
 
-        linearLayout.setOnLongClickListener {
-            if (contextMenuContainer != null)
-                viewModel.appMenu.postValue(AppMenu(currentApp, true, contextMenuContainer!!))
-            true
-        }
+            override fun onClick() {
+                val launchAppIntent =
+                    context.packageManager.getLaunchIntentForPackage(currentApp.packageName)
+                if (launchAppIntent != null) context.startActivity(launchAppIntent)
+            }
+
+            override fun onLongClick() {
+                if (contextMenuContainer != null) {
+                    viewModel.vibrate(context)
+                    viewModel.appMenu.postValue(AppMenu(currentApp, true, contextMenuContainer!!))
+                }
+            }
+        })
     }
 
     override fun getItemCount(): Int {
