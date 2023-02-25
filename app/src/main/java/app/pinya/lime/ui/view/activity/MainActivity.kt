@@ -3,7 +3,6 @@ package app.pinya.lime.ui.view.activity
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.view.Window
 import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.activity.viewModels
@@ -36,8 +35,8 @@ class MainActivity : AppCompatActivity() {
 
         makeNavbarTransparent()
         AppProvider.initialize(this.application)
-        appViewModel.onCreate()
         linkAdapter()
+
     }
 
     override fun onResume() {
@@ -50,9 +49,13 @@ class MainActivity : AppCompatActivity() {
         appViewModel.settings.observe(this) { settings ->
             showStatusBar(settings.generalShowStatusBar)
             dimBackground(settings.generalDimBackground, settings.generalIsTextBlack)
+            customPageAdapter.home?.handleSettingsUpdate(settings)
         }
 
+        appViewModel.getSettings()
+        appViewModel.getInfo()
         appViewModel.updateAppList()
+
         viewPager.setCurrentItem(0, false)
 
         // TODO update wallpaper daily

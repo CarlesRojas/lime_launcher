@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/popup_background_black"
-    tools:context=".SettingsActivity">
+    tools:context=".ui.view.activity.SettingsActivity">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineV1"

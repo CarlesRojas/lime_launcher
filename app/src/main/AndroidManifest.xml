@@ -53,6 +53,21 @@
         </activity>
 
 
+        <activity
+            android:name=".ui.view.activity.SettingsActivity"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:stateNotNeeded="true"
+            android:theme="@style/Theme.Transparent"
+            tools:ignore="LockedOrientationActivity">
+
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+
+
     </application>
 
 </manifest>

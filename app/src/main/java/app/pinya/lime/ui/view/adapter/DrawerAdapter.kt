@@ -27,7 +27,9 @@ import kotlin.math.floor
 
 
 class DrawerAdapter(
-    private val context: Context, private val layout: ViewGroup, private val viewModel: AppViewModel
+    private val context: Context,
+    private val layout: ViewGroup,
+    private val viewModel: AppViewModel
 ) : RecyclerView.Adapter<ItemAppViewHolder>() {
 
     // APP LIST

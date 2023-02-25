@@ -7,7 +7,7 @@ import javax.inject.Inject
 class GetSettings @Inject constructor(
     private val settingsRepo: SettingsRepo
 ) {
-    operator fun invoke(): SettingsModel {
+    suspend operator fun invoke(): SettingsModel {
         return settingsRepo.getSettingsFromMemory()
     }
 }

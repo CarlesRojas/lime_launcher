@@ -7,7 +7,7 @@ import javax.inject.Inject
 class GetInfo @Inject constructor(
     private val infoRepo: InfoRepo
 ) {
-    operator fun invoke(): InfoModel {
+    suspend operator fun invoke(): InfoModel {
         return infoRepo.getInfoFromMemory()
     }
 }

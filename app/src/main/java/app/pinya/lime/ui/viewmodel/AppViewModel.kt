@@ -32,11 +32,6 @@ class AppViewModel @Inject constructor(
 
     var completeAppList: MutableList<AppModel> = mutableListOf()
 
-    fun onCreate() {
-        getSettings()
-        getInfo()
-        updateAppList()
-    }
 
     // ########################################
     //   MAIN
@@ -56,9 +51,11 @@ class AppViewModel @Inject constructor(
     //   SETTINGS
     // ########################################
 
-    private fun getSettings() {
-        val newSettings = getSettingsUseCase()
-        settings.postValue(newSettings)
+    fun getSettings() {
+        viewModelScope.launch {
+            val newSettings = getSettingsUseCase()
+            settings.postValue(newSettings)
+        }
     }
 
     fun updateSettings(newSettings: SettingsModel) {
@@ -72,9 +69,11 @@ class AppViewModel @Inject constructor(
     //   INFO
     // ########################################
 
-    private fun getInfo() {
-        val newInfo = getInfoUseCase()
-        info.postValue(newInfo)
+    fun getInfo() {
+        viewModelScope.launch {
+            val newInfo = getInfoUseCase()
+            info.postValue(newInfo)
+        }
     }
 
     fun updateInfo(newInfo: InfoModel) {

@@ -6,6 +6,8 @@ import app.pinya.lime.data.memory.AppProvider
 import app.pinya.lime.domain.model.InfoModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
@@ -34,17 +36,19 @@ class InfoRepo @Inject constructor() {
             context.getSharedPreferences(this.oldPreferencesName, Context.MODE_PRIVATE)
     }
 
-    fun getInfoFromMemory(): InfoModel {
-        var info = InfoModel()
-        info.homeApps = getData(InfoDataKey.HOME_APPS, info.homeApps)
-        info.hiddenApps = getData(InfoDataKey.HIDDEN_APPS, info.hiddenApps)
-        info.renamedApps =
-            getData(InfoDataKey.RENAMED_APPS, info.renamedApps)
-        info.wallpaperLastUpdatedDate =
-            getData(InfoDataKey.WALLPAPER_LAST_UPDATED_DATE, info.wallpaperLastUpdatedDate)
+    suspend fun getInfoFromMemory(): InfoModel {
+        return withContext(Dispatchers.IO) {
+            var info = InfoModel()
+            info.homeApps = getData(InfoDataKey.HOME_APPS, info.homeApps)
+            info.hiddenApps = getData(InfoDataKey.HIDDEN_APPS, info.hiddenApps)
+            info.renamedApps =
+                getData(InfoDataKey.RENAMED_APPS, info.renamedApps)
+            info.wallpaperLastUpdatedDate =
+                getData(InfoDataKey.WALLPAPER_LAST_UPDATED_DATE, info.wallpaperLastUpdatedDate)
 
-        info = getOldPreferences(info)
-        return info
+            info = getOldPreferences(info)
+            info
+        }
     }
 
     fun setInfoToMemory(newInfo: InfoModel) {

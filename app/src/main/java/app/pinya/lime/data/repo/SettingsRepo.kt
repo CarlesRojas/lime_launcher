@@ -6,6 +6,8 @@ import android.content.SharedPreferences.Editor
 import app.pinya.lime.data.memory.AppProvider
 import app.pinya.lime.domain.model.SettingsModel
 import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class SettingsRepo @Inject constructor() {
@@ -16,8 +18,7 @@ class SettingsRepo @Inject constructor() {
     private val preferencesName = "LimeLauncherSharedPreferences"
 
     private enum class SettingsDataKey {
-        SETTINGS,
-        OLD_SETTINGS_RETRIEVED,
+        SETTINGS, OLD_SETTINGS_RETRIEVED,
     }
 
     init {
@@ -30,17 +31,18 @@ class SettingsRepo @Inject constructor() {
             context.getSharedPreferences(this.oldPreferencesName, Context.MODE_PRIVATE)
     }
 
-    fun getSettingsFromMemory(): SettingsModel {
-        val gson = Gson()
-        val json: String =
-            sharedPreferences.getString(SettingsDataKey.SETTINGS.toString(), "") ?: ""
-        var settings = gson.fromJson(json, SettingsModel::class.java)
+    suspend fun getSettingsFromMemory(): SettingsModel {
+        return withContext(Dispatchers.IO) {
+            val gson = Gson()
+            val json: String =
+                sharedPreferences.getString(SettingsDataKey.SETTINGS.toString(), "") ?: ""
+            var settings = gson.fromJson(json, SettingsModel::class.java)
 
-        if (settings == null) settings = SettingsModel()
+            if (settings == null) settings = SettingsModel()
 
-        settings = getOldPreferences(settings)
-
-        return settings
+            settings = getOldPreferences(settings)
+            settings
+        }
     }
 
     fun setSettingsToMemory(newSettings: SettingsModel) {
@@ -56,31 +58,13 @@ class SettingsRepo @Inject constructor() {
     // ########################################
 
     enum class OldSettingsDataKey {
-        DATE_FORMAT,
-        TIME_FORMAT,
-        AUTO_SHOW_KEYBOARD,
-        AUTO_OPEN_APPS,
-        ICONS_IN_HOME,
-        ICONS_IN_DRAWER,
-        SHOW_SEARCH_BAR,
-        SHOW_ALPHABET_FILTER,
-        HOME_APPS,
-        HIDDEN_APPS,
-        SHOW_HIDDEN_APPS,
-        RENAMED_APPS,
-        BLACK_TEXT,
-        DIM_BACKGROUND,
-        DAILY_WALLPAPER,
-        WALLPAPER_DATE,
-        TIME_CLICK_APP,
-        DATE_CLICK_APP
+        DATE_FORMAT, TIME_FORMAT, AUTO_SHOW_KEYBOARD, AUTO_OPEN_APPS, ICONS_IN_HOME, ICONS_IN_DRAWER, SHOW_SEARCH_BAR, SHOW_ALPHABET_FILTER, HOME_APPS, HIDDEN_APPS, SHOW_HIDDEN_APPS, RENAMED_APPS, BLACK_TEXT, DIM_BACKGROUND, DAILY_WALLPAPER, WALLPAPER_DATE, TIME_CLICK_APP, DATE_CLICK_APP
     }
 
     private fun getOldPreferences(settings: SettingsModel): SettingsModel {
 
         val oldSettingsRetrieved = sharedPreferences.getBoolean(
-            SettingsDataKey.OLD_SETTINGS_RETRIEVED.toString(),
-            false
+            SettingsDataKey.OLD_SETTINGS_RETRIEVED.toString(), false
         )
 
         if (oldSettingsRetrieved) return settings
