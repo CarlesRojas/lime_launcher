@@ -47,7 +47,10 @@ class MainPagerAdapter(private val context: Context, private val viewModel: AppV
 
         this.home = HomeAdapter(context, layout, viewModel).also { adapter ->
             viewHome.adapter = adapter
-            viewHome.layoutManager = LinearLayoutManager(context)
+
+            viewHome.layoutManager = object : LinearLayoutManager(context) {
+                override fun canScrollVertically() = false
+            }
         }
 
         // TODO get how many apps can fit in the home screen
