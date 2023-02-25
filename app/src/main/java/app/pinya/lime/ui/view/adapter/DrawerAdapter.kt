@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
@@ -76,7 +75,7 @@ class DrawerAdapter(
         this.notifyDataSetChanged()
     }
 
-    fun showHideElements() {
+    private fun showHideElements() {
         val showSearchBar = true // TODO get from settings
         val showAlphabetFilter = true // TODO get from settings
 
@@ -201,7 +200,7 @@ class DrawerAdapter(
                 currentLetter.visibility = View.VISIBLE
                 currentLetter.text = currentChar.uppercase()
                 currentLetter.animate().y(event.rawY - (currentLetter.height / 2)).setDuration(0)
-                    .start();
+                    .start()
 
 
                 filteringByAlphabet = true

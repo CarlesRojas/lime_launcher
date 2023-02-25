@@ -48,16 +48,12 @@ class MainActivity : AppCompatActivity() {
             customPageAdapter.drawer?.updateAppList(newAppList)
         }
 
+
         appViewModel.updateAppList()
         viewPager.setCurrentItem(0, false)
 
         // TODO update wallpaper daily
         // TODO Hide any active menu
-    }
-
-    override fun onPause() {
-        super.onPause()
-
     }
 
     private fun linkAdapter() {
