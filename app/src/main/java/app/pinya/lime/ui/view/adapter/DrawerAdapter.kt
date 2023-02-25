@@ -60,7 +60,7 @@ class DrawerAdapter(
     fun updateAppList(newAppList: MutableList<AppModel>) {
         appList = newAppList
 
-        val autoOpenApps = true // TODO get from settings
+        val autoOpenApps = viewModel.settings.value?.drawerAutoOpenApps ?: true
         val moreThanOneInstalledApp = viewModel.completeAppList.size > 1
 
         if (!lastFilterWasAlphabet && autoOpenApps && moreThanOneInstalledApp && appList.size == 1) {
@@ -76,8 +76,8 @@ class DrawerAdapter(
     }
 
     private fun showHideElements() {
-        val showSearchBar = true // TODO get from settings
-        val showAlphabetFilter = true // TODO get from settings
+        val showSearchBar = viewModel.settings.value?.drawerShowSearchBar ?: true
+        val showAlphabetFilter = viewModel.settings.value?.drawerShowAlphabetFilter ?: true
 
         searchBar?.visibility = if (showSearchBar) View.VISIBLE else View.GONE
         alphabetLayout?.visibility = if (showAlphabetFilter) View.VISIBLE else View.GONE
@@ -140,7 +140,7 @@ class DrawerAdapter(
     }
 
     fun showKeyboard() {
-        val autoOpenKeyboard = true // TODO get from settings
+        val autoOpenKeyboard = viewModel.settings.value?.drawerAutoShowKeyboard ?: true
 
         if (autoOpenKeyboard) {
             searchBar?.requestFocus()
@@ -228,7 +228,7 @@ class DrawerAdapter(
 
         alphabetLayout?.removeAllViews()
         val alphabetHeight = alphabetLayout?.height ?: 20
-        val isTextBlack = false // TODO get from settings
+        val isTextBlack = viewModel.settings.value?.generalIsTextBlack ?: false
 
         for (char in currentAlphabet) {
             val textView = View.inflate(context, R.layout.view_alphabet_character, null) as TextView
@@ -264,7 +264,7 @@ class DrawerAdapter(
     override fun onBindViewHolder(holder: ItemAppViewHolder, position: Int) {
         val currentApp = appList[position]
 
-        val isTextBlack = false // TODO get from settings
+        val isTextBlack = viewModel.settings.value?.generalIsTextBlack ?: false
 
         val imageView: ImageView = holder.itemView.findViewById(R.id.appIcon)
         val textView: TextView = holder.itemView.findViewById(R.id.appName)
@@ -273,7 +273,7 @@ class DrawerAdapter(
         linearLayout.alpha = if (currentApp.hidden) 0.35f else 1f
 
         imageView.setImageDrawable(currentApp.icon)
-        val areIconsVisible = true // TODO get from settings
+        val areIconsVisible = viewModel.settings.value?.drawerShowIcons ?: true
         imageView.visibility = if (areIconsVisible) View.VISIBLE else View.GONE
 
         textView.text = currentApp.name
