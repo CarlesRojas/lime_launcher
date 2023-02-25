@@ -13,6 +13,7 @@ import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import app.pinya.lime.R
 import app.pinya.lime.data.memory.AppProvider
 import app.pinya.lime.databinding.ActivityMainBinding
+import app.pinya.lime.ui.view.adapter.AppMenuAdapter
 import app.pinya.lime.ui.view.adapter.MainPagerAdapter
 import app.pinya.lime.ui.viewmodel.AppViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,6 +28,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewPager: ViewPager
     private lateinit var customPageAdapter: MainPagerAdapter
 
+    private lateinit var appMenuAdapter: AppMenuAdapter
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +40,7 @@ class MainActivity : AppCompatActivity() {
         AppProvider.initialize(this.application)
         linkAdapter()
 
+        appMenuAdapter = AppMenuAdapter(this, appViewModel)
     }
 
     override fun onResume() {
@@ -54,6 +58,12 @@ class MainActivity : AppCompatActivity() {
             showStatusBar(settings.generalShowStatusBar)
             dimBackground(settings.generalDimBackground, settings.generalIsTextBlack)
             customPageAdapter.home?.handleSettingsUpdate(settings)
+            customPageAdapter.drawer?.handleSettingsUpdate(settings)
+        }
+
+
+        appViewModel.appMenu.observe(this) { appMenu ->
+            appMenuAdapter.handleAppMenu(appMenu)
         }
 
         appViewModel.getSettings()
@@ -63,7 +73,7 @@ class MainActivity : AppCompatActivity() {
         viewPager.setCurrentItem(0, false)
 
         // TODO update wallpaper daily
-        // TODO Hide any active menu
+        hideContextMenus()
     }
 
     private fun linkAdapter() {
@@ -119,6 +129,9 @@ class MainActivity : AppCompatActivity() {
             )
             else window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         }
+    }
 
+    private fun hideContextMenus() {
+        appViewModel.appMenu.postValue(null)
     }
 }

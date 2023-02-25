@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import app.pinya.lime.domain.model.AppModel
 import app.pinya.lime.domain.model.InfoModel
 import app.pinya.lime.domain.model.SettingsModel
+import app.pinya.lime.domain.model.menus.AppMenu
 import app.pinya.lime.domain.usecase.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -34,6 +35,9 @@ class AppViewModel @Inject constructor(
     val homeList = MutableLiveData<MutableList<AppModel>>()
 
     var completeAppList: MutableList<AppModel> = mutableListOf()
+
+    // CONTEXT MENUS
+    val appMenu = MutableLiveData<AppMenu?>(null)
 
 
     // ########################################
@@ -98,8 +102,7 @@ class AppViewModel @Inject constructor(
     // ########################################
 
     private fun updateHomeList() {
-        val result =
-            filterHomeAppsUseCase(completeAppList, settings.value?.generalShowHiddenApps ?: false)
+        val result = filterHomeAppsUseCase(completeAppList)
         homeList.postValue(result)
     }
 

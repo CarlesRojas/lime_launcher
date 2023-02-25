@@ -83,6 +83,5 @@ class MainPagerAdapter(private val context: Context, private val viewModel: AppV
     fun onDrawerPageSelected() {
         this.drawer?.clearText()
         this.drawer?.showKeyboard()
-        // TODO show or hide elements according to settings (change to use live data?)
     }
 }

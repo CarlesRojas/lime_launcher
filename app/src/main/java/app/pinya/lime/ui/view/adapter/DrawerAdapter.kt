@@ -21,6 +21,8 @@ import androidx.recyclerview.widget.RecyclerView
 import app.pinya.lime.R
 import app.pinya.lime.domain.model.AlphabetModel
 import app.pinya.lime.domain.model.AppModel
+import app.pinya.lime.domain.model.SettingsModel
+import app.pinya.lime.domain.model.menus.AppMenu
 import app.pinya.lime.ui.view.holder.ItemAppViewHolder
 import app.pinya.lime.ui.viewmodel.AppViewModel
 import kotlin.math.floor
@@ -47,11 +49,14 @@ class DrawerAdapter(
     private var filteringByAlphabet = false
     private var lastFilterWasAlphabet = false
 
+    // CONTEXT MENU
+    private var contextMenuContainer: ConstraintLayout? = null
+
     init {
+        initContextMenu()
         initSearchBar()
         hideKeyboardOnAnyTouchOutside()
         initAlphabet()
-        showHideElements()
     }
 
     // ########################################
@@ -77,9 +82,15 @@ class DrawerAdapter(
         this.notifyDataSetChanged()
     }
 
-    private fun showHideElements() {
-        val showSearchBar = viewModel.settings.value?.drawerShowSearchBar ?: true
-        val showAlphabetFilter = viewModel.settings.value?.drawerShowAlphabetFilter ?: true
+    @SuppressLint("NotifyDataSetChanged")
+    fun handleSettingsUpdate(settings: SettingsModel) {
+        showHideElements(settings)
+        this.notifyDataSetChanged()
+    }
+
+    private fun showHideElements(settings: SettingsModel) {
+        val showSearchBar = settings.drawerShowSearchBar
+        val showAlphabetFilter = settings.drawerShowAlphabetFilter
 
         searchBar?.visibility = if (showSearchBar) View.VISIBLE else View.GONE
         alphabetLayout?.visibility = if (showAlphabetFilter) View.VISIBLE else View.GONE
@@ -251,6 +262,14 @@ class DrawerAdapter(
     }
 
     // ########################################
+    //   CONTEXT MENU
+    // ########################################
+
+    private fun initContextMenu() {
+        contextMenuContainer = layout.findViewById(R.id.contextMenuDrawer_parent)
+    }
+
+    // ########################################
     //   RECYCLER VIEW
     // ########################################
 
@@ -263,6 +282,7 @@ class DrawerAdapter(
         )
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: ItemAppViewHolder, position: Int) {
         val currentApp = appList[position]
 
@@ -284,13 +304,24 @@ class DrawerAdapter(
             )
         )
 
+        linearLayout.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) hideKeyboard()
+            false
+        }
+
         linearLayout.setOnClickListener {
             val launchAppIntent =
                 context.packageManager.getLaunchIntentForPackage(currentApp.packageName)
             if (launchAppIntent != null) context.startActivity(launchAppIntent)
         }
 
-        // TODO long click to open menu
+        linearLayout.setOnLongClickListener {
+            if (contextMenuContainer != null) {
+                hideKeyboard()
+                viewModel.appMenu.postValue(AppMenu(currentApp, false, contextMenuContainer!!))
+            }
+            true
+        }
     }
 
     override fun getItemCount(): Int {

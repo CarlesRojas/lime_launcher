@@ -6,14 +6,11 @@ import javax.inject.Inject
 class FilterHomeApps @Inject constructor() {
     operator fun invoke(
         completeAppList: MutableList<AppModel>,
-        showHiddenApps: Boolean
     ): MutableList<AppModel> {
         val filteredList = mutableListOf<AppModel>()
 
         completeAppList.forEach { app ->
-            if (showHiddenApps || !app.hidden) {
-                if (app.home) filteredList.add(app)
-            }
+            if (app.home) filteredList.add(app)
         }
 
         return filteredList

@@ -13,11 +13,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import app.pinya.lime.R
 import app.pinya.lime.domain.model.AppModel
 import app.pinya.lime.domain.model.SettingsModel
+import app.pinya.lime.domain.model.menus.AppMenu
 import app.pinya.lime.ui.view.activity.SettingsActivity
 import app.pinya.lime.ui.view.holder.ItemAppViewHolder
 import app.pinya.lime.ui.viewmodel.AppViewModel
@@ -37,12 +39,15 @@ class HomeAdapter(
     private var time: TextView? = null
     private var timer: Timer? = Timer()
 
+    // APP LIST
     private var appList: MutableList<AppModel> = mutableListOf()
 
+    // CONTEXT MENU
+    private var contextMenuContainer: ConstraintLayout? = null
+
     init {
-        // TODO initContextMenu()
+        initContextMenu()
         // TODO initGestureDetector()
-        // TODO getHomeAppList()
     }
 
     // ########################################
@@ -151,7 +156,14 @@ class HomeAdapter(
     }
 
     // TODO expand notifications
-    // TODO context menu
+
+    // ########################################
+    //   CONTEXT MENU
+    // ########################################
+
+    private fun initContextMenu() {
+        contextMenuContainer = layout.findViewById(R.id.contextMenuHome_parent)
+    }
 
     // ########################################
     //   RECYCLER VIEW
@@ -185,14 +197,18 @@ class HomeAdapter(
                 if (isTextBlack) R.color.black else R.color.white
             )
         )
-        
+
         linearLayout.setOnClickListener {
             val launchAppIntent =
                 context.packageManager.getLaunchIntentForPackage(currentApp.packageName)
             if (launchAppIntent != null) context.startActivity(launchAppIntent)
         }
 
-        // TODO long click to open menu
+        linearLayout.setOnLongClickListener {
+            if (contextMenuContainer != null)
+                viewModel.appMenu.postValue(AppMenu(currentApp, true, contextMenuContainer!!))
+            true
+        }
     }
 
     override fun getItemCount(): Int {
