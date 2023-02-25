@@ -1,10 +1,10 @@
 package app.pinya.lime.ui.view.activity
 
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.WindowInsetsController
+import android.view.Window
+import android.view.WindowManager
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
@@ -14,6 +14,7 @@ import app.pinya.lime.databinding.ActivityMainBinding
 import app.pinya.lime.ui.view.adapter.MainPagerAdapter
 import app.pinya.lime.ui.viewmodel.AppViewModel
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -30,6 +31,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(R.layout.activity_main)
 
+        makeNavbarTransparent()
+
         AppProvider.initialize(this.application)
 
         appViewModel.onCreate()
@@ -45,12 +48,18 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
+        appViewModel.updateAppList()
+        viewPager.setCurrentItem(0, false)
+
         // TODO update wallpaper daily
-        // TODO refetch installed apps
         // TODO Hide any active menu
-        // TODO Show home Page
         // TODO Dim background
         // TODO Hide any active menu
+    }
+
+    override fun onPause() {
+        super.onPause()
+
     }
 
     private fun linkAdapter() {
@@ -86,5 +95,14 @@ class MainActivity : AppCompatActivity() {
                 if (shouldDimBackground) (if (isTextBlack) R.color.white_extra_low else R.color.black_extra_low) else R.color.transparent
             )
         )
+    }
+
+    private fun makeNavbarTransparent() {
+        val window: Window = window
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        )
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
     }
 }

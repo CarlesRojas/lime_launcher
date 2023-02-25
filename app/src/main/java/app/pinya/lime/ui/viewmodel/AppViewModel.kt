@@ -22,12 +22,25 @@ class AppViewModel @Inject constructor(
     val drawerList = MutableLiveData<MutableList<AppModel>>()
 
     fun onCreate() {
+        updateAppList()
+    }
+
+    // ########################################
+    //   MAIN
+    // ########################################
+
+    fun updateAppList() {
         viewModelScope.launch {
             val result = refreshAppList()
             completeAppList = result
             drawerList.postValue(result)
         }
     }
+
+
+    // ########################################
+    //   DRAWER
+    // ########################################
 
     fun filterDrawerAppListBySearchedText(searchedText: String) {
         val result = filterAppListByText(completeAppList, searchedText)

@@ -28,11 +28,8 @@ import kotlin.math.floor
 
 
 class DrawerAdapter(
-    private val context: Context,
-    private val layout: ViewGroup,
-    private val viewModel: AppViewModel
-) :
-    RecyclerView.Adapter<ItemAppViewHolder>() {
+    private val context: Context, private val layout: ViewGroup, private val viewModel: AppViewModel
+) : RecyclerView.Adapter<ItemAppViewHolder>() {
 
     // APP LIST
     private var appList: MutableList<AppModel> = mutableListOf()
@@ -71,8 +68,7 @@ class DrawerAdapter(
             clearText()
 
             val app = appList[0]
-            val launchAppIntent =
-                context.packageManager.getLaunchIntentForPackage(app.packageName)
+            val launchAppIntent = context.packageManager.getLaunchIntentForPackage(app.packageName)
             if (launchAppIntent != null) context.startActivity(launchAppIntent)
         }
 
@@ -204,9 +200,7 @@ class DrawerAdapter(
 
                 currentLetter.visibility = View.VISIBLE
                 currentLetter.text = currentChar.uppercase()
-                currentLetter.animate()
-                    .y(event.rawY - (currentLetter.height / 2))
-                    .setDuration(0)
+                currentLetter.animate().y(event.rawY - (currentLetter.height / 2)).setDuration(0)
                     .start();
 
 
@@ -215,8 +209,8 @@ class DrawerAdapter(
                 lastFilterWasAlphabet = true
             }
 
-            if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL || event.action == MotionEvent.ACTION_OUTSIDE)
-                currentLetter.visibility = View.GONE
+            if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL || event.action == MotionEvent.ACTION_OUTSIDE) currentLetter.visibility =
+                View.GONE
 
             true
         }
@@ -244,8 +238,7 @@ class DrawerAdapter(
             textView.typeface = ResourcesCompat.getFont(context, R.font.montserrat)
             textView.setTextColor(
                 ContextCompat.getColor(
-                    context,
-                    if (isTextBlack) R.color.black else R.color.white
+                    context, if (isTextBlack) R.color.black else R.color.white
                 )
             )
             textView.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM)
@@ -287,8 +280,7 @@ class DrawerAdapter(
         textView.text = currentApp.name
         textView.setTextColor(
             ContextCompat.getColor(
-                context,
-                if (isTextBlack) R.color.black else R.color.white
+                context, if (isTextBlack) R.color.black else R.color.white
             )
         )
 

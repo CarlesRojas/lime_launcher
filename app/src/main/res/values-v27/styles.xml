@@ -1,17 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="BottomPopupWindowAnimation">
-        <item name="android:windowEnterAnimation">@anim/bottom_popup_show</item>
-        <item name="android:windowExitAnimation">@anim/bottom_popup_hide</item>
-    </style>
-
-
-    <style name="TopPopupWindowAnimation">
-        <item name="android:windowEnterAnimation">@anim/top_popup_show</item>
-        <item name="android:windowExitAnimation">@anim/top_popup_hide</item>
-    </style>
-
     <style name="Theme.Transparent" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowContentOverlay">@null</item>
@@ -23,6 +12,7 @@
         <item name="android:windowShowWallpaper">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">always</item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:fitsSystemWindows">false</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>

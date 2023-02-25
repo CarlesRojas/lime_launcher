@@ -8,8 +8,6 @@ class RefreshAppList @Inject constructor(
     private val appRepo: AppRepo
 ) {
     suspend operator fun invoke(): MutableList<AppModel> {
-        val appList = appRepo.getAppList()
-
-        return appList
+        return appRepo.getAppList()
     }
 }
