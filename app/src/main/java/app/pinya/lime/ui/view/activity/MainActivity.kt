@@ -38,22 +38,20 @@ class MainActivity : AppCompatActivity() {
         appViewModel.onCreate()
 
         linkAdapter()
+    }
+
+    override fun onResume() {
+        super.onResume()
         dimBackground()
 
         appViewModel.drawerList.observe(this) { newAppList ->
             customPageAdapter.drawer?.updateAppList(newAppList)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
 
         appViewModel.updateAppList()
         viewPager.setCurrentItem(0, false)
 
         // TODO update wallpaper daily
-        // TODO Hide any active menu
-        // TODO Dim background
         // TODO Hide any active menu
     }
 
