@@ -18,6 +18,7 @@ class AppViewModel @Inject constructor(
 
     private val filterAppListByTextUseCase: FilterAppListByText,
     private val filterAppListByAlphabetUseCase: FilterAppListByAlphabet,
+    private val filterHomeAppsUseCase: FilterHomeApps,
 
     private val getInfoUseCase: GetInfo,
     private val updateInfoUseCase: UpdateInfo,
@@ -28,7 +29,9 @@ class AppViewModel @Inject constructor(
 
     val settings = MutableLiveData<SettingsModel>()
     val info = MutableLiveData<InfoModel>()
+
     val drawerList = MutableLiveData<MutableList<AppModel>>()
+    val homeList = MutableLiveData<MutableList<AppModel>>()
 
     var completeAppList: MutableList<AppModel> = mutableListOf()
 
@@ -42,6 +45,8 @@ class AppViewModel @Inject constructor(
             val result = refreshAppListUseCase()
             updateAppListWithInfoUseCase(result, info.value ?: InfoModel())
             completeAppList = result
+
+            updateHomeList()
             filterByLastValue()
         }
     }
@@ -61,6 +66,8 @@ class AppViewModel @Inject constructor(
     fun updateSettings(newSettings: SettingsModel) {
         updateSettingsUseCase(newSettings)
         settings.postValue(newSettings)
+
+        updateHomeList()
         filterByLastValue()
     }
 
@@ -81,7 +88,19 @@ class AppViewModel @Inject constructor(
         info.postValue(newInfo)
 
         updateAppListWithInfoUseCase(completeAppList, info.value ?: InfoModel())
+
+        updateHomeList()
         filterByLastValue()
+    }
+
+    // ########################################
+    //   HOME
+    // ########################################
+
+    private fun updateHomeList() {
+        val result =
+            filterHomeAppsUseCase(completeAppList, settings.value?.generalShowHiddenApps ?: false)
+        homeList.postValue(result)
     }
 
 

@@ -42,8 +42,12 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        appViewModel.drawerList.observe(this) { newAppList ->
-            customPageAdapter.drawer?.updateAppList(newAppList)
+        appViewModel.homeList.observe(this) { newHomeList ->
+            customPageAdapter.home?.handleHomeListUpdate(newHomeList)
+        }
+
+        appViewModel.drawerList.observe(this) { newDrawerList ->
+            customPageAdapter.drawer?.handleDrawerListUpdate(newDrawerList)
         }
 
         appViewModel.settings.observe(this) { settings ->

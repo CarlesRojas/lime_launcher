@@ -59,8 +59,8 @@ class DrawerAdapter(
     // ########################################
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateAppList(newAppList: MutableList<AppModel>) {
-        appList = newAppList
+    fun handleDrawerListUpdate(newDrawerList: MutableList<AppModel>) {
+        appList = newDrawerList
 
         val autoOpenApps = viewModel.settings.value?.drawerAutoOpenApps ?: true
         val moreThanOneInstalledApp = viewModel.completeAppList.size > 1
@@ -266,8 +266,6 @@ class DrawerAdapter(
     override fun onBindViewHolder(holder: ItemAppViewHolder, position: Int) {
         val currentApp = appList[position]
 
-        val isTextBlack = viewModel.settings.value?.generalIsTextBlack ?: false
-
         val imageView: ImageView = holder.itemView.findViewById(R.id.appIcon)
         val textView: TextView = holder.itemView.findViewById(R.id.appName)
         val linearLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
@@ -279,6 +277,7 @@ class DrawerAdapter(
         imageView.visibility = if (areIconsVisible) View.VISIBLE else View.GONE
 
         textView.text = currentApp.name
+        val isTextBlack = viewModel.settings.value?.generalIsTextBlack ?: false
         textView.setTextColor(
             ContextCompat.getColor(
                 context, if (isTextBlack) R.color.black else R.color.white
