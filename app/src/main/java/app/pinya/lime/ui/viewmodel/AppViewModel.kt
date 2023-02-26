@@ -11,7 +11,10 @@ import androidx.lifecycle.viewModelScope
 import app.pinya.lime.domain.model.AppModel
 import app.pinya.lime.domain.model.InfoModel
 import app.pinya.lime.domain.model.SettingsModel
+import app.pinya.lime.domain.model.menus.AppListMenu
 import app.pinya.lime.domain.model.menus.AppMenu
+import app.pinya.lime.domain.model.menus.RenameMenu
+import app.pinya.lime.domain.model.menus.ReorderMenu
 import app.pinya.lime.domain.usecase.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -43,6 +46,9 @@ class AppViewModel @Inject constructor(
 
     // CONTEXT MENUS
     val appMenu = MutableLiveData<AppMenu?>(null)
+    val renameMenu = MutableLiveData<RenameMenu?>(null)
+    val reorderMenu = MutableLiveData<ReorderMenu?>(null)
+    val appListMenu = MutableLiveData<AppListMenu?>(null)
 
 
     // ########################################

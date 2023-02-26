@@ -16,6 +16,7 @@ import android.widget.Toast
 import app.pinya.lime.R
 import app.pinya.lime.domain.model.InfoModel
 import app.pinya.lime.domain.model.menus.AppMenu
+import app.pinya.lime.domain.model.menus.RenameMenu
 import app.pinya.lime.ui.view.activity.SettingsActivity
 import app.pinya.lime.ui.viewmodel.AppViewModel
 
@@ -133,7 +134,7 @@ class AppMenuAdapter(
 
         renameButton.setOnClickListener {
             viewModel.appMenu.postValue(null)
-            // TODO showRenameMenu(appMenu.app, appMenu.container, appMenu.callback)
+            viewModel.renameMenu.postValue(RenameMenu(appMenu.app, appMenu.container))
         }
     }
 
@@ -167,7 +168,6 @@ class AppMenuAdapter(
         Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
     }
 
-
     private fun toggleHomeInApp(packageName: String, homeNewValue: Boolean) {
         val info = viewModel.info.value ?: InfoModel()
 
@@ -179,7 +179,6 @@ class AppMenuAdapter(
         viewModel.updateInfo(info)
     }
 
-
     private fun toggleHiddenApp(packageName: String, hiddenNewValue: Boolean) {
         val info = viewModel.info.value ?: InfoModel()
 
@@ -190,5 +189,4 @@ class AppMenuAdapter(
 
         viewModel.updateInfo(info)
     }
-
 }

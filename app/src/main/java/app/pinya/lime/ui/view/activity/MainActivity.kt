@@ -13,8 +13,7 @@ import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import app.pinya.lime.R
 import app.pinya.lime.data.memory.AppProvider
 import app.pinya.lime.databinding.ActivityMainBinding
-import app.pinya.lime.ui.view.adapter.AppMenuAdapter
-import app.pinya.lime.ui.view.adapter.MainPagerAdapter
+import app.pinya.lime.ui.view.adapter.*
 import app.pinya.lime.ui.viewmodel.AppViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -29,6 +28,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var customPageAdapter: MainPagerAdapter
 
     private lateinit var appMenuAdapter: AppMenuAdapter
+    private lateinit var renameMenuAdapter: RenameMenuAdapter
+    private lateinit var reorderMenuAdapter: ReorderMenuAdapter
+    private lateinit var appListMenuAdapter: AppListMenuAdapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +39,11 @@ class MainActivity : AppCompatActivity() {
 
         makeNavbarTransparent()
         AppProvider.initialize(this.application)
+
         appMenuAdapter = AppMenuAdapter(this, appViewModel)
+        renameMenuAdapter = RenameMenuAdapter(this, appViewModel)
+        reorderMenuAdapter = ReorderMenuAdapter(this, appViewModel)
+        appListMenuAdapter = AppListMenuAdapter(this, appViewModel)
 
         setContentView(R.layout.activity_main)
         linkAdapter()
@@ -66,6 +72,18 @@ class MainActivity : AppCompatActivity() {
             appMenuAdapter.handleAppMenu(appMenu)
         }
 
+        appViewModel.renameMenu.observe(this) { renameMenu ->
+            renameMenuAdapter.handleAppMenu(renameMenu)
+        }
+
+        appViewModel.reorderMenu.observe(this) { reorderMenu ->
+            reorderMenuAdapter.handleAppMenu(reorderMenu)
+        }
+
+        appViewModel.appListMenu.observe(this) { appListMenu ->
+            appListMenuAdapter.handleAppMenu(appListMenu)
+        }
+
         appViewModel.getSettings()
         appViewModel.getInfo()
         appViewModel.updateAppList()
@@ -84,9 +102,7 @@ class MainActivity : AppCompatActivity() {
 
             viewPager.addOnPageChangeListener(object : OnPageChangeListener {
                 override fun onPageScrolled(
-                    position: Int,
-                    positionOffset: Float,
-                    positionOffsetPixels: Int
+                    position: Int, positionOffset: Float, positionOffsetPixels: Int
                 ) {
                 }
 
@@ -133,5 +149,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun hideContextMenus() {
         appViewModel.appMenu.postValue(null)
+        appViewModel.renameMenu.postValue(null)
+        appViewModel.reorderMenu.postValue(null)
+        appViewModel.appListMenu.postValue(null)
     }
 }

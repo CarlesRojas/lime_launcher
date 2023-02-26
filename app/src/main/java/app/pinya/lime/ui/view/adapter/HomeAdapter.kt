@@ -221,7 +221,7 @@ class HomeAdapter(
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: ItemAppViewHolder, position: Int) {
-        val currentApp = appList[position]
+        val currentApp = appList.find { it.homeOrderIndex == position } ?: return
 
         val imageView: ImageView = holder.itemView.findViewById(R.id.appIcon)
         val textView: TextView = holder.itemView.findViewById(R.id.appName)
