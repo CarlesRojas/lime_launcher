@@ -170,6 +170,7 @@ class AppMenuAdapter(
 
     private fun toggleHomeInApp(packageName: String, homeNewValue: Boolean) {
         val info = viewModel.info.value ?: return
+        info.tutorialDone = true
 
         when (homeNewValue) {
             true -> info.homeApps.add(packageName)

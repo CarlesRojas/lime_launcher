@@ -249,48 +249,100 @@ class HomeAdapter(
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: AppViewHolder, position: Int) {
-        val currentApp = appList.find { it.homeOrderIndex == position } ?: return
 
         val imageView: ImageView = holder.itemView.findViewById(R.id.appIcon)
         val textView: TextView = holder.itemView.findViewById(R.id.appName)
         val linearLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
 
-        linearLayout.alpha = if (currentApp.hidden) 0.35f else 1f
-
-        imageView.setImageDrawable(currentApp.icon)
-        val areIconsVisible = viewModel.settings.value?.homeShowIcons ?: true
-        imageView.visibility = if (areIconsVisible) View.VISIBLE else View.GONE
-
-        textView.text = currentApp.name
         val isTextBlack = viewModel.settings.value?.generalIsTextBlack ?: false
-        textView.setTextColor(
-            ContextCompat.getColor(
-                context,
-                if (isTextBlack) R.color.black else R.color.white
+        val areIconsVisible = viewModel.settings.value?.homeShowIcons ?: true
+
+        if (appList.size > 0) {
+            val currentApp = appList.find { it.homeOrderIndex == position } ?: return
+
+            linearLayout.alpha = if (currentApp.hidden) 0.35f else 1f
+
+            imageView.setImageDrawable(currentApp.icon)
+            imageView.visibility = if (areIconsVisible) View.VISIBLE else View.GONE
+
+            textView.text = currentApp.name
+            textView.isSingleLine = true
+            textView.setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    if (isTextBlack) R.color.black else R.color.white
+                )
             )
-        )
 
-        linearLayout.setOnTouchListener(object : OnSwipeTouchListener(context) {
-            override fun onFlingDown() {
-                expandNotificationBar()
-            }
+            linearLayout.setOnTouchListener(object : OnSwipeTouchListener(context) {
+                override fun onFlingDown() {
+                    expandNotificationBar()
+                }
 
-            override fun onClick() {
-                val launchAppIntent =
-                    context.packageManager.getLaunchIntentForPackage(currentApp.packageName)
-                if (launchAppIntent != null) context.startActivity(launchAppIntent)
-            }
+                override fun onClick() {
+                    val launchAppIntent =
+                        context.packageManager.getLaunchIntentForPackage(currentApp.packageName)
+                    if (launchAppIntent != null) context.startActivity(launchAppIntent)
+                }
 
-            override fun onLongClick() {
-                if (contextMenuContainer != null) {
-                    Utils.vibrate(context)
-                    viewModel.appMenu.postValue(AppMenu(currentApp, true, contextMenuContainer!!))
+                override fun onLongClick() {
+                    if (contextMenuContainer != null) {
+                        Utils.vibrate(context)
+                        viewModel.appMenu.postValue(
+                            AppMenu(
+                                currentApp,
+                                true,
+                                contextMenuContainer!!
+                            )
+                        )
+                    }
+                }
+            })
+        } else {
+            var text = ""
+            var icon = R.drawable.icon_arrow_left
+
+            when (position) {
+                0 -> {
+                    text = "Long press above to open settings"
+                    icon = R.drawable.icon_settings
+                }
+                1 -> {
+                    text = "All your apps are to the right"
+                    icon = R.drawable.icon_arrow_right
+                }
+                else -> {
+                    text = "Long press an app to add it here"
+                    icon = R.drawable.icon_menu
                 }
             }
-        })
+
+            imageView.setImageDrawable(
+                ContextCompat.getDrawable(
+                    context, icon
+                )
+            )
+
+            textView.text = text
+            textView.isSingleLine = false
+            textView.setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    if (isTextBlack) R.color.black else R.color.white
+                )
+            )
+
+            linearLayout.setOnTouchListener(object : OnSwipeTouchListener(context) {
+                override fun onFlingDown() {
+                    expandNotificationBar()
+                }
+            })
+        }
     }
 
+
     override fun getItemCount(): Int {
-        return appList.size
+        val info = viewModel.info.value ?: return appList.size
+        return if (appList.size <= 0 && !info.tutorialDone) 3 else appList.size
     }
 }

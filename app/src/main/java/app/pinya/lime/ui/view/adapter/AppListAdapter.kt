@@ -63,7 +63,8 @@ class AppListAdapter(
                 }
             }
             else -> {
-                //if (position - 2 < 0 || position - 2 >= appList.size) return
+                // TODO check if all apps are showing correctly
+                if (position - 2 < 0 || position - 2 >= appList.size) return
                 val currentApp = appList[position - 2]
 
                 imageView.setImageDrawable(currentApp.icon)

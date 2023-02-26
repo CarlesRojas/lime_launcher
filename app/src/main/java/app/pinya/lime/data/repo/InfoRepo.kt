@@ -24,6 +24,7 @@ class InfoRepo @Inject constructor() {
         RENAMED_APPS,
         WALLPAPER_LAST_UPDATED_DATE,
         MAX_NUMBER_OF_HOME_APPS,
+        TUTORIAL_DONE,
         OLD_INFO_RETRIEVED,
     }
 
@@ -48,6 +49,8 @@ class InfoRepo @Inject constructor() {
                 getData(InfoDataKey.WALLPAPER_LAST_UPDATED_DATE, info.wallpaperLastUpdatedDate)
             info.maxNumberOfHomeApps =
                 getData(InfoDataKey.MAX_NUMBER_OF_HOME_APPS, info.maxNumberOfHomeApps)
+            info.tutorialDone =
+                getData(InfoDataKey.TUTORIAL_DONE, info.tutorialDone)
 
             info = getOldPreferences(info)
             info
@@ -65,6 +68,10 @@ class InfoRepo @Inject constructor() {
 
     private fun getData(key: InfoDataKey, defaultValue: Int): Int {
         return sharedPreferences.getInt(key.toString(), defaultValue)
+    }
+
+    private fun getData(key: InfoDataKey, defaultValue: Boolean): Boolean {
+        return this.sharedPreferences.getBoolean(key.toString(), defaultValue)
     }
 
     private fun getData(
