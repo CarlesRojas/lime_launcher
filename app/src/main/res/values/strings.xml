@@ -18,22 +18,6 @@
     <string name="reorder_icon_description">Reorder home apps Icon</string>
 
 
-    <string name="settings_title">Settings</string>
-    <string name="settings_dateFormat">Date format</string>
-    <string name="settings_timeFormat">Time format</string>
-    <string name="settings_autoShowKeyboard">Auto show keyboard</string>
-    <string name="settings_autoOpenApps">Auto open apps</string>
-    <string name="settings_iconsInHome">Show icons in home</string>
-    <string name="settings_iconsInDrawer">Show icons in drawer</string>
-    <string name="settings_showSearchBar">Show search bar</string>
-    <string name="settings_showAlphabet">Show alphabet filter</string>
-    <string name="settings_showHiddenApps">Show hidden apps</string>
-    <string name="settings_blackText">Use black text</string>
-    <string name="settings_dimBackground">Dim wallpaper</string>
-    <string name="settings_dailyWallpaper">Update wallpaper daily</string>
-    <string name="settings_timeAppLaunch">Choose app to open on clock click</string>
-    <string name="settings_dateAppLaunch">Choose app to open on date click</string>
-
     <string name="contextMenu_addToHome">Add to Home</string>
     <string name="contextMenu_removeFromHome">Remove from Home</string>
     <string name="contextMenu_hideApp">Hide app</string>
@@ -63,5 +47,42 @@
 
     <string name="placeholder_time">19:35</string>
     <string name="placeholder_date">Monday, 23 August</string>
+
+    <!-- Preferences -->
+    <string name="title_activity_settings">Lime Settings</string>
+
+    <string name="preference_title_general">General</string>
+    <string name="preference_title_home">Home</string>
+    <string name="preference_title_drawer">Drawer</string>
+    <string name="preference_title_date">Date</string>
+    <string name="preference_title_time">Time</string>
+
+    <string name="preference_general_show_hidden_apps">Show hidden apps</string>
+    <string name="preference_general_show_status_bar">Show status bar</string>
+    <string name="preference_general_change_wallpaper_daily">Change wallpaper daily</string>
+    <string name="preference_general_is_text_black">Use black text</string>
+    <string name="preference_general_dim_wallpaper">Dim wallpaper</string>
+
+    <string name="preference_home_show_icons">Show icons</string>
+    <string name="preference_home_show_in_grid">Use app grid</string>
+    <string name="preference_home_show_labels">Show labels</string>
+
+    <string name="preference_drawer_show_icons">Show icons</string>
+    <string name="preference_drawer_show_in_grid">Use app grid</string>
+    <string name="preference_drawer_show_labels">Show labels</string>
+    <string name="preference_drawer_auto_show_keyboard">Automatically show keyboard</string>
+    <string name="preference_drawer_auto_show_keyboard_subtitle">Show the keyboard automatically when entering the drawer.</string>
+    <string name="preference_drawer_auto_open_apps">Automatically open apps</string>
+    <string name="preference_drawer_auto_open_apps_subtitle">While searching, if there is only one app that matches the query, it will automatically open.</string>
+    <string name="preference_drawer_show_search_bar">Show search bar</string>
+    <string name="preference_drawer_show_alphabet_filter">Show alphabet filter</string>
+
+    <string name="preference_date_visible">Show date</string>
+    <string name="preference_date_format">Date format</string>
+    <string name="preference_date_click_app">Choose app to open on click</string>
+
+    <string name="preference_time_visible">Show time</string>
+    <string name="preference_time_format">Time format</string>
+    <string name="preference_time_click_app">Choose app to open on click</string>
 
 </resources>

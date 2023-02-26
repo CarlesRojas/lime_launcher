@@ -52,11 +52,13 @@ class AppMenuAdapter(
         val uninstallButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_uninstall)
         val renameButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_renameApp)
 
+        val homeApps = viewModel.info.value?.homeApps ?: mutableSetOf()
 
         icon.setImageDrawable(appMenu.app.icon)
         appName.text = appMenu.app.name
 
-        reorderButton.visibility = if (appMenu.fromHome) View.VISIBLE else View.GONE
+        reorderButton.visibility =
+            if (appMenu.fromHome && homeApps.size > 1) View.VISIBLE else View.GONE
         addToHomeButton.visibility =
             if (appMenu.app.home || isHomeFull()) View.GONE else View.VISIBLE
         removeFromHomeButton.visibility = if (appMenu.app.home) View.VISIBLE else View.GONE

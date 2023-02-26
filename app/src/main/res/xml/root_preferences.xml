@@ -1,0 +1,160 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--<PreferenceCategory app:title="@string/preference_title_general">
+        <EditTextPreference
+            app:key="signature"
+            app:title="@string/preference_date_format"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="reply"
+            app:entries="@array/reply_entries"
+            app:entryValues="@array/reply_values"
+            app:key="reply"
+            app:title="@string/preference_date_format"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/preference_title_home">
+        <SwitchPreferenceCompat
+            app:key="sync"
+            app:title="@string/preference_date_format" />
+
+        <SwitchPreferenceCompat
+            app:dependency="sync"
+            app:key="attachment"
+            app:summaryOff="@string/preference_date_format"
+            app:summaryOn="@string/preference_date_format"
+            app:title="@string/preference_date_format" />
+    </PreferenceCategory>-->
+
+    <PreferenceCategory app:title="@string/preference_title_general">
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="preference_general_show_hidden_apps"
+            app:title="@string/preference_general_show_hidden_apps" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="preference_general_show_status_bar"
+            app:title="@string/preference_general_show_status_bar" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="preference_general_change_wallpaper_daily"
+            app:title="@string/preference_general_change_wallpaper_daily" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="preference_general_is_text_black"
+            app:title="@string/preference_general_is_text_black" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="preference_general_dim_wallpaper"
+            app:title="@string/preference_general_dim_wallpaper" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/preference_title_home">
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="preference_home_show_in_grid"
+            app:title="@string/preference_home_show_in_grid" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:dependency="preference_home_show_in_grid"
+            app:key="preference_home_show_labels"
+            app:title="@string/preference_home_show_labels" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="preference_home_show_icons"
+            app:title="@string/preference_home_show_icons" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/preference_title_drawer">
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="preference_drawer_show_in_grid"
+            app:title="@string/preference_drawer_show_in_grid" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:dependency="preference_drawer_show_in_grid"
+            app:key="preference_drawer_show_labels"
+            app:title="@string/preference_drawer_show_labels" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="preference_drawer_show_icons"
+            app:title="@string/preference_drawer_show_icons" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="preference_drawer_show_search_bar"
+            app:title="@string/preference_drawer_show_search_bar" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:dependency="preference_drawer_show_search_bar"
+            app:key="preference_drawer_auto_show_keyboard"
+            app:summary="@string/preference_drawer_auto_show_keyboard_subtitle"
+            app:title="@string/preference_drawer_auto_show_keyboard" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:dependency="preference_drawer_show_search_bar"
+            app:key="preference_drawer_auto_open_apps"
+            app:summary="@string/preference_drawer_auto_open_apps_subtitle"
+            app:title="@string/preference_drawer_auto_open_apps" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="preference_drawer_show_alphabet_filter"
+            app:title="@string/preference_drawer_show_alphabet_filter" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/preference_title_date">
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="preference_date_visible"
+            app:title="@string/preference_date_visible" />
+
+        <ListPreference
+            app:defaultValue="1"
+            app:dependency="preference_date_visible"
+            app:key="preference_date_format"
+            app:title="@string/preference_date_format"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="default"
+            app:dependency="preference_date_visible"
+            app:key="preference_date_click_app"
+            app:title="@string/preference_date_click_app"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/preference_title_time">
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="preference_time_visible"
+            app:title="@string/preference_time_visible" />
+
+        <ListPreference
+            app:defaultValue="0"
+            app:dependency="preference_time_visible"
+            app:key="preference_time_format"
+            app:title="@string/preference_time_format"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="default"
+            app:dependency="preference_time_visible"
+            app:key="preference_time_click_app"
+            app:title="@string/preference_time_click_app"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
