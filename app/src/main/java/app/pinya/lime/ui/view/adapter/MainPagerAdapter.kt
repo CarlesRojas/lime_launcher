@@ -73,7 +73,8 @@ class MainPagerAdapter(private val context: Context, private val viewModel: AppV
 
                 val info = viewModel.info.value ?: InfoModel()
                 info.maxNumberOfHomeApps = maxNumberOfHomeApps
-                viewModel.updateInfo(info)
+                println(info.homeApps)
+                // TODO viewModel.updateInfo(info)
             }
         })
 

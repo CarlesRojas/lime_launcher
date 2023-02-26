@@ -34,13 +34,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(R.layout.activity_main)
 
         makeNavbarTransparent()
         AppProvider.initialize(this.application)
-        linkAdapter()
-
         appMenuAdapter = AppMenuAdapter(this, appViewModel)
+
+        setContentView(R.layout.activity_main)
+        linkAdapter()
     }
 
     override fun onResume() {

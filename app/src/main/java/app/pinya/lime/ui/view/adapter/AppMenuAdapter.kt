@@ -177,9 +177,6 @@ class AppMenuAdapter(
         }
 
         viewModel.updateInfo(info)
-
-        // TODO remove packages that are uninstalled
-        // TODO Update home order when home list changes
     }
 
 
@@ -192,8 +189,6 @@ class AppMenuAdapter(
         }
 
         viewModel.updateInfo(info)
-
-        // TODO remove packages that are uninstalled
     }
 
 }
