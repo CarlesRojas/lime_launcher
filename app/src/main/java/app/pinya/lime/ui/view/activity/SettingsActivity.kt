@@ -5,6 +5,8 @@ import java.text.DateFormat
 
 class SettingsActivity : AppCompatActivity() {
 
+    // TODO create settings with 4 pages
+
     companion object {
         fun mapFormat(num: Int): Int {
             return when (num) {
