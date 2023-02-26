@@ -10,6 +10,7 @@ import android.provider.CalendarContract
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -23,18 +24,19 @@ import app.pinya.lime.domain.model.menus.AppMenu
 import app.pinya.lime.ui.utils.OnSwipeTouchListener
 import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.view.activity.SettingsActivity
-import app.pinya.lime.ui.view.holder.ItemAppViewHolder
+import app.pinya.lime.ui.view.holder.AppViewHolder
 import app.pinya.lime.ui.viewmodel.AppViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Timer
 import java.util.TimerTask
+import kotlin.math.floor
 
 class HomeAdapter(
     private val context: Context,
     private val layout: ViewGroup,
     private val viewModel: AppViewModel
-) : RecyclerView.Adapter<ItemAppViewHolder>() {
+) : RecyclerView.Adapter<AppViewHolder>() {
 
     // DATE & TIME
     private var date: TextView? = null
@@ -50,6 +52,7 @@ class HomeAdapter(
     init {
         initContextMenu()
         initGestureDetector()
+        calculateMaxNumberOfAppsInHome()
     }
 
     // ########################################
@@ -172,6 +175,31 @@ class HomeAdapter(
     }
 
     // ########################################
+    //   MAX APPS IN HOME
+    // ########################################
+
+    private fun calculateMaxNumberOfAppsInHome() {
+        layout.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                layout.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                val homeAppListContainer =
+                    layout.findViewById<View>(R.id.homeAppListContainer) as ConstraintLayout
+
+                val heightInDp = Utils.pxToDp(context, homeAppListContainer.height)
+                val appHeightInDp = 62f
+                val maxNumberOfHomeApps =
+                    floor(heightInDp / appHeightInDp).toInt() - 1
+
+                val info = viewModel.info.value ?: return
+                info.maxNumberOfHomeApps = maxNumberOfHomeApps
+                viewModel.updateInfo(info)
+            }
+        })
+    }
+
+    // ########################################
     //   GESTURES
     // ########################################
 
@@ -212,15 +240,15 @@ class HomeAdapter(
     //   RECYCLER VIEW
     // ########################################
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemAppViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return ItemAppViewHolder(
+        return AppViewHolder(
             inflater.inflate(R.layout.view_app, parent, false)
         )
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    override fun onBindViewHolder(holder: ItemAppViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: AppViewHolder, position: Int) {
         val currentApp = appList.find { it.homeOrderIndex == position } ?: return
 
         val imageView: ImageView = holder.itemView.findViewById(R.id.appIcon)

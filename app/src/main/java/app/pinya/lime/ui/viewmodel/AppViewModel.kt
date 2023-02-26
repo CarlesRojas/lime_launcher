@@ -1,10 +1,5 @@
 package app.pinya.lime.ui.viewmodel
 
-import android.content.Context
-import android.os.Build
-import android.os.VibrationEffect
-import android.os.Vibrator
-import android.os.VibratorManager
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -58,7 +53,7 @@ class AppViewModel @Inject constructor(
     fun updateAppList() {
         viewModelScope.launch {
             val result = refreshAppListUseCase()
-            updateAppListWithInfoUseCase(result, info.value ?: InfoModel())
+            if (info.value != null) updateAppListWithInfoUseCase(result, info.value!!)
             completeAppList = result
 
             updateHomeList()
@@ -102,7 +97,7 @@ class AppViewModel @Inject constructor(
         updateInfoUseCase(newInfo)
         info.postValue(newInfo)
 
-        updateAppListWithInfoUseCase(completeAppList, info.value ?: InfoModel())
+        if (info.value != null) updateAppListWithInfoUseCase(completeAppList, info.value!!)
 
         updateHomeList()
         filterByLastValue()

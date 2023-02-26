@@ -4,4 +4,4 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
 
-class ItemAppViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+class AppViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)

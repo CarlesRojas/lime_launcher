@@ -14,7 +14,6 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
 import app.pinya.lime.R
-import app.pinya.lime.domain.model.InfoModel
 import app.pinya.lime.domain.model.menus.AppMenu
 import app.pinya.lime.domain.model.menus.RenameMenu
 import app.pinya.lime.ui.view.activity.SettingsActivity
@@ -169,7 +168,7 @@ class AppMenuAdapter(
     }
 
     private fun toggleHomeInApp(packageName: String, homeNewValue: Boolean) {
-        val info = viewModel.info.value ?: InfoModel()
+        val info = viewModel.info.value ?: return
 
         when (homeNewValue) {
             true -> info.homeApps.add(packageName)
@@ -180,7 +179,7 @@ class AppMenuAdapter(
     }
 
     private fun toggleHiddenApp(packageName: String, hiddenNewValue: Boolean) {
-        val info = viewModel.info.value ?: InfoModel()
+        val info = viewModel.info.value ?: return
 
         when (hiddenNewValue) {
             true -> info.hiddenApps.add(packageName)

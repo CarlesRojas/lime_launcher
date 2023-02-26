@@ -23,7 +23,7 @@ import app.pinya.lime.domain.model.AlphabetModel
 import app.pinya.lime.domain.model.AppModel
 import app.pinya.lime.domain.model.SettingsModel
 import app.pinya.lime.domain.model.menus.AppMenu
-import app.pinya.lime.ui.view.holder.ItemAppViewHolder
+import app.pinya.lime.ui.view.holder.AppViewHolder
 import app.pinya.lime.ui.viewmodel.AppViewModel
 import kotlin.math.floor
 
@@ -32,7 +32,7 @@ class DrawerAdapter(
     private val context: Context,
     private val layout: ViewGroup,
     private val viewModel: AppViewModel
-) : RecyclerView.Adapter<ItemAppViewHolder>() {
+) : RecyclerView.Adapter<AppViewHolder>() {
 
     // APP LIST
     private var appList: MutableList<AppModel> = mutableListOf()
@@ -273,17 +273,17 @@ class DrawerAdapter(
     //   RECYCLER VIEW
     // ########################################
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemAppViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppViewHolder {
         val inflater = LayoutInflater.from(parent.context)
 
 
-        return ItemAppViewHolder(
+        return AppViewHolder(
             inflater.inflate(R.layout.view_app, parent, false)
         )
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    override fun onBindViewHolder(holder: ItemAppViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: AppViewHolder, position: Int) {
         val currentApp = appList[position]
 
         val imageView: ImageView = holder.itemView.findViewById(R.id.appIcon)

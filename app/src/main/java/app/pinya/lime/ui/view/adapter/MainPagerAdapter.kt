@@ -4,17 +4,12 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
 import app.pinya.lime.R
-import app.pinya.lime.domain.model.InfoModel
-import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.viewmodel.AppViewModel
 import kotlinx.coroutines.*
-import kotlin.math.floor
 
 class MainPagerAdapter(private val context: Context, private val viewModel: AppViewModel) :
     PagerAdapter() {
@@ -58,25 +53,7 @@ class MainPagerAdapter(private val context: Context, private val viewModel: AppV
             }
         }
 
-        layout.viewTreeObserver.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                layout.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                val homeAppListContainer =
-                    layout.findViewById<View>(R.id.homeAppListContainer) as ConstraintLayout
-
-                val heightInDp = Utils.pxToDp(context, homeAppListContainer.height)
-                val appHeightInDp = 62f
-                val maxNumberOfHomeApps =
-                    floor(heightInDp / appHeightInDp).toInt() - 1
-
-                val info = viewModel.info.value ?: InfoModel()
-                info.maxNumberOfHomeApps = maxNumberOfHomeApps
-                println(info.homeApps)
-                // TODO viewModel.updateInfo(info)
-            }
-        })
 
         collection.addView(layout)
         return layout
