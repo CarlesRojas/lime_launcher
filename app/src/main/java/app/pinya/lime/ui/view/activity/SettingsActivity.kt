@@ -112,10 +112,6 @@ class SettingsActivity : AppCompatActivity() {
                     timeClickApp.entries = entries
                     timeClickApp.entryValues = entryValues
                 }
-
-                val prefsEditor = prefs.edit()
-
-                prefsEditor.apply()
             }
 
         }
