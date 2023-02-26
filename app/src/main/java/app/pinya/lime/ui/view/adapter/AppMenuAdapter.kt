@@ -16,6 +16,7 @@ import android.widget.Toast
 import app.pinya.lime.R
 import app.pinya.lime.domain.model.menus.AppMenu
 import app.pinya.lime.domain.model.menus.RenameMenu
+import app.pinya.lime.domain.model.menus.ReorderMenu
 import app.pinya.lime.ui.view.activity.SettingsActivity
 import app.pinya.lime.ui.viewmodel.AppViewModel
 
@@ -89,7 +90,7 @@ class AppMenuAdapter(
 
         reorderButton.setOnClickListener {
             viewModel.appMenu.postValue(null)
-            // TODO showReorderMenu(appMenu.container, appMenu.callback)
+            viewModel.reorderMenu.postValue(ReorderMenu(appMenu.container))
         }
 
         addToHomeButton.setOnClickListener {

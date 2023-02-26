@@ -18,7 +18,7 @@ class RenameMenuAdapter(
     private var contextMenuWindow: PopupWindow? = null
     private var isMenuOpen = false
 
-    fun handleAppMenu(renameMenu: RenameMenu?) {
+    fun handleRenameMenu(renameMenu: RenameMenu?) {
         if (renameMenu == null) hide()
         else show(renameMenu)
     }
@@ -97,6 +97,10 @@ class RenameMenuAdapter(
 
         contextMenuWindow?.showAtLocation(renameMenu.container, Gravity.TOP, 0, 0)
         dimBehindMenu(contextMenuWindow)
+
+        contextMenuWindow?.setOnDismissListener {
+            viewModel.renameMenu.postValue(null)
+        }
 
         renameBar.focusAndShowKeyboard()
 

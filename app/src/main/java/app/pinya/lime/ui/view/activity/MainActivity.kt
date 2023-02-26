@@ -73,15 +73,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         appViewModel.renameMenu.observe(this) { renameMenu ->
-            renameMenuAdapter.handleAppMenu(renameMenu)
+            renameMenuAdapter.handleRenameMenu(renameMenu)
         }
 
         appViewModel.reorderMenu.observe(this) { reorderMenu ->
-            reorderMenuAdapter.handleAppMenu(reorderMenu)
+            reorderMenuAdapter.handleReorderMenu(reorderMenu)
         }
 
         appViewModel.appListMenu.observe(this) { appListMenu ->
-            appListMenuAdapter.handleAppMenu(appListMenu)
+            appListMenuAdapter.handleAppListMenu(appListMenu)
         }
 
         appViewModel.getSettings()

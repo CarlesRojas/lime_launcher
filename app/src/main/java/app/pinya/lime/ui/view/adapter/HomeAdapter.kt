@@ -258,7 +258,7 @@ class HomeAdapter(
         linearLayout.alpha = if (currentApp.hidden) 0.35f else 1f
 
         imageView.setImageDrawable(currentApp.icon)
-        val areIconsVisible = viewModel.settings.value?.drawerShowIcons ?: true
+        val areIconsVisible = viewModel.settings.value?.homeShowIcons ?: true
         imageView.visibility = if (areIconsVisible) View.VISIBLE else View.GONE
 
         textView.text = currentApp.name

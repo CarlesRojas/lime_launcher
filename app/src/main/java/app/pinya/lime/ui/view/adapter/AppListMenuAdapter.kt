@@ -12,7 +12,7 @@ class AppListMenuAdapter(
     private var contextMenuWindow: PopupWindow? = null
     private var isMenuOpen = false
 
-    fun handleAppMenu(appListMenu: AppListMenu?) {
+    fun handleAppListMenu(appListMenu: AppListMenu?) {
         if (appListMenu == null) hide()
         else show(appListMenu)
     }
