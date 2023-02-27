@@ -23,6 +23,7 @@ import app.pinya.lime.domain.model.AlphabetModel
 import app.pinya.lime.domain.model.AppModel
 import app.pinya.lime.domain.model.SettingsModel
 import app.pinya.lime.domain.model.menus.AppMenu
+import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.view.holder.AppViewHolder
 import app.pinya.lime.ui.viewmodel.AppViewModel
 import kotlin.math.floor
@@ -191,6 +192,8 @@ class DrawerAdapter(
     //   ALPHABET
     // ########################################
 
+    var lastSelectedChar: Char = '-'
+
     @SuppressLint("ClickableViewAccessibility")
     fun initAlphabet() {
         alphabetLayout = layout.findViewById(R.id.alphabetLayout)
@@ -209,6 +212,10 @@ class DrawerAdapter(
 
             if (currentSection >= 0 && currentSection < currentAlphabet.size) {
                 val currentChar = currentAlphabet[currentSection]
+                if (currentChar != lastSelectedChar) {
+                    lastSelectedChar = currentChar
+                    Utils.vibrate(context)
+                }
 
                 currentLetter.visibility = View.VISIBLE
                 currentLetter.text = currentChar.uppercase()
@@ -219,10 +226,15 @@ class DrawerAdapter(
                 filteringByAlphabet = true
                 searchBar?.setText(currentChar.toString())
                 lastFilterWasAlphabet = true
+            } else {
+                lastSelectedChar = '-'
+                currentLetter.visibility = View.GONE
             }
 
-            if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL || event.action == MotionEvent.ACTION_OUTSIDE) currentLetter.visibility =
-                View.GONE
+            if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL || event.action == MotionEvent.ACTION_OUTSIDE) {
+                lastSelectedChar = '-'
+                currentLetter.visibility = View.GONE
+            }
 
             true
         }
