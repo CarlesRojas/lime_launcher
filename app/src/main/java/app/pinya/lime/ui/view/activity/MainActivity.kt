@@ -47,10 +47,6 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
         linkAdapter()
-    }
-
-    override fun onResume() {
-        super.onResume()
 
         appViewModel.homeList.observe(this) { newHomeList ->
             customPageAdapter.home?.handleHomeListUpdate(newHomeList)
@@ -66,7 +62,6 @@ class MainActivity : AppCompatActivity() {
             customPageAdapter.home?.handleSettingsUpdate(settings)
             customPageAdapter.drawer?.handleSettingsUpdate(settings)
         }
-
 
         appViewModel.appMenu.observe(this) { appMenu ->
             appMenuAdapter.handleAppMenu(appMenu)
@@ -88,9 +83,14 @@ class MainActivity : AppCompatActivity() {
         appViewModel.getInfo()
         appViewModel.updateAppList()
 
+        // TODO update wallpaper daily
+    }
+
+    override fun onResume() {
+        super.onResume()
+
         viewPager.setCurrentItem(0, false)
 
-        // TODO update wallpaper daily
         hideContextMenus()
     }
 
