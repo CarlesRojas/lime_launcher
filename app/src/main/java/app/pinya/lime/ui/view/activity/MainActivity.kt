@@ -86,8 +86,7 @@ class MainActivity : AppCompatActivity() {
         showStatusBar(showStatusBar)
         dimBackground(dimBackground, isTextBlack)
 
-        customPageAdapter.home?.onResume()
-        customPageAdapter.drawer?.onResume()
+        customPageAdapter.onResume()
 
         hideContextMenus()
     }

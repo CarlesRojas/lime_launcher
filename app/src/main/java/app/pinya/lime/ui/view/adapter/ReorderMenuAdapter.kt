@@ -47,10 +47,10 @@ class ReorderMenuAdapter(
 
                 val app = appList.find { it.packageName == homeApp } ?: continue
 
+                val areIconsVisible = Utils.getBooleanPref(context, BooleanPref.HOME_SHOW_ICONS)
+
                 appIcon.setImageDrawable(app.icon)
                 appName.text = app.name
-
-                val areIconsVisible = Utils.getBooleanPref(context, BooleanPref.HOME_SHOW_ICONS)
 
                 appIcon.visibility = if (areIconsVisible) View.VISIBLE else View.GONE
                 moveUpButton.visibility = if (app.homeOrderIndex <= 0) View.GONE else View.VISIBLE

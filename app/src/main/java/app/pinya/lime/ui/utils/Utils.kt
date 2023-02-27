@@ -63,9 +63,9 @@ class Utils {
                 BooleanPref.DRAWER_AUTO_OPEN_APPS -> "preference_drawer_auto_open_apps"
                 BooleanPref.DRAWER_SHOW_ALPHABET_FILTER -> "preference_drawer_show_alphabet_filter"
 
-                BooleanPref.DATE_VISIBLE -> "preference_date_visible"
-
                 BooleanPref.TIME_VISIBLE -> "preference_time_visible"
+
+                BooleanPref.DATE_VISIBLE -> "preference_date_visible"
             }
 
 
@@ -88,9 +88,9 @@ class Utils {
                 BooleanPref.DRAWER_AUTO_OPEN_APPS -> true
                 BooleanPref.DRAWER_SHOW_ALPHABET_FILTER -> true
 
-                BooleanPref.DATE_VISIBLE -> true
-
                 BooleanPref.TIME_VISIBLE -> true
+
+                BooleanPref.DATE_VISIBLE -> true
             }
 
             return prefs.getBoolean(key, defaultValue)
@@ -101,20 +101,20 @@ class Utils {
             val prefs = PreferenceManager.getDefaultSharedPreferences(context)
 
             val key = when (preference) {
-                StringPref.DATE_FORMAT -> "preference_date_format"
-                StringPref.DATE_CLICK_APP -> "preference_date_click_app"
-
                 StringPref.TIME_FORMAT -> "preference_time_format"
                 StringPref.TIME_CLICK_APP -> "preference_time_click_app"
+
+                StringPref.DATE_FORMAT -> "preference_date_format"
+                StringPref.DATE_CLICK_APP -> "preference_date_click_app"
             }
 
 
             val defaultValue = when (preference) {
-                StringPref.DATE_FORMAT -> "1"
-                StringPref.DATE_CLICK_APP -> "default"
-
                 StringPref.TIME_FORMAT -> "0"
                 StringPref.TIME_CLICK_APP -> "default"
+
+                StringPref.DATE_FORMAT -> "1"
+                StringPref.DATE_CLICK_APP -> "default"
             }
 
             return prefs.getString(key, defaultValue) ?: defaultValue

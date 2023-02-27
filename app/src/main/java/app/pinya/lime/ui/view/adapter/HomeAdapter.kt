@@ -15,7 +15,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import app.pinya.lime.R
@@ -285,6 +284,9 @@ class HomeAdapter(
 
         val isTextBlack = Utils.getBooleanPref(context, BooleanPref.GENERAL_IS_TEXT_BLACK)
         val areIconsVisible = Utils.getBooleanPref(context, BooleanPref.HOME_SHOW_ICONS)
+        val showInGrid = Utils.getBooleanPref(context, BooleanPref.HOME_SHOW_IN_GRID)
+        val araLabelsVisible =
+            !showInGrid || Utils.getBooleanPref(context, BooleanPref.HOME_SHOW_LABELS)
 
         if (appList.size > 0) {
             val currentApp = appList.find { it.homeOrderIndex == position } ?: return
@@ -302,6 +304,7 @@ class HomeAdapter(
                     if (isTextBlack) R.color.black else R.color.white
                 )
             )
+            textView.visibility = if (araLabelsVisible) View.VISIBLE else View.GONE
 
             linearLayout.setOnTouchListener(object : OnSwipeTouchListener(context) {
                 override fun onFlingDown() {
@@ -328,6 +331,9 @@ class HomeAdapter(
                 }
             })
         } else {
+            if (showInGrid) return
+
+
             val text = when (position) {
                 0 -> "Long press above to open settings"
                 1 -> "All your apps are to the right"
@@ -366,6 +372,8 @@ class HomeAdapter(
 
     override fun getItemCount(): Int {
         val info = viewModel.info.value ?: return appList.size
-        return if (appList.size <= 0 && !info.tutorialDone) 3 else appList.size
+        val showInGrid = Utils.getBooleanPref(context, BooleanPref.HOME_SHOW_IN_GRID)
+
+        return if (appList.size <= 0 && !info.tutorialDone && !showInGrid) 3 else appList.size
     }
 }

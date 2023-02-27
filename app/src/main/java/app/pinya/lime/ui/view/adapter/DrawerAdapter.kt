@@ -309,19 +309,25 @@ class DrawerAdapter(
         val textView: TextView = holder.itemView.findViewById(R.id.appName)
         val linearLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
 
+        val isTextBlack = Utils.getBooleanPref(context, BooleanPref.GENERAL_IS_TEXT_BLACK)
+        val areIconsVisible = Utils.getBooleanPref(context, BooleanPref.DRAWER_SHOW_ICONS)
+        val showInGrid = Utils.getBooleanPref(context, BooleanPref.DRAWER_SHOW_IN_GRID)
+        val araLabelsVisible =
+            !showInGrid || Utils.getBooleanPref(context, BooleanPref.DRAWER_SHOW_LABELS)
+
+
         linearLayout.alpha = if (currentApp.hidden) 0.35f else 1f
 
         imageView.setImageDrawable(currentApp.icon)
-        val areIconsVisible = Utils.getBooleanPref(context, BooleanPref.DRAWER_SHOW_ICONS)
         imageView.visibility = if (areIconsVisible) View.VISIBLE else View.GONE
 
         textView.text = currentApp.name
-        val isTextBlack = Utils.getBooleanPref(context, BooleanPref.GENERAL_IS_TEXT_BLACK)
         textView.setTextColor(
             ContextCompat.getColor(
                 context, if (isTextBlack) R.color.black else R.color.white
             )
         )
+        textView.visibility = if (araLabelsVisible) View.VISIBLE else View.GONE
 
         linearLayout.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) hideKeyboard()

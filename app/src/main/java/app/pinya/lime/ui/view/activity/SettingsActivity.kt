@@ -7,6 +7,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
+import androidx.preference.SwitchPreference
 import app.pinya.lime.R
 import app.pinya.lime.data.repo.AppRepo
 import app.pinya.lime.domain.usecase.RefreshAppList
@@ -45,7 +46,6 @@ class SettingsActivity : AppCompatActivity() {
 
             lifecycleScope.launch {
                 val appList = RefreshAppList(AppRepo()).invoke()
-
 
                 // DATE FORMAT
                 val dateFormat = findPreference("preference_date_format") as ListPreference?
@@ -111,8 +111,63 @@ class SettingsActivity : AppCompatActivity() {
                     timeClickApp.entryValues = entryValues
                 }
 
-                val prefsEditor = prefs.edit()
+                // HOME GRID DEPENDENCIES
+                val homeShowInGrid =
+                    findPreference("preference_home_show_in_grid") as SwitchPreference?
+                val homeShowIcons =
+                    findPreference("preference_home_show_icons") as SwitchPreference?
+                val homeShowLabels =
+                    findPreference("preference_home_show_labels") as SwitchPreference?
 
+                fun setHomeDependencies(showInGrid: Boolean) {
+                    if (showInGrid) {
+                        homeShowIcons?.isEnabled = false
+                        homeShowIcons?.isChecked = true
+                        homeShowLabels?.isEnabled = true
+                    } else {
+                        homeShowIcons?.isEnabled = true
+                        homeShowLabels?.isEnabled = false
+                        homeShowLabels?.isChecked = true
+                    }
+                }
+
+                setHomeDependencies(prefs.getBoolean("preference_home_show_in_grid", false))
+
+                homeShowInGrid?.setOnPreferenceClickListener {
+                    setHomeDependencies(prefs.getBoolean("preference_home_show_in_grid", false))
+                    true
+                }
+
+
+                // DRAWER GRID DEPENDENCIES
+                val drawerShowInGrid =
+                    findPreference("preference_drawer_show_in_grid") as SwitchPreference?
+                val drawerShowIcons =
+                    findPreference("preference_drawer_show_icons") as SwitchPreference?
+                val drawerShowLabels =
+                    findPreference("preference_drawer_show_labels") as SwitchPreference?
+
+                fun setDrawerDependencies(showInGrid: Boolean) {
+                    if (showInGrid) {
+                        drawerShowIcons?.isEnabled = false
+                        drawerShowIcons?.isChecked = true
+                        drawerShowLabels?.isEnabled = true
+                    } else {
+                        drawerShowIcons?.isEnabled = true
+                        drawerShowLabels?.isEnabled = false
+                        drawerShowLabels?.isChecked = true
+                    }
+                }
+
+                setDrawerDependencies(prefs.getBoolean("preference_drawer_show_in_grid", false))
+
+                drawerShowInGrid?.setOnPreferenceClickListener {
+                    setDrawerDependencies(prefs.getBoolean("preference_drawer_show_in_grid", false))
+                    true
+                }
+
+
+                val prefsEditor = prefs.edit()
                 // TODO the first time get old settings
                 prefsEditor.apply()
             }

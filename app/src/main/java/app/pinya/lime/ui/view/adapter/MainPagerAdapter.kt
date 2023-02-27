@@ -4,10 +4,13 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
 import app.pinya.lime.R
+import app.pinya.lime.domain.model.BooleanPref
+import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.viewmodel.AppViewModel
 import kotlinx.coroutines.*
 
@@ -16,6 +19,17 @@ class MainPagerAdapter(private val context: Context, private val viewModel: AppV
 
     var home: HomeAdapter? = null
     var drawer: DrawerAdapter? = null
+
+    var viewHome: RecyclerView? = null
+    var viewDrawer: RecyclerView? = null
+
+    fun onResume() {
+        setHomeLayoutManager()
+        setDrawerLayoutManager()
+
+        home?.onResume()
+        drawer?.onResume()
+    }
 
 
     override fun instantiateItem(collection: ViewGroup, position: Int): Any {
@@ -43,35 +57,49 @@ class MainPagerAdapter(private val context: Context, private val viewModel: AppV
     private fun instantiateHome(collection: ViewGroup): ViewGroup {
         val inflater = LayoutInflater.from(context)
         val layout = inflater.inflate(R.layout.view_home, collection, false) as ViewGroup
-        val viewHome = layout.findViewById<View>(R.id.homeAppList) as RecyclerView
+        viewHome = layout.findViewById<View>(R.id.homeAppList) as RecyclerView
 
         this.home = HomeAdapter(context, layout, viewModel).also { adapter ->
-            viewHome.adapter = adapter
-
-            viewHome.layoutManager = object : LinearLayoutManager(context) {
-                override fun canScrollVertically() = false
-            }
+            viewHome!!.adapter = adapter
         }
-
-
+        setHomeLayoutManager()
 
         collection.addView(layout)
         return layout
+    }
+
+    private fun setHomeLayoutManager() {
+        val showInGrid = Utils.getBooleanPref(context, BooleanPref.HOME_SHOW_IN_GRID)
+
+        viewHome?.layoutManager =
+            if (showInGrid) object : GridLayoutManager(context, 3) {
+                override fun canScrollVertically() = false
+            } else object : LinearLayoutManager(context) {
+                override fun canScrollVertically() = false
+            }
     }
 
     private fun instantiateDrawer(collection: ViewGroup): ViewGroup {
         val inflater = LayoutInflater.from(context)
         val layout = inflater.inflate(R.layout.view_drawer, collection, false) as ViewGroup
-        val viewDrawer = layout.findViewById<View>(R.id.drawerAppList) as RecyclerView
+        viewDrawer = layout.findViewById<View>(R.id.drawerAppList) as RecyclerView
 
         this.drawer = DrawerAdapter(context, layout, viewModel).also { adapter ->
-            viewDrawer.adapter = adapter
-            viewDrawer.layoutManager = LinearLayoutManager(context)
+            viewDrawer!!.adapter = adapter
         }
+        setDrawerLayoutManager()
 
         collection.addView(layout)
         return layout
     }
+
+    private fun setDrawerLayoutManager() {
+        val showInGrid = Utils.getBooleanPref(context, BooleanPref.DRAWER_SHOW_IN_GRID)
+
+        viewDrawer?.layoutManager =
+            if (showInGrid) GridLayoutManager(context, 3) else LinearLayoutManager(context)
+    }
+
 
     @OptIn(DelicateCoroutinesApi::class)
     fun onHomePageSelected() {

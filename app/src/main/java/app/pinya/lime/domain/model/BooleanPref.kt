@@ -19,7 +19,7 @@ enum class BooleanPref {
     DRAWER_AUTO_OPEN_APPS,
     DRAWER_SHOW_ALPHABET_FILTER,
 
-    DATE_VISIBLE,
-
     TIME_VISIBLE,
+
+    DATE_VISIBLE,
 }
