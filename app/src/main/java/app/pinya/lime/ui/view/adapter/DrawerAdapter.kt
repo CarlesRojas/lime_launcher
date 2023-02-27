@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView
 import app.pinya.lime.R
 import app.pinya.lime.domain.model.AlphabetModel
 import app.pinya.lime.domain.model.AppModel
-import app.pinya.lime.domain.model.SettingsModel
+import app.pinya.lime.domain.model.BooleanPref
 import app.pinya.lime.domain.model.menus.AppMenu
 import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.view.holder.AppViewHolder
@@ -58,6 +58,7 @@ class DrawerAdapter(
         initSearchBar()
         hideKeyboardOnAnyTouchOutside()
         initAlphabet()
+        onResume()
     }
 
     // ########################################
@@ -65,10 +66,17 @@ class DrawerAdapter(
     // ########################################
 
     @SuppressLint("NotifyDataSetChanged")
+    fun onResume() {
+        showHideElements()
+        updateLettersIncludedInAlphabet()
+        this.notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
     fun handleDrawerListUpdate(newDrawerList: MutableList<AppModel>) {
         appList = newDrawerList
 
-        val autoOpenApps = viewModel.settings.value?.drawerAutoOpenApps ?: true
+        val autoOpenApps = Utils.getBooleanPref(context, BooleanPref.DRAWER_AUTO_OPEN_APPS)
         val moreThanOneInstalledApp = viewModel.completeAppList.size > 1
 
         if (!lastFilterWasAlphabet && autoOpenApps && moreThanOneInstalledApp && appList.size == 1) {
@@ -84,14 +92,10 @@ class DrawerAdapter(
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun handleSettingsUpdate(settings: SettingsModel) {
-        showHideElements(settings)
-        this.notifyDataSetChanged()
-    }
-
-    private fun showHideElements(settings: SettingsModel) {
-        val showSearchBar = settings.drawerShowSearchBar
-        val showAlphabetFilter = settings.drawerShowAlphabetFilter
+    private fun showHideElements() {
+        val showSearchBar = Utils.getBooleanPref(context, BooleanPref.DRAWER_SHOW_SEARCH_BAR)
+        val showAlphabetFilter =
+            Utils.getBooleanPref(context, BooleanPref.DRAWER_SHOW_ALPHABET_FILTER)
 
         searchBar?.visibility = if (showSearchBar) View.VISIBLE else View.GONE
         alphabetLayout?.visibility = if (showAlphabetFilter) View.VISIBLE else View.GONE
@@ -122,8 +126,11 @@ class DrawerAdapter(
             if (it.toString() == "") hideClearText() else showClearText()
             searchBarText = it.toString()
 
-            if (filteringByAlphabet) viewModel.filterDrawerAppListByAlphabetLetter(searchBarText.first())
-            else viewModel.filterDrawerAppListBySearchedText(searchBarText)
+            if (filteringByAlphabet) viewModel.filterDrawerAppListByAlphabetLetter(
+                searchBarText.first(),
+                context
+            )
+            else viewModel.filterDrawerAppListBySearchedText(searchBarText, context)
 
             filteringByAlphabet = false
             lastFilterWasAlphabet = false
@@ -154,7 +161,7 @@ class DrawerAdapter(
     }
 
     fun showKeyboard() {
-        val autoOpenKeyboard = viewModel.settings.value?.drawerAutoShowKeyboard ?: true
+        val autoOpenKeyboard = Utils.getBooleanPref(context, BooleanPref.DRAWER_AUTO_SHOW_KEYBOARD)
 
         if (autoOpenKeyboard) {
             searchBar?.requestFocus()
@@ -192,7 +199,7 @@ class DrawerAdapter(
     //   ALPHABET
     // ########################################
 
-    var lastSelectedChar: Char = '-'
+    private var lastSelectedChar: Char = '-'
 
     @SuppressLint("ClickableViewAccessibility")
     fun initAlphabet() {
@@ -253,7 +260,7 @@ class DrawerAdapter(
 
         alphabetLayout?.removeAllViews()
         val alphabetHeight = alphabetLayout?.height ?: 20
-        val isTextBlack = viewModel.settings.value?.generalIsTextBlack ?: false
+        val isTextBlack = Utils.getBooleanPref(context, BooleanPref.GENERAL_IS_TEXT_BLACK)
 
         for (char in currentAlphabet) {
             val textView = View.inflate(context, R.layout.view_alphabet_character, null) as TextView
@@ -305,11 +312,11 @@ class DrawerAdapter(
         linearLayout.alpha = if (currentApp.hidden) 0.35f else 1f
 
         imageView.setImageDrawable(currentApp.icon)
-        val areIconsVisible = viewModel.settings.value?.drawerShowIcons ?: true
+        val areIconsVisible = Utils.getBooleanPref(context, BooleanPref.DRAWER_SHOW_ICONS)
         imageView.visibility = if (areIconsVisible) View.VISIBLE else View.GONE
 
         textView.text = currentApp.name
-        val isTextBlack = viewModel.settings.value?.generalIsTextBlack ?: false
+        val isTextBlack = Utils.getBooleanPref(context, BooleanPref.GENERAL_IS_TEXT_BLACK)
         textView.setTextColor(
             ContextCompat.getColor(
                 context, if (isTextBlack) R.color.black else R.color.white

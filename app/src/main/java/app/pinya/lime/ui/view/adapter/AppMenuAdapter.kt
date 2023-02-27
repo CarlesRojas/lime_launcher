@@ -14,9 +14,11 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
 import app.pinya.lime.R
+import app.pinya.lime.domain.model.BooleanPref
 import app.pinya.lime.domain.model.menus.AppMenu
 import app.pinya.lime.domain.model.menus.RenameMenu
 import app.pinya.lime.domain.model.menus.ReorderMenu
+import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.view.activity.SettingsActivity
 import app.pinya.lime.ui.viewmodel.AppViewModel
 
@@ -155,7 +157,8 @@ class AppMenuAdapter(
 
     private fun dimBehindMenu(menu: PopupWindow?) {
         if (menu == null) return
-        val isTextBlack = viewModel.settings.value?.generalIsTextBlack ?: false
+
+        val isTextBlack = Utils.getBooleanPref(context, BooleanPref.GENERAL_IS_TEXT_BLACK)
 
         val container = menu.contentView.rootView
         val context = menu.contentView.context
@@ -179,7 +182,7 @@ class AppMenuAdapter(
             false -> info.homeApps.remove(packageName)
         }
 
-        viewModel.updateInfo(info)
+        viewModel.updateInfo(info, context)
     }
 
     private fun toggleHiddenApp(packageName: String, hiddenNewValue: Boolean) {
@@ -190,6 +193,6 @@ class AppMenuAdapter(
             false -> info.hiddenApps.remove(packageName)
         }
 
-        viewModel.updateInfo(info)
+        viewModel.updateInfo(info, context)
     }
 }

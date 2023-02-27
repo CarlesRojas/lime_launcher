@@ -1,16 +1,17 @@
 package app.pinya.lime.ui.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.pinya.lime.domain.model.AppModel
+import app.pinya.lime.domain.model.BooleanPref
 import app.pinya.lime.domain.model.InfoModel
-import app.pinya.lime.domain.model.SettingsModel
-import app.pinya.lime.domain.model.menus.AppListMenu
 import app.pinya.lime.domain.model.menus.AppMenu
 import app.pinya.lime.domain.model.menus.RenameMenu
 import app.pinya.lime.domain.model.menus.ReorderMenu
 import app.pinya.lime.domain.usecase.*
+import app.pinya.lime.ui.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -26,12 +27,8 @@ class AppViewModel @Inject constructor(
 
     private val getInfoUseCase: GetInfo,
     private val updateInfoUseCase: UpdateInfo,
-
-    private val getSettingsUseCase: GetSettings,
-    private val updateSettingsUseCase: UpdateSettings
 ) : ViewModel() {
 
-    val settings = MutableLiveData<SettingsModel>()
     val info = MutableLiveData<InfoModel>()
 
     val drawerList = MutableLiveData<MutableList<AppModel>>()
@@ -43,42 +40,21 @@ class AppViewModel @Inject constructor(
     val appMenu = MutableLiveData<AppMenu?>(null)
     val renameMenu = MutableLiveData<RenameMenu?>(null)
     val reorderMenu = MutableLiveData<ReorderMenu?>(null)
-    val appListMenu = MutableLiveData<AppListMenu?>(null)
 
 
     // ########################################
     //   MAIN
     // ########################################
 
-    fun updateAppList() {
+    fun updateAppList(context: Context) {
         viewModelScope.launch {
             val result = refreshAppListUseCase()
             if (info.value != null) updateAppListWithInfoUseCase(result, info.value!!)
             completeAppList = result
 
             updateHomeList()
-            filterByLastValue()
+            filterByLastValue(context)
         }
-    }
-
-
-    // ########################################
-    //   SETTINGS
-    // ########################################
-
-    fun getSettings() {
-        viewModelScope.launch {
-            val newSettings = getSettingsUseCase()
-            settings.postValue(newSettings)
-        }
-    }
-
-    fun updateSettings(newSettings: SettingsModel) {
-        updateSettingsUseCase(newSettings)
-        settings.postValue(newSettings)
-
-        updateHomeList()
-        filterByLastValue()
     }
 
 
@@ -93,14 +69,14 @@ class AppViewModel @Inject constructor(
         }
     }
 
-    fun updateInfo(newInfo: InfoModel) {
+    fun updateInfo(newInfo: InfoModel, context: Context) {
         updateInfoUseCase(newInfo)
         info.postValue(newInfo)
 
         if (info.value != null) updateAppListWithInfoUseCase(completeAppList, info.value!!)
 
         updateHomeList()
-        filterByLastValue()
+        filterByLastValue(context)
     }
 
     // ########################################
@@ -121,34 +97,38 @@ class AppViewModel @Inject constructor(
     private var lastSearchedText: String = ""
     private var lastFilterLetter: Char = 'a'
 
-    fun filterDrawerAppListBySearchedText(searchedText: String) {
+    fun filterDrawerAppListBySearchedText(searchedText: String, context: Context) {
         lastFilterWasChar = false
         lastSearchedText = searchedText
+
+        val showHiddenApps = Utils.getBooleanPref(context, BooleanPref.GENERAL_SHOW_HIDDEN_APPS)
 
         val result = filterAppListByTextUseCase(
             completeAppList,
             searchedText,
-            settings.value?.generalShowHiddenApps ?: false
+            showHiddenApps
         )
         drawerList.postValue(result)
     }
 
-    fun filterDrawerAppListByAlphabetLetter(letter: Char) {
+    fun filterDrawerAppListByAlphabetLetter(letter: Char, context: Context) {
         lastFilterWasChar = true
         lastSearchedText = ""
         lastFilterLetter = letter
 
+        val showHiddenApps = Utils.getBooleanPref(context, BooleanPref.GENERAL_SHOW_HIDDEN_APPS)
+
         val result = filterAppListByAlphabetUseCase(
             completeAppList,
             letter,
-            settings.value?.generalShowHiddenApps ?: false
+            showHiddenApps
         )
         drawerList.postValue(result)
     }
 
-    private fun filterByLastValue() {
-        if (lastFilterWasChar) filterDrawerAppListByAlphabetLetter(lastFilterLetter)
-        else filterDrawerAppListBySearchedText(lastSearchedText)
+    private fun filterByLastValue(context: Context) {
+        if (lastFilterWasChar) filterDrawerAppListByAlphabetLetter(lastFilterLetter, context)
+        else filterDrawerAppListBySearchedText(lastSearchedText, context)
     }
 
 }

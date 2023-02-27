@@ -32,7 +32,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
 
-    class SettingsFragment(val settingsContext: Context) : PreferenceFragmentCompat() {
+    class SettingsFragment(private val settingsContext: Context) : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
 
@@ -72,9 +72,8 @@ class SettingsActivity : AppCompatActivity() {
                 // DATE CLICK APP
                 val dateClickApp = findPreference("preference_date_click_app") as ListPreference?
                 if (dateClickApp != null) {
-                    val entries: Array<CharSequence?> = arrayOfNulls<CharSequence>(appList.size + 2)
-                    val entryValues: Array<CharSequence?> =
-                        arrayOfNulls<CharSequence>(appList.size + 2)
+                    val entries: Array<CharSequence?> = arrayOfNulls(appList.size + 2)
+                    val entryValues: Array<CharSequence?> = arrayOfNulls(appList.size + 2)
 
                     entries[0] = "Default calendar app"
                     entryValues[0] = "default"
@@ -94,9 +93,8 @@ class SettingsActivity : AppCompatActivity() {
                 // TIME CLICK APP
                 val timeClickApp = findPreference("preference_time_click_app") as ListPreference?
                 if (timeClickApp != null) {
-                    val entries: Array<CharSequence?> = arrayOfNulls<CharSequence>(appList.size + 2)
-                    val entryValues: Array<CharSequence?> =
-                        arrayOfNulls<CharSequence>(appList.size + 2)
+                    val entries: Array<CharSequence?> = arrayOfNulls(appList.size + 2)
+                    val entryValues: Array<CharSequence?> = arrayOfNulls(appList.size + 2)
 
                     entries[0] = "Default clock app"
                     entryValues[0] = "default"
@@ -112,17 +110,22 @@ class SettingsActivity : AppCompatActivity() {
                     timeClickApp.entries = entries
                     timeClickApp.entryValues = entryValues
                 }
+
+                val prefsEditor = prefs.edit()
+
+                // TODO the first time get old settings
+                prefsEditor.apply()
             }
 
         }
 
         private fun getDateFormatResult(setting: Int): CharSequence {
-            return SimpleDateFormat.getDateInstance(SettingsActivity.mapFormat(setting))
+            return SimpleDateFormat.getDateInstance(mapFormat(setting))
                 .format(Date())
         }
 
         private fun getTimeFormatResult(setting: Int): CharSequence {
-            return SimpleDateFormat.getTimeInstance(SettingsActivity.mapFormat(setting))
+            return SimpleDateFormat.getTimeInstance(mapFormat(setting))
                 .format(Date())
         }
     }

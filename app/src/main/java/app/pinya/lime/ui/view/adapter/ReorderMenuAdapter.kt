@@ -6,6 +6,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.*
 import app.pinya.lime.R
+import app.pinya.lime.domain.model.BooleanPref
 import app.pinya.lime.domain.model.menus.ReorderMenu
 import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.viewmodel.AppViewModel
@@ -49,7 +50,7 @@ class ReorderMenuAdapter(
                 appIcon.setImageDrawable(app.icon)
                 appName.text = app.name
 
-                val areIconsVisible = viewModel.settings.value?.homeShowIcons ?: true
+                val areIconsVisible = Utils.getBooleanPref(context, BooleanPref.HOME_SHOW_ICONS)
 
                 appIcon.visibility = if (areIconsVisible) View.VISIBLE else View.GONE
                 moveUpButton.visibility = if (app.homeOrderIndex <= 0) View.GONE else View.VISIBLE
@@ -107,7 +108,7 @@ class ReorderMenuAdapter(
 
     private fun dimBehindMenu(menu: PopupWindow?) {
         if (menu == null) return
-        val isTextBlack = viewModel.settings.value?.generalIsTextBlack ?: false
+        val isTextBlack = Utils.getBooleanPref(context, BooleanPref.GENERAL_IS_TEXT_BLACK)
 
         val container = menu.contentView.rootView
         val context = menu.contentView.context
@@ -141,6 +142,6 @@ class ReorderMenuAdapter(
 
         info.homeApps.swap(index, if (moveUp) index - 1 else index + 1)
 
-        viewModel.updateInfo(info)
+        viewModel.updateInfo(info, context)
     }
 }

@@ -9,7 +9,9 @@ import android.widget.*
 import android.widget.TextView.OnEditorActionListener
 import androidx.core.widget.doAfterTextChanged
 import app.pinya.lime.R
+import app.pinya.lime.domain.model.BooleanPref
 import app.pinya.lime.domain.model.menus.RenameMenu
+import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.viewmodel.AppViewModel
 
 class RenameMenuAdapter(
@@ -159,7 +161,7 @@ class RenameMenuAdapter(
 
     private fun dimBehindMenu(menu: PopupWindow?) {
         if (menu == null) return
-        val isTextBlack = viewModel.settings.value?.generalIsTextBlack ?: false
+        val isTextBlack = Utils.getBooleanPref(context, BooleanPref.GENERAL_IS_TEXT_BLACK)
 
         val container = menu.contentView.rootView
         val context = menu.contentView.context
@@ -181,6 +183,6 @@ class RenameMenuAdapter(
         if (newName == app.originalName) info.renamedApps.remove(packageName)
         else info.renamedApps[packageName] = newName
 
-        viewModel.updateInfo(info)
+        viewModel.updateInfo(info, context)
     }
 }

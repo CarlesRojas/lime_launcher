@@ -15,11 +15,13 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import app.pinya.lime.R
 import app.pinya.lime.domain.model.AppModel
-import app.pinya.lime.domain.model.SettingsModel
+import app.pinya.lime.domain.model.BooleanPref
+import app.pinya.lime.domain.model.StringPref
 import app.pinya.lime.domain.model.menus.AppMenu
 import app.pinya.lime.ui.utils.OnSwipeTouchListener
 import app.pinya.lime.ui.utils.Utils
@@ -52,18 +54,21 @@ class HomeAdapter(
     init {
         initContextMenu()
         initGestureDetector()
-        calculateMaxNumberOfAppsInHome()
+        onResume()
     }
 
     // ########################################
     //   GENERAL
     // ########################################
 
-    fun handleSettingsUpdate(settings: SettingsModel) {
-        addDateListeners(settings)
-        addTimeListeners(settings)
-        updateTimeDateStyle(settings)
-        startTimerToUpdateDateTime(settings)
+    @SuppressLint("NotifyDataSetChanged")
+    fun onResume() {
+        calculateMaxNumberOfAppsInHome()
+        addDateListeners()
+        addTimeListeners()
+        updateTimeDateStyle()
+        startTimerToUpdateDateTime()
+        this.notifyDataSetChanged()
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -77,7 +82,7 @@ class HomeAdapter(
     // ########################################
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun addDateListeners(settings: SettingsModel) {
+    private fun addDateListeners() {
         date = layout.findViewById(R.id.homeDate)
         date?.setOnTouchListener(object : OnSwipeTouchListener(context) {
             override fun onFlingDown() {
@@ -85,7 +90,7 @@ class HomeAdapter(
             }
 
             override fun onClick() {
-                when (val stateValue = settings.dateClickApp) {
+                when (val dateClickApp = Utils.getStringPref(context, StringPref.DATE_CLICK_APP)) {
                     "default" -> {
                         val builder: Uri.Builder =
                             CalendarContract.CONTENT_URI.buildUpon().appendPath("time")
@@ -95,7 +100,7 @@ class HomeAdapter(
                     "none" -> return
                     else -> {
                         val launchAppIntent =
-                            context.packageManager.getLaunchIntentForPackage(stateValue)
+                            context.packageManager.getLaunchIntentForPackage(dateClickApp)
                         if (launchAppIntent != null) context.startActivity(launchAppIntent)
                     }
                 }
@@ -109,7 +114,7 @@ class HomeAdapter(
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun addTimeListeners(settings: SettingsModel) {
+    private fun addTimeListeners() {
         time = layout.findViewById(R.id.homeTime)
         time?.setOnTouchListener(object : OnSwipeTouchListener(context) {
             override fun onFlingDown() {
@@ -117,7 +122,7 @@ class HomeAdapter(
             }
 
             override fun onClick() {
-                when (val stateValue = settings.timeClickApp) {
+                when (val timeClickApp = Utils.getStringPref(context, StringPref.TIME_CLICK_APP)) {
                     "default" -> {
                         val intent = Intent(AlarmClock.ACTION_SHOW_ALARMS)
                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -126,7 +131,7 @@ class HomeAdapter(
                     "none" -> return
                     else -> {
                         val launchAppIntent =
-                            context.packageManager.getLaunchIntentForPackage(stateValue)
+                            context.packageManager.getLaunchIntentForPackage(timeClickApp)
                         if (launchAppIntent != null) context.startActivity(launchAppIntent)
                     }
                 }
@@ -139,16 +144,23 @@ class HomeAdapter(
         })
     }
 
-    private fun startTimerToUpdateDateTime(settings: SettingsModel) {
+    private fun startTimerToUpdateDateTime() {
+        timer?.cancel()
+        timer = Timer()
         timer?.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
                 (context as Activity).runOnUiThread {
+                    val dateFormat =
+                        Utils.getStringPref(context, StringPref.DATE_FORMAT).toIntOrNull() ?: 1
+                    val timeFormat =
+                        Utils.getStringPref(context, StringPref.TIME_FORMAT).toIntOrNull() ?: 0
+
                     date?.text =
-                        SimpleDateFormat.getDateInstance(SettingsActivity.mapFormat(settings.dateFormat))
+                        SimpleDateFormat.getDateInstance(SettingsActivity.mapFormat(dateFormat))
                             .format(Date())
 
                     time?.text =
-                        SimpleDateFormat.getTimeInstance(SettingsActivity.mapFormat(settings.timeFormat))
+                        SimpleDateFormat.getTimeInstance(SettingsActivity.mapFormat(timeFormat))
                             .format(Date())
                 }
             }
@@ -156,22 +168,26 @@ class HomeAdapter(
     }
 
 
-    private fun updateTimeDateStyle(settings: SettingsModel) {
-        val blackTextValue = settings.generalIsTextBlack
+    private fun updateTimeDateStyle() {
+        val isTextBlack = Utils.getBooleanPref(context, BooleanPref.GENERAL_IS_TEXT_BLACK)
+        val isTimeVisible = Utils.getBooleanPref(context, BooleanPref.TIME_VISIBLE)
+        val isDateVisible = Utils.getBooleanPref(context, BooleanPref.DATE_VISIBLE)
 
         date?.setTextColor(
             ContextCompat.getColor(
                 context,
-                if (blackTextValue) R.color.black else R.color.white
+                if (isTextBlack) R.color.black else R.color.white
             )
         )
+        date?.visibility = if (isDateVisible) View.VISIBLE else View.GONE
 
         time?.setTextColor(
             ContextCompat.getColor(
                 context,
-                if (blackTextValue) R.color.black else R.color.white
+                if (isTextBlack) R.color.black else R.color.white
             )
         )
+        time?.visibility = if (isTimeVisible) View.VISIBLE else View.GONE
     }
 
     // ########################################
@@ -179,13 +195,26 @@ class HomeAdapter(
     // ########################################
 
     private fun calculateMaxNumberOfAppsInHome() {
+        val isTimeVisible = Utils.getBooleanPref(context, BooleanPref.TIME_VISIBLE)
+        val isDateVisible = Utils.getBooleanPref(context, BooleanPref.DATE_VISIBLE)
+
+        val homeAppListContainer =
+            layout.findViewById<View>(R.id.homeAppListContainer) as ConstraintLayout
+
+        val containerParams = homeAppListContainer.layoutParams as ConstraintLayout.LayoutParams
+        containerParams.topToBottom = ConstraintLayout.LayoutParams.UNSET
+
+        if (isTimeVisible && isDateVisible) containerParams.topToBottom = R.id.guidelineH2
+        else if (!isTimeVisible && !isDateVisible) containerParams.topToBottom = R.id.guidelineH1
+        else containerParams.topToBottom = R.id.guidelineHMiddle
+
+        homeAppListContainer.layoutParams = containerParams
+
+
         layout.viewTreeObserver.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 layout.viewTreeObserver.removeOnGlobalLayoutListener(this)
-
-                val homeAppListContainer =
-                    layout.findViewById<View>(R.id.homeAppListContainer) as ConstraintLayout
 
                 val heightInDp = Utils.pxToDp(context, homeAppListContainer.height)
                 val appHeightInDp = 62f
@@ -194,7 +223,7 @@ class HomeAdapter(
 
                 val info = viewModel.info.value ?: return
                 info.maxNumberOfHomeApps = maxNumberOfHomeApps
-                viewModel.updateInfo(info)
+                viewModel.updateInfo(info, context)
             }
         })
     }
@@ -254,8 +283,8 @@ class HomeAdapter(
         val textView: TextView = holder.itemView.findViewById(R.id.appName)
         val linearLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
 
-        val isTextBlack = viewModel.settings.value?.generalIsTextBlack ?: false
-        val areIconsVisible = viewModel.settings.value?.homeShowIcons ?: true
+        val isTextBlack = Utils.getBooleanPref(context, BooleanPref.GENERAL_IS_TEXT_BLACK)
+        val areIconsVisible = Utils.getBooleanPref(context, BooleanPref.HOME_SHOW_ICONS)
 
         if (appList.size > 0) {
             val currentApp = appList.find { it.homeOrderIndex == position } ?: return
@@ -299,22 +328,16 @@ class HomeAdapter(
                 }
             })
         } else {
-            var text = ""
-            var icon = R.drawable.icon_arrow_left
+            val text = when (position) {
+                0 -> "Long press above to open settings"
+                1 -> "All your apps are to the right"
+                else -> "Long press an app to add it here"
+            }
 
-            when (position) {
-                0 -> {
-                    text = "Long press above to open settings"
-                    icon = R.drawable.icon_settings
-                }
-                1 -> {
-                    text = "All your apps are to the right"
-                    icon = R.drawable.icon_arrow_right
-                }
-                else -> {
-                    text = "Long press an app to add it here"
-                    icon = R.drawable.icon_menu
-                }
+            val icon = when (position) {
+                0 -> R.drawable.icon_settings
+                1 -> R.drawable.icon_arrow_right
+                else -> R.drawable.icon_menu
             }
 
             imageView.setImageDrawable(

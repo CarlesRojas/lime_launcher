@@ -13,6 +13,8 @@ import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import app.pinya.lime.R
 import app.pinya.lime.data.memory.AppProvider
 import app.pinya.lime.databinding.ActivityMainBinding
+import app.pinya.lime.domain.model.BooleanPref
+import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.view.adapter.*
 import app.pinya.lime.ui.viewmodel.AppViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,7 +32,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appMenuAdapter: AppMenuAdapter
     private lateinit var renameMenuAdapter: RenameMenuAdapter
     private lateinit var reorderMenuAdapter: ReorderMenuAdapter
-    private lateinit var appListMenuAdapter: AppListMenuAdapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +44,6 @@ class MainActivity : AppCompatActivity() {
         appMenuAdapter = AppMenuAdapter(this, appViewModel)
         renameMenuAdapter = RenameMenuAdapter(this, appViewModel)
         reorderMenuAdapter = ReorderMenuAdapter(this, appViewModel)
-        appListMenuAdapter = AppListMenuAdapter(this, appViewModel)
 
         setContentView(R.layout.activity_main)
         linkAdapter()
@@ -54,13 +54,6 @@ class MainActivity : AppCompatActivity() {
 
         appViewModel.drawerList.observe(this) { newDrawerList ->
             customPageAdapter.drawer?.handleDrawerListUpdate(newDrawerList)
-        }
-
-        appViewModel.settings.observe(this) { settings ->
-            showStatusBar(settings.generalShowStatusBar)
-            dimBackground(settings.generalDimBackground, settings.generalIsTextBlack)
-            customPageAdapter.home?.handleSettingsUpdate(settings)
-            customPageAdapter.drawer?.handleSettingsUpdate(settings)
         }
 
         appViewModel.appMenu.observe(this) { appMenu ->
@@ -75,13 +68,8 @@ class MainActivity : AppCompatActivity() {
             reorderMenuAdapter.handleReorderMenu(reorderMenu)
         }
 
-        appViewModel.appListMenu.observe(this) { appListMenu ->
-            appListMenuAdapter.handleAppListMenu(appListMenu)
-        }
-
-        appViewModel.getSettings()
         appViewModel.getInfo()
-        appViewModel.updateAppList()
+        appViewModel.updateAppList(this)
 
         // TODO update wallpaper daily
     }
@@ -90,6 +78,16 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
 
         viewPager.setCurrentItem(0, false)
+
+        val showStatusBar = Utils.getBooleanPref(this, BooleanPref.GENERAL_SHOW_STATUS_BAR)
+        val dimBackground = Utils.getBooleanPref(this, BooleanPref.GENERAL_DIM_BACKGROUND)
+        val isTextBlack = Utils.getBooleanPref(this, BooleanPref.GENERAL_IS_TEXT_BLACK)
+
+        showStatusBar(showStatusBar)
+        dimBackground(dimBackground, isTextBlack)
+
+        customPageAdapter.home?.onResume()
+        customPageAdapter.drawer?.onResume()
 
         hideContextMenus()
     }
@@ -151,6 +149,5 @@ class MainActivity : AppCompatActivity() {
         appViewModel.appMenu.postValue(null)
         appViewModel.renameMenu.postValue(null)
         appViewModel.reorderMenu.postValue(null)
-        appViewModel.appListMenu.postValue(null)
     }
 }
