@@ -119,6 +119,10 @@ class InfoRepo @Inject constructor() {
     //   OLD INFO
     // ########################################
 
+    enum class OldSettingsDataKey {
+        HOME_APPS, HIDDEN_APPS, RENAMED_APPS, WALLPAPER_DATE,
+    }
+
     private fun getOldPreferences(info: InfoModel): InfoModel {
 
         val oldInfoRetrieved = sharedPreferences.getBoolean(
@@ -132,13 +136,13 @@ class InfoRepo @Inject constructor() {
         editor.putBoolean(InfoDataKey.OLD_INFO_RETRIEVED.toString(), true)
         editor.apply()
 
-        info.homeApps = getOldData(SettingsRepo.OldSettingsDataKey.HOME_APPS, info.homeApps)
-        info.hiddenApps = getOldData(SettingsRepo.OldSettingsDataKey.HIDDEN_APPS, info.hiddenApps)
+        info.homeApps = getOldData(OldSettingsDataKey.HOME_APPS, info.homeApps)
+        info.hiddenApps = getOldData(OldSettingsDataKey.HIDDEN_APPS, info.hiddenApps)
         info.renamedApps =
-            getOldData(SettingsRepo.OldSettingsDataKey.RENAMED_APPS, info.renamedApps)
+            getOldData(OldSettingsDataKey.RENAMED_APPS, info.renamedApps)
         info.wallpaperLastUpdatedDate =
             getOldData(
-                SettingsRepo.OldSettingsDataKey.WALLPAPER_DATE,
+                OldSettingsDataKey.WALLPAPER_DATE,
                 info.wallpaperLastUpdatedDate
             )
 
@@ -147,14 +151,14 @@ class InfoRepo @Inject constructor() {
     }
 
 
-    private fun getOldData(key: SettingsRepo.OldSettingsDataKey, defaultValue: Int): Int {
+    private fun getOldData(key: OldSettingsDataKey, defaultValue: Int): Int {
         val value = this.oldSharedPreferences.getInt(key.toString(), defaultValue)
         removeKey(key)
         return value
     }
 
     private fun getOldData(
-        key: SettingsRepo.OldSettingsDataKey, defaultValue: MutableSet<String>
+        key: OldSettingsDataKey, defaultValue: MutableSet<String>
     ): MutableSet<String> {
         val jsonDefaultValue: String = Gson().toJson(defaultValue)
         val result = this.oldSharedPreferences.getString(key.toString(), jsonDefaultValue)
@@ -165,7 +169,7 @@ class InfoRepo @Inject constructor() {
     }
 
     private fun getOldData(
-        key: SettingsRepo.OldSettingsDataKey, defaultValue: MutableMap<String, String>
+        key: OldSettingsDataKey, defaultValue: MutableMap<String, String>
     ): MutableMap<String, String> {
         val jsonDefaultValue: String = Gson().toJson(defaultValue)
         val result = this.oldSharedPreferences.getString(key.toString(), jsonDefaultValue)
@@ -176,7 +180,7 @@ class InfoRepo @Inject constructor() {
     }
 
 
-    private fun removeKey(key: SettingsRepo.OldSettingsDataKey) {
+    private fun removeKey(key: OldSettingsDataKey) {
         val prefsEditor: SharedPreferences.Editor = oldSharedPreferences.edit()
         prefsEditor.remove(key.toString())
         prefsEditor.apply()

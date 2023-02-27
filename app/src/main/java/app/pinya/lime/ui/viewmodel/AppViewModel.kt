@@ -70,10 +70,10 @@ class AppViewModel @Inject constructor(
     }
 
     fun updateInfo(newInfo: InfoModel, context: Context) {
+        updateAppListWithInfoUseCase(completeAppList, newInfo)
+
         updateInfoUseCase(newInfo)
         info.postValue(newInfo)
-
-        if (info.value != null) updateAppListWithInfoUseCase(completeAppList, info.value!!)
 
         updateHomeList()
         filterByLastValue(context)

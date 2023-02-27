@@ -165,11 +165,6 @@ class SettingsActivity : AppCompatActivity() {
                     setDrawerDependencies(prefs.getBoolean("preference_drawer_show_in_grid", false))
                     true
                 }
-
-
-                val prefsEditor = prefs.edit()
-                // TODO the first time get old settings
-                prefsEditor.apply()
             }
 
         }
