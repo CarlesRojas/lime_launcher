@@ -18,6 +18,12 @@
 
         <SwitchPreference
             app:defaultValue="false"
+            app:dependency="preference_general_change_wallpaper_daily"
+            app:key="preference_general_also_change_lockscreen"
+            app:title="@string/preference_general_also_change_lockscreen" />
+
+        <SwitchPreference
+            app:defaultValue="false"
             app:key="preference_general_is_text_black"
             app:title="@string/preference_general_is_text_black" />
 

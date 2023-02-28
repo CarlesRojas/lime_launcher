@@ -120,7 +120,7 @@ class InfoRepo @Inject constructor() {
     // ########################################
 
     enum class OldSettingsDataKey {
-        HOME_APPS, HIDDEN_APPS, RENAMED_APPS, WALLPAPER_DATE,
+        HOME_APPS, HIDDEN_APPS, RENAMED_APPS,
     }
 
     private fun getOldPreferences(info: InfoModel): InfoModel {
@@ -140,22 +140,11 @@ class InfoRepo @Inject constructor() {
         info.hiddenApps = getOldData(OldSettingsDataKey.HIDDEN_APPS, info.hiddenApps)
         info.renamedApps =
             getOldData(OldSettingsDataKey.RENAMED_APPS, info.renamedApps)
-        info.wallpaperLastUpdatedDate =
-            getOldData(
-                OldSettingsDataKey.WALLPAPER_DATE,
-                info.wallpaperLastUpdatedDate
-            )
 
         setInfoToMemory(info)
         return info
     }
 
-
-    private fun getOldData(key: OldSettingsDataKey, defaultValue: Int): Int {
-        val value = this.oldSharedPreferences.getInt(key.toString(), defaultValue)
-        removeKey(key)
-        return value
-    }
 
     private fun getOldData(
         key: OldSettingsDataKey, defaultValue: MutableSet<String>

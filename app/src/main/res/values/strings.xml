@@ -60,6 +60,7 @@
     <string name="preference_general_show_hidden_apps">Show hidden apps</string>
     <string name="preference_general_show_status_bar">Show status bar</string>
     <string name="preference_general_change_wallpaper_daily">Change wallpaper daily</string>
+    <string name="preference_general_also_change_lockscreen">Also change the lock screen</string>
     <string name="preference_general_is_text_black">Use black text</string>
     <string name="preference_general_dim_wallpaper">Dim wallpaper</string>
 

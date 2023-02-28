@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import app.pinya.lime.ui.utils.DailyWallpaper
 import app.pinya.lime.R
 import app.pinya.lime.data.memory.AppProvider
 import app.pinya.lime.databinding.ActivityMainBinding
@@ -18,6 +19,7 @@ import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.view.adapter.*
 import app.pinya.lime.ui.viewmodel.AppViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Calendar
 
 
 @AndroidEntryPoint
@@ -33,6 +35,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var renameMenuAdapter: RenameMenuAdapter
     private lateinit var reorderMenuAdapter: ReorderMenuAdapter
 
+    private var dailyWallpaper: DailyWallpaper? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +50,8 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
         linkAdapter()
+
+        dailyWallpaper = DailyWallpaper(this, appViewModel)
 
         appViewModel.homeList.observe(this) { newHomeList ->
             customPageAdapter.home?.handleHomeListUpdate(newHomeList)
@@ -70,8 +75,6 @@ class MainActivity : AppCompatActivity() {
 
         appViewModel.getInfo()
         appViewModel.updateAppList(this)
-
-        // TODO update wallpaper daily
     }
 
     override fun onResume() {
@@ -85,6 +88,7 @@ class MainActivity : AppCompatActivity() {
 
         showStatusBar(showStatusBar)
         dimBackground(dimBackground, isTextBlack)
+        changeWallpaper()
 
         customPageAdapter.onResume()
 
@@ -148,5 +152,21 @@ class MainActivity : AppCompatActivity() {
         appViewModel.appMenu.postValue(null)
         appViewModel.renameMenu.postValue(null)
         appViewModel.reorderMenu.postValue(null)
+    }
+
+    private fun changeWallpaper() {
+        val changeWallpaperDaily =
+            Utils.getBooleanPref(this, BooleanPref.GENERAL_CHANGE_WALLPAPER_DAILY)
+        val alsoChangeLockScreen =
+            Utils.getBooleanPref(this, BooleanPref.GENERAL_ALSO_CHANGE_LOCK_SCREEN)
+
+        if (!changeWallpaperDaily) return
+
+        val wallpaperLastUpdatedDate = appViewModel.info.value?.wallpaperLastUpdatedDate ?: return
+
+        val cal: Calendar = Calendar.getInstance()
+        val date = cal.get(Calendar.DATE)
+
+        if (wallpaperLastUpdatedDate != date) dailyWallpaper?.updateWallpaper(alsoChangeLockScreen)
     }
 }

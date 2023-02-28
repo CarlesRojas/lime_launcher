@@ -48,6 +48,7 @@ class Utils {
                 BooleanPref.GENERAL_SHOW_HIDDEN_APPS -> "preference_general_show_hidden_apps"
                 BooleanPref.GENERAL_SHOW_STATUS_BAR -> "preference_general_show_status_bar"
                 BooleanPref.GENERAL_CHANGE_WALLPAPER_DAILY -> "preference_general_change_wallpaper_daily"
+                BooleanPref.GENERAL_ALSO_CHANGE_LOCK_SCREEN -> "preference_general_also_change_lockscreen"
                 BooleanPref.GENERAL_IS_TEXT_BLACK -> "preference_general_is_text_black"
                 BooleanPref.GENERAL_DIM_BACKGROUND -> "preference_general_dim_wallpaper"
 
@@ -73,6 +74,7 @@ class Utils {
                 BooleanPref.GENERAL_SHOW_HIDDEN_APPS -> false
                 BooleanPref.GENERAL_SHOW_STATUS_BAR -> false
                 BooleanPref.GENERAL_CHANGE_WALLPAPER_DAILY -> false
+                BooleanPref.GENERAL_ALSO_CHANGE_LOCK_SCREEN -> false
                 BooleanPref.GENERAL_IS_TEXT_BLACK -> false
                 BooleanPref.GENERAL_DIM_BACKGROUND -> true
 
