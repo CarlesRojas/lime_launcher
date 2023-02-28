@@ -1,6 +1,7 @@
 package app.pinya.lime.ui.view.adapter
 
 import android.annotation.SuppressLint
+import android.app.ActionBar.LayoutParams
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -10,9 +11,11 @@ import android.provider.CalendarContract
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -28,10 +31,10 @@ import app.pinya.lime.ui.view.activity.SettingsActivity
 import app.pinya.lime.ui.view.holder.AppViewHolder
 import app.pinya.lime.ui.viewmodel.AppViewModel
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Timer
-import java.util.TimerTask
+import java.util.*
 import kotlin.math.floor
+import kotlin.math.max
+
 
 class HomeAdapter(
     private val context: Context,
@@ -196,6 +199,8 @@ class HomeAdapter(
     private fun calculateMaxNumberOfAppsInHome() {
         val isTimeVisible = Utils.getBooleanPref(context, BooleanPref.TIME_VISIBLE)
         val isDateVisible = Utils.getBooleanPref(context, BooleanPref.DATE_VISIBLE)
+        val showInGrid = Utils.getBooleanPref(context, BooleanPref.HOME_SHOW_IN_GRID)
+        val textSize = Utils.pxToDp(context, Utils.spToPx(context, 12).toInt())
 
         val homeAppListContainer =
             layout.findViewById<View>(R.id.homeAppListContainer) as ConstraintLayout
@@ -216,12 +221,19 @@ class HomeAdapter(
                 layout.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
                 val heightInDp = Utils.pxToDp(context, homeAppListContainer.height)
-                val appHeightInDp = 62f
-                val maxNumberOfHomeApps =
-                    floor(heightInDp / appHeightInDp).toInt() - 1
+                val appHeightInDp = if (showInGrid) 108f + textSize else 66f
+
+                var maxNumberOfHomeApps =
+                    (floor(heightInDp / appHeightInDp).toInt() - 1) * (if (showInGrid) 4 else 1)
+                maxNumberOfHomeApps = maxNumberOfHomeApps.coerceAtMost(12)
 
                 val info = viewModel.info.value ?: return
                 info.maxNumberOfHomeApps = maxNumberOfHomeApps
+
+                val newHomeApps =
+                    info.homeApps.filterIndexed { index, _ -> index < maxNumberOfHomeApps }
+
+                info.homeApps = newHomeApps.toMutableSet()
                 viewModel.updateInfo(info, context)
             }
         })
@@ -304,7 +316,37 @@ class HomeAdapter(
                     if (isTextBlack) R.color.black else R.color.white
                 )
             )
-            textView.visibility = if (araLabelsVisible) View.VISIBLE else View.GONE
+            textView.alpha = if (araLabelsVisible) 1f else 0f
+
+            if (showInGrid) {
+                imageView.layoutParams.height = Utils.dpToPx(context, 68)
+                imageView.layoutParams.width = Utils.dpToPx(context, 68)
+
+                textView.textSize = 12f
+                textView.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
+
+                linearLayout.orientation = LinearLayout.VERTICAL
+                linearLayout.setPadding(0, Utils.dpToPx(context, 20), 0, Utils.dpToPx(context, 20))
+
+                val marginParams = MarginLayoutParams(imageView.layoutParams)
+                marginParams.setMargins(0, 0, 0, Utils.dpToPx(context, 6))
+                val layoutParams = LinearLayout.LayoutParams(marginParams)
+                imageView.layoutParams = layoutParams
+            } else {
+                imageView.layoutParams.height = Utils.dpToPx(context, 42)
+                imageView.layoutParams.width = Utils.dpToPx(context, 42)
+
+                textView.textSize = 19.5f
+                textView.textAlignment = TextView.TEXT_ALIGNMENT_TEXT_START
+
+                linearLayout.orientation = LinearLayout.HORIZONTAL
+                linearLayout.setPadding(0, Utils.dpToPx(context, 12), 0, Utils.dpToPx(context, 12))
+
+                val marginParams = MarginLayoutParams(imageView.layoutParams)
+                marginParams.setMargins(0, 0, Utils.dpToPx(context, 18), 0)
+                val layoutParams = LinearLayout.LayoutParams(marginParams)
+                imageView.layoutParams = layoutParams
+            }
 
             linearLayout.setOnTouchListener(object : OnSwipeTouchListener(context) {
                 override fun onFlingDown() {

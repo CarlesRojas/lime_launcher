@@ -9,10 +9,12 @@ class UpdateAppListWithInfo @Inject constructor() {
 
         info.homeApps.removeAll { appPackage -> appList.find { appPackage == it.packageName } == null }
         info.hiddenApps.removeAll { appPackage -> appList.find { appPackage == it.packageName } == null }
-        for (key in info.renamedApps.keys) {
-            if (appList.find { key == it.packageName } == null) info.renamedApps.remove(
-                key
-            )
+
+        val renamedAppsIterator = info.renamedApps.entries.iterator()
+        while (renamedAppsIterator.hasNext()) {
+            val packageName = renamedAppsIterator.next().key
+            if (appList.find { packageName == it.packageName } == null)
+                renamedAppsIterator.remove()
         }
 
         info.homeApps.forEachIndexed { i, packageName ->

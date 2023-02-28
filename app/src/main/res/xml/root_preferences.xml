@@ -40,7 +40,7 @@
             app:title="@string/preference_home_show_in_grid" />
 
         <SwitchPreference
-            app:defaultValue="true"
+            app:defaultValue="false"
             app:dependency="preference_home_show_in_grid"
             app:key="preference_home_show_labels"
             app:title="@string/preference_home_show_labels" />
@@ -58,7 +58,7 @@
             app:title="@string/preference_drawer_show_in_grid" />
 
         <SwitchPreference
-            app:defaultValue="true"
+            app:defaultValue="false"
             app:dependency="preference_drawer_show_in_grid"
             app:key="preference_drawer_show_labels"
             app:title="@string/preference_drawer_show_labels" />

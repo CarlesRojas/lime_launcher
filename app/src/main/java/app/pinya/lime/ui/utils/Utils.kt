@@ -18,10 +18,19 @@ class Utils {
             return round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).toInt()
         }
 
-
         fun dpToPx(context: Context, dp: Int): Int {
             val displayMetrics: DisplayMetrics = context.resources.displayMetrics
             return round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).toInt()
+        }
+
+        fun pxToSp(context: Context, px: Int): Float {
+            val scaledDensity: Float = context.resources.displayMetrics.scaledDensity
+            return px / scaledDensity
+        }
+
+        fun spToPx(context: Context, sp: Int): Float {
+            val scaledDensity: Float = context.resources.displayMetrics.scaledDensity
+            return sp * scaledDensity
         }
 
         @Suppress("DEPRECATION")
