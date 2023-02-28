@@ -327,7 +327,37 @@ class DrawerAdapter(
                 context, if (isTextBlack) R.color.black else R.color.white
             )
         )
-        textView.visibility = if (araLabelsVisible) View.VISIBLE else View.GONE
+        textView.alpha = if (araLabelsVisible) 1f else 0f
+
+        if (showInGrid) {
+            imageView.layoutParams.height = Utils.dpToPx(context, 68)
+            imageView.layoutParams.width = Utils.dpToPx(context, 68)
+
+            textView.textSize = 12f
+            textView.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
+
+            linearLayout.orientation = LinearLayout.VERTICAL
+            linearLayout.setPadding(0, Utils.dpToPx(context, 20), 0, Utils.dpToPx(context, 20))
+
+            val marginParams = ViewGroup.MarginLayoutParams(imageView.layoutParams)
+            marginParams.setMargins(0, 0, 0, Utils.dpToPx(context, 6))
+            val layoutParams = LinearLayout.LayoutParams(marginParams)
+            imageView.layoutParams = layoutParams
+        } else {
+            imageView.layoutParams.height = Utils.dpToPx(context, 42)
+            imageView.layoutParams.width = Utils.dpToPx(context, 42)
+
+            textView.textSize = 19.5f
+            textView.textAlignment = TextView.TEXT_ALIGNMENT_TEXT_START
+
+            linearLayout.orientation = LinearLayout.HORIZONTAL
+            linearLayout.setPadding(0, Utils.dpToPx(context, 12), 0, Utils.dpToPx(context, 12))
+
+            val marginParams = ViewGroup.MarginLayoutParams(imageView.layoutParams)
+            marginParams.setMargins(0, 0, Utils.dpToPx(context, 18), 0)
+            val layoutParams = LinearLayout.LayoutParams(marginParams)
+            imageView.layoutParams = layoutParams
+        }
 
         linearLayout.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) hideKeyboard()

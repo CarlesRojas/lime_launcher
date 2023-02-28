@@ -4,5 +4,6 @@
     android:layout_height="wrap_content"
     android:alpha="0.4"
     android:fontFamily="@font/montserrat"
+    android:textAlignment="center"
     android:textSize="14sp"
     android:textStyle="bold" />

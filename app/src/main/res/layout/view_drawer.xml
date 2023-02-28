@@ -70,22 +70,6 @@
         app:layout_constraintStart_toStartOf="@+id/guidelineV2"
         app:layout_constraintTop_toTopOf="@+id/guidelineH2" />
 
-    <TextView
-        android:id="@+id/currentLetter"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="28dp"
-        android:background="@drawable/background_current_letter"
-        android:fontFamily="@font/montserrat"
-        android:gravity="center"
-        android:text="@string/drawer_letter"
-        android:textColor="@color/white_low"
-        android:textSize="24sp"
-        android:textStyle="normal"
-        android:visibility="gone"
-        app:layout_constraintRight_toRightOf="@+id/guidelineV2"
-        tools:ignore="MissingConstraints" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/contextMenuDrawer_parent"
         android:layout_width="0dp"
@@ -126,5 +110,21 @@
 
         </com.bosphere.fadingedgelayout.FadingEdgeLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/currentLetter"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="28dp"
+        android:background="@drawable/background_current_letter"
+        android:fontFamily="@font/montserrat"
+        android:gravity="center"
+        android:text="@string/drawer_letter"
+        android:textColor="@color/white_low"
+        android:textSize="24sp"
+        android:textStyle="normal"
+        android:visibility="gone"
+        app:layout_constraintRight_toRightOf="@+id/guidelineV2"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
