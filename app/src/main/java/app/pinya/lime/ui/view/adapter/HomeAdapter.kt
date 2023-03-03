@@ -345,6 +345,7 @@ class HomeAdapter(
 
                 linearLayout.orientation = LinearLayout.VERTICAL
                 linearLayout.setPadding(0, Utils.dpToPx(context, 20), 0, Utils.dpToPx(context, 20))
+                linearLayout.gravity = Gravity.CENTER
 
                 val marginParams = MarginLayoutParams(imageView.layoutParams)
                 marginParams.setMargins(0, 0, 0, Utils.dpToPx(context, 6))
@@ -365,7 +366,6 @@ class HomeAdapter(
                     "center" -> Gravity.CENTER
                     else -> Gravity.START
                 }
-
 
                 val marginParams = MarginLayoutParams(imageView.layoutParams)
                 marginParams.setMargins(0, 0, Utils.dpToPx(context, 18), 0)
