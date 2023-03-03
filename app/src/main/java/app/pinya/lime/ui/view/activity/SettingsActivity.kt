@@ -133,9 +133,70 @@ class SettingsActivity : AppCompatActivity() {
 
                 setHomeDependencies(prefs.getBoolean("preference_home_show_in_grid", false))
 
-                homeShowInGrid?.setOnPreferenceClickListener {
-                    setHomeDependencies(prefs.getBoolean("preference_home_show_in_grid", false))
+                homeShowInGrid?.setOnPreferenceChangeListener { _, newValue ->
+                    setHomeDependencies(newValue as Boolean)
                     true
+                }
+
+                // DOUBLE TAP GESTURE
+                val doubleTapGesture =
+                    findPreference("preference_home_double_tap_gesture") as ListPreference?
+                val doubleTapApp =
+                    findPreference("preference_home_double_tap_app") as ListPreference?
+
+                doubleTapApp?.isEnabled =
+                    prefs.getString("preference_home_double_tap_gesture", "none") == "openApp"
+
+                doubleTapGesture?.setOnPreferenceChangeListener { _, newValue ->
+                    doubleTapApp?.isEnabled = newValue as String == "openApp"
+                    true
+                }
+
+                if (doubleTapApp != null) {
+                    val entries: Array<CharSequence?> = arrayOfNulls(appList.size + 1)
+                    val entryValues: Array<CharSequence?> = arrayOfNulls(appList.size + 1)
+
+                    entries[0] = "Don't open any app"
+                    entryValues[0] = "none"
+
+                    appList.forEachIndexed { i, app ->
+                        entries[i + 1] = app.originalName
+                        entryValues[i + 1] = app.packageName
+                    }
+
+                    doubleTapApp.entries = entries
+                    doubleTapApp.entryValues = entryValues
+                }
+
+
+                // SWIPE DOWN GESTURE
+                val swipeDownGesture =
+                    findPreference("preference_home_swipe_down_gesture") as ListPreference?
+                val swipeDownApp =
+                    findPreference("preference_home_swipe_down_app") as ListPreference?
+
+                swipeDownApp?.isEnabled =
+                    prefs.getString("preference_home_swipe_down_gesture", "none") == "openApp"
+
+                swipeDownGesture?.setOnPreferenceChangeListener { _, newValue ->
+                    swipeDownApp?.isEnabled = newValue as String == "openApp"
+                    true
+                }
+
+                if (swipeDownApp != null) {
+                    val entries: Array<CharSequence?> = arrayOfNulls(appList.size + 1)
+                    val entryValues: Array<CharSequence?> = arrayOfNulls(appList.size + 1)
+
+                    entries[0] = "Don't open any app"
+                    entryValues[0] = "none"
+
+                    appList.forEachIndexed { i, app ->
+                        entries[i + 1] = app.originalName
+                        entryValues[i + 1] = app.packageName
+                    }
+
+                    swipeDownApp.entries = entries
+                    swipeDownApp.entryValues = entryValues
                 }
 
 
@@ -161,12 +222,11 @@ class SettingsActivity : AppCompatActivity() {
 
                 setDrawerDependencies(prefs.getBoolean("preference_drawer_show_in_grid", false))
 
-                drawerShowInGrid?.setOnPreferenceClickListener {
-                    setDrawerDependencies(prefs.getBoolean("preference_drawer_show_in_grid", false))
+                drawerShowInGrid?.setOnPreferenceChangeListener { _, newValue ->
+                    setDrawerDependencies(newValue as Boolean)
                     true
                 }
             }
-
         }
 
         private fun getDateFormatResult(setting: Int): CharSequence {

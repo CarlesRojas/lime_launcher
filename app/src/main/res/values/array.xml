@@ -11,4 +11,19 @@
         <item>center</item>
         <item>right</item>
     </string-array>
+
+
+    <string-array name="preference_actions_entries">
+        <item>None</item>
+        <item>Open app</item>
+        <item>Assistant</item>
+        <item>Screen lock</item>
+    </string-array>
+
+    <string-array name="preference_actions_values">
+        <item>none</item>
+        <item>openApp</item>
+        <item>assistant</item>
+        <item>screenLock</item>
+    </string-array>
 </resources>

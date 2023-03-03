@@ -60,6 +60,39 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/preference_title_gestures">
+        <ListPreference
+            app:defaultValue="none"
+            app:entries="@array/preference_actions_entries"
+            app:entryValues="@array/preference_actions_values"
+            app:key="preference_home_double_tap_gesture"
+            app:summary="@string/preference_home_double_tap_gesture_description"
+            app:title="@string/preference_home_double_tap_gesture"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="none"
+            app:key="preference_home_double_tap_app"
+            app:title="@string/preference_home_double_tap_app"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="none"
+            app:entries="@array/preference_actions_entries"
+            app:entryValues="@array/preference_actions_values"
+            app:key="preference_home_swipe_down_gesture"
+            app:summary="@string/preference_home_swipe_down_gesture_description"
+            app:title="@string/preference_home_swipe_down_gesture"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="none"
+            app:key="preference_home_swipe_down_app"
+            app:title="@string/preference_home_swipe_down_app"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
     <PreferenceCategory app:title="@string/preference_title_drawer">
         <SwitchPreference
             app:defaultValue="false"

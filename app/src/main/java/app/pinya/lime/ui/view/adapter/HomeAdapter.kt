@@ -7,16 +7,13 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.AlarmClock
 import android.provider.CalendarContract
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.ViewGroup.MarginLayoutParams
-import android.view.ViewTreeObserver
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import app.pinya.lime.R
 import app.pinya.lime.domain.model.AppModel
@@ -97,6 +94,15 @@ class HomeAdapter(
                 expandNotificationBar()
             }
 
+            override fun onFlingUp() {
+                when (Utils.getStringPref(context, StringPref.HOME_SWIPE_DOWN_ACTION)) {
+                    "openApp" -> openApp(true)
+                    "assistant" -> openAssistant()
+                    "screenLock" -> lockScreen()
+                }
+            }
+
+
             override fun onClick() {
                 when (val dateClickApp = Utils.getStringPref(context, StringPref.DATE_CLICK_APP)) {
                     "default" -> {
@@ -135,6 +141,14 @@ class HomeAdapter(
         time?.setOnTouchListener(object : OnSwipeTouchListener(context) {
             override fun onFlingDown() {
                 expandNotificationBar()
+            }
+
+            override fun onFlingUp() {
+                when (Utils.getStringPref(context, StringPref.HOME_SWIPE_DOWN_ACTION)) {
+                    "openApp" -> openApp(true)
+                    "assistant" -> openAssistant()
+                    "screenLock" -> lockScreen()
+                }
             }
 
             override fun onClick() {
@@ -264,6 +278,22 @@ class HomeAdapter(
                 expandNotificationBar()
             }
 
+            override fun onFlingUp() {
+                when (Utils.getStringPref(context, StringPref.HOME_SWIPE_DOWN_ACTION)) {
+                    "openApp" -> openApp(true)
+                    "assistant" -> openAssistant()
+                    "screenLock" -> lockScreen()
+                }
+            }
+
+            override fun onDoubleClick() {
+                when (Utils.getStringPref(context, StringPref.HOME_DOUBLE_TAP_ACTION)) {
+                    "openApp" -> openApp(false)
+                    "assistant" -> openAssistant()
+                    "screenLock" -> lockScreen()
+                }
+            }
+
             override fun onLongClick() {
                 Utils.vibrate(context)
                 context.startActivity(Intent(context, SettingsActivity::class.java))
@@ -288,6 +318,39 @@ class HomeAdapter(
 
     private fun initContextMenu() {
         contextMenuContainer = layout.findViewById(R.id.contextMenuHome_parent)
+    }
+
+    // ########################################
+    //   GESTURE ACTIONS
+    // ########################################
+
+    fun openAssistant() {
+        try {
+            val intent = Intent(Intent.ACTION_VOICE_COMMAND)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            context.startActivity(intent)
+            Utils.vibrate(context)
+        } catch (_: Error) {
+        }
+    }
+
+    fun lockScreen() {
+        println("lock screen")
+        Utils.vibrate(context)
+    }
+
+    fun openApp(fromSwipeDown: Boolean) {
+        val appToOpen = Utils.getStringPref(
+            context,
+            if (fromSwipeDown) StringPref.HOME_SWIPE_DOWN_APP else StringPref.HOME_DOUBLE_TAP_APP
+        )
+
+        if (appToOpen != "none") {
+            Utils.vibrate(context)
+            val launchAppIntent =
+                context.packageManager.getLaunchIntentForPackage(appToOpen)
+            if (launchAppIntent != null) context.startActivity(launchAppIntent)
+        }
     }
 
     // ########################################
@@ -378,6 +441,14 @@ class HomeAdapter(
                     expandNotificationBar()
                 }
 
+                override fun onFlingUp() {
+                    when (Utils.getStringPref(context, StringPref.HOME_SWIPE_DOWN_ACTION)) {
+                        "openApp" -> openApp(true)
+                        "assistant" -> openAssistant()
+                        "screenLock" -> lockScreen()
+                    }
+                }
+
                 override fun onClick() {
                     val launchAppIntent =
                         context.packageManager.getLaunchIntentForPackage(currentApp.packageName)
@@ -434,10 +505,17 @@ class HomeAdapter(
                 override fun onFlingDown() {
                     expandNotificationBar()
                 }
+
+                override fun onFlingUp() {
+                    when (Utils.getStringPref(context, StringPref.HOME_SWIPE_DOWN_ACTION)) {
+                        "openApp" -> openApp(true)
+                        "assistant" -> openAssistant()
+                        "screenLock" -> lockScreen()
+                    }
+                }
             })
         }
     }
-
 
     override fun getItemCount(): Int {
         val info = viewModel.info.value ?: return appList.size

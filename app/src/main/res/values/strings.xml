@@ -53,6 +53,7 @@
 
     <string name="preference_title_general">General</string>
     <string name="preference_title_home">Home</string>
+    <string name="preference_title_gestures">Home gestures</string>
     <string name="preference_title_drawer">Drawer</string>
     <string name="preference_title_date">Date</string>
     <string name="preference_title_time">Time</string>
@@ -68,6 +69,12 @@
     <string name="preference_home_show_in_grid">Use app grid</string>
     <string name="preference_home_show_labels">Show labels</string>
     <string name="preference_home_alignment">Home alignment</string>
+    <string name="preference_home_swipe_down_gesture">Swipe down gesture action</string>
+    <string name="preference_home_swipe_down_app">Select the swipe down app</string>
+    <string name="preference_home_swipe_down_gesture_description">This gesture only works on the home screen.</string>
+    <string name="preference_home_double_tap_gesture">Double tap gesture action</string>
+    <string name="preference_home_double_tap_app">Select the double tap app</string>
+    <string name="preference_home_double_tap_gesture_description">This gesture only works on an empty space in the home screen.</string>
 
     <string name="preference_drawer_show_icons">Show icons</string>
     <string name="preference_drawer_show_in_grid">Use app grid</string>
