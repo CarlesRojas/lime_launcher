@@ -428,6 +428,7 @@ class HomeAdapter(
                 )
             )
 
+            linearLayout.gravity = Gravity.START
             linearLayout.setOnTouchListener(object : OnSwipeTouchListener(context) {
                 override fun onFlingDown() {
                     expandNotificationBar()
