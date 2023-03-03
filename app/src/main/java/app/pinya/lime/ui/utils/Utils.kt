@@ -35,9 +35,7 @@ class Utils {
 
         @Suppress("DEPRECATION")
         fun vibrate(
-            context: Context,
-            timeInMs: Long = 1,
-            amplitude: Int = VibrationEffect.DEFAULT_AMPLITUDE
+            context: Context, timeInMs: Long = 1, amplitude: Int = VibrationEffect.DEFAULT_AMPLITUDE
         ) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 val vibratorManager =
@@ -112,6 +110,8 @@ class Utils {
             val prefs = PreferenceManager.getDefaultSharedPreferences(context)
 
             val key = when (preference) {
+                StringPref.HOME_ALIGNMENT -> "preference_home_alignment"
+
                 StringPref.TIME_FORMAT -> "preference_time_format"
                 StringPref.TIME_CLICK_APP -> "preference_time_click_app"
 
@@ -119,8 +119,9 @@ class Utils {
                 StringPref.DATE_CLICK_APP -> "preference_date_click_app"
             }
 
-
             val defaultValue = when (preference) {
+                StringPref.HOME_ALIGNMENT -> "left"
+
                 StringPref.TIME_FORMAT -> "0"
                 StringPref.TIME_CLICK_APP -> "default"
 

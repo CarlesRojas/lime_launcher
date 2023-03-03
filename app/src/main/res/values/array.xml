@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="preference_home_alignment_entries">
+        <item>Left</item>
+        <item>Center</item>
+        <item>Right</item>
+    </string-array>
+
+    <string-array name="preference_home_alignment_values">
+        <item>left</item>
+        <item>center</item>
+        <item>right</item>
+    </string-array>
+</resources>

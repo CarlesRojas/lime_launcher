@@ -8,6 +8,7 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.AlarmClock
 import android.provider.CalendarContract
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -85,7 +86,15 @@ class HomeAdapter(
 
     @SuppressLint("ClickableViewAccessibility")
     private fun addDateListeners() {
+        val alignment = Utils.getStringPref(context, StringPref.HOME_ALIGNMENT)
+
         date = layout.findViewById(R.id.homeDate)
+        date?.gravity = when (alignment) {
+            "right" -> Gravity.END
+            "center" -> Gravity.CENTER
+            else -> Gravity.START
+        }
+
         date?.setOnTouchListener(object : OnSwipeTouchListener(context) {
             override fun onFlingDown() {
                 expandNotificationBar()
@@ -117,7 +126,15 @@ class HomeAdapter(
 
     @SuppressLint("ClickableViewAccessibility")
     private fun addTimeListeners() {
+        val alignment = Utils.getStringPref(context, StringPref.HOME_ALIGNMENT)
+
         time = layout.findViewById(R.id.homeTime)
+        time?.gravity = when (alignment) {
+            "right" -> Gravity.END
+            "center" -> Gravity.CENTER
+            else -> Gravity.START
+        }
+
         time?.setOnTouchListener(object : OnSwipeTouchListener(context) {
             override fun onFlingDown() {
                 expandNotificationBar()
@@ -299,6 +316,7 @@ class HomeAdapter(
         val showInGrid = Utils.getBooleanPref(context, BooleanPref.HOME_SHOW_IN_GRID)
         val araLabelsVisible =
             !showInGrid || Utils.getBooleanPref(context, BooleanPref.HOME_SHOW_LABELS)
+        val alignment = Utils.getStringPref(context, StringPref.HOME_ALIGNMENT)
 
         if (appList.size > 0) {
             val currentApp = appList.find { it.homeOrderIndex == position } ?: return
@@ -340,7 +358,14 @@ class HomeAdapter(
                 textView.textAlignment = TextView.TEXT_ALIGNMENT_TEXT_START
 
                 linearLayout.orientation = LinearLayout.HORIZONTAL
-                linearLayout.setPadding(0, Utils.dpToPx(context, 12), 0, Utils.dpToPx(context, 12))
+                val padding = Utils.dpToPx(context, if (areIconsVisible) 12 else 18)
+                linearLayout.setPadding(0, padding, 0, padding)
+                linearLayout.gravity = when (alignment) {
+                    "right" -> Gravity.END
+                    "center" -> Gravity.CENTER
+                    else -> Gravity.START
+                }
+
 
                 val marginParams = MarginLayoutParams(imageView.layoutParams)
                 marginParams.setMargins(0, 0, Utils.dpToPx(context, 18), 0)

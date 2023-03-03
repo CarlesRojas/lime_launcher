@@ -49,6 +49,15 @@
             app:defaultValue="true"
             app:key="preference_home_show_icons"
             app:title="@string/preference_home_show_icons" />
+
+        <ListPreference
+            app:defaultValue="left"
+            app:entries="@array/preference_home_alignment_entries"
+            app:entryValues="@array/preference_home_alignment_values"
+            app:key="preference_home_alignment"
+            app:title="@string/preference_home_alignment"
+            app:useSimpleSummaryProvider="true" />
+
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/preference_title_drawer">
