@@ -94,4 +94,8 @@
     <string name="preference_time_format">Time format</string>
     <string name="preference_time_click_app">Choose app to open on click</string>
 
+
+    <!-- LOCK SCREEN -->
+    <string name="accessibility_service_description">The accessibility permission is required to enable double tap to lock. Any data acquired by Lime Launcher via this service will not leave your device.</string>
+    <string name="lock_layout_description">lock</string>
 </resources>

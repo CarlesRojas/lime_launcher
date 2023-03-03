@@ -5,21 +5,24 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.provider.AlarmClock
 import android.provider.CalendarContract
+import android.provider.Settings
 import android.view.*
 import android.view.ViewGroup.MarginLayoutParams
+import android.view.accessibility.AccessibilityEvent
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import app.pinya.lime.R
 import app.pinya.lime.domain.model.AppModel
 import app.pinya.lime.domain.model.BooleanPref
 import app.pinya.lime.domain.model.StringPref
 import app.pinya.lime.domain.model.menus.AppMenu
+import app.pinya.lime.ui.utils.MyAccessibilityService
 import app.pinya.lime.ui.utils.OnSwipeTouchListener
 import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.view.activity.SettingsActivity
@@ -324,7 +327,7 @@ class HomeAdapter(
     //   GESTURE ACTIONS
     // ########################################
 
-    fun openAssistant() {
+    private fun openAssistant() {
         try {
             val intent = Intent(Intent.ACTION_VOICE_COMMAND)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -334,12 +337,38 @@ class HomeAdapter(
         }
     }
 
-    fun lockScreen() {
-        println("lock screen")
-        Utils.vibrate(context)
+    private fun isAccessServiceEnabled(context: Context): Boolean {
+        val enabled = try {
+            Settings.Secure.getInt(
+                context.applicationContext.contentResolver,
+                Settings.Secure.ACCESSIBILITY_ENABLED
+            )
+        } catch (e: Exception) {
+            0
+        }
+        if (enabled == 1) {
+            val enabledServicesString: String? = Settings.Secure.getString(
+                context.contentResolver,
+                Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
+            )
+            return enabledServicesString?.contains(context.packageName + "/" + MyAccessibilityService::class.java.name)
+                ?: false
+        }
+        return false
     }
 
-    fun openApp(fromSwipeDown: Boolean) {
+    private fun lockScreen() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && isAccessServiceEnabled(context)) {
+            Utils.vibrate(context)
+            val lock = layout.findViewById<TextView>(R.id.lock)
+            lock.performClick()
+
+            val event = AccessibilityEvent.obtain(AccessibilityEvent.TYPE_VIEW_CLICKED)
+            lock.parent.requestSendAccessibilityEvent(lock, event)
+        }
+    }
+
+    private fun openApp(fromSwipeDown: Boolean) {
         val appToOpen = Utils.getStringPref(
             context,
             if (fromSwipeDown) StringPref.HOME_SWIPE_DOWN_APP else StringPref.HOME_DOUBLE_TAP_APP
@@ -352,6 +381,7 @@ class HomeAdapter(
             if (launchAppIntent != null) context.startActivity(launchAppIntent)
         }
     }
+
 
     // ########################################
     //   RECYCLER VIEW
