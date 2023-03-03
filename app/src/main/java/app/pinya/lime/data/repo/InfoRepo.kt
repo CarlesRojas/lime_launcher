@@ -149,9 +149,8 @@ class InfoRepo @Inject constructor() {
     private fun getOldData(
         key: OldSettingsDataKey, defaultValue: MutableSet<String>
     ): MutableSet<String> {
-        val jsonDefaultValue: String = Gson().toJson(defaultValue)
-        val result = this.oldSharedPreferences.getString(key.toString(), jsonDefaultValue)
-            ?: jsonDefaultValue
+        val result = this.oldSharedPreferences.getString(key.toString(), null)
+            ?: return defaultValue
         val listType = object : TypeToken<MutableSet<String>>() {}.type
         removeKey(key)
         return Gson().fromJson(result, listType)
@@ -160,9 +159,8 @@ class InfoRepo @Inject constructor() {
     private fun getOldData(
         key: OldSettingsDataKey, defaultValue: MutableMap<String, String>
     ): MutableMap<String, String> {
-        val jsonDefaultValue: String = Gson().toJson(defaultValue)
-        val result = this.oldSharedPreferences.getString(key.toString(), jsonDefaultValue)
-            ?: jsonDefaultValue
+        val result = this.oldSharedPreferences.getString(key.toString(), null)
+            ?: return defaultValue
         val listType = object : TypeToken<MutableMap<String, String>>() {}.type
         removeKey(key)
         return Gson().fromJson(result, listType)
