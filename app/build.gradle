@@ -57,6 +57,7 @@ dependencies {
 
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1"
 
+    implementation 'com.makeramen:roundedimageview:2.3.0'
     implementation 'com.github.bosphere.android-fadingedgelayout:fadingedgelayout:1.0.0'
 }
 

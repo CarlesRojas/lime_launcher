@@ -1,7 +1,6 @@
 package app.pinya.lime.ui.view.adapter
 
 import android.annotation.SuppressLint
-import android.app.ActionBar.LayoutParams
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -14,9 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
 import android.view.ViewTreeObserver
-import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -31,10 +28,10 @@ import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.view.activity.SettingsActivity
 import app.pinya.lime.ui.view.holder.AppViewHolder
 import app.pinya.lime.ui.viewmodel.AppViewModel
+import com.makeramen.roundedimageview.RoundedImageView
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.floor
-import kotlin.math.max
 
 
 class HomeAdapter(
@@ -307,7 +304,7 @@ class HomeAdapter(
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: AppViewHolder, position: Int) {
 
-        val imageView: ImageView = holder.itemView.findViewById(R.id.appIcon)
+        val imageView: RoundedImageView = holder.itemView.findViewById(R.id.appIcon)
         val textView: TextView = holder.itemView.findViewById(R.id.appName)
         val linearLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
 
@@ -325,6 +322,9 @@ class HomeAdapter(
 
             imageView.setImageDrawable(currentApp.icon)
             imageView.visibility = if (areIconsVisible) View.VISIBLE else View.GONE
+            imageView.background = ContextCompat.getDrawable(
+                context, R.drawable.background_rounded
+            )
 
             textView.text = currentApp.name
             textView.isSingleLine = true
@@ -418,6 +418,7 @@ class HomeAdapter(
                     context, icon
                 )
             )
+            imageView.background = null
 
             textView.text = text
             textView.isSingleLine = false
