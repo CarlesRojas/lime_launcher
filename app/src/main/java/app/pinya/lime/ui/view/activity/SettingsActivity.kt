@@ -1,5 +1,6 @@
 package app.pinya.lime.ui.view.activity
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.ListPreference
+import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import androidx.preference.SwitchPreference
@@ -94,6 +96,8 @@ class SettingsActivity : AppCompatActivity() {
                 setDoubleTapGestureSettings(prefs, appList)
                 setSwipeUpGestureSettings(prefs, appList)
                 setSwipeDownGestureSettings(prefs, appList)
+
+                lockPremiumFeatures(prefs)
             }
         }
 
@@ -387,6 +391,97 @@ class SettingsActivity : AppCompatActivity() {
                 swipeUpGesture?.entryValues = entryValues
                 swipeDownGesture?.entries = entries
                 swipeDownGesture?.entryValues = entryValues
+            }
+        }
+
+        private fun launchPayForPremium() {
+            // TODO pay with google service
+            println("PAY")
+        }
+
+        @SuppressLint("PrivateResource")
+        private fun lockPremiumFeatures(prefs: SharedPreferences) {
+
+            val isPremium = false // TODO get from google pay info
+
+            val getPremiumMainButton = findPreference("preference_get_pro") as Preference?
+            getPremiumMainButton?.isVisible = !isPremium
+            getPremiumMainButton?.setOnPreferenceClickListener {
+                launchPayForPremium()
+                true
+            }
+
+            val homeShowInGrid = findPreference("preference_home_show_in_grid") as SwitchPreference?
+            val homeShowInGridPro =
+                findPreference("preference_home_show_in_grid_pro") as Preference?
+
+            val homeAlignment = findPreference("preference_home_alignment") as ListPreference?
+            val homeAlignmentPro =
+                findPreference("preference_home_alignment_pro") as Preference?
+
+            val doubleTapGesture =
+                findPreference("preference_home_double_tap_gesture") as ListPreference?
+            val doubleTapGesturePro =
+                findPreference("preference_home_double_tap_gesture_pro") as Preference?
+
+            val swipeUpGesture =
+                findPreference("preference_home_swipe_up_gesture") as ListPreference?
+            val swipeUpGesturePro =
+                findPreference("preference_home_swipe_up_gesture_pro") as Preference?
+
+            val swipeDownGesture =
+                findPreference("preference_home_swipe_down_gesture") as ListPreference?
+            val swipeDownGesturePro =
+                findPreference("preference_home_swipe_down_gesture_pro") as Preference?
+
+            val drawerShowInGrid =
+                findPreference("preference_drawer_show_in_grid") as SwitchPreference?
+            val drawerShowInGridPro =
+                findPreference("preference_drawer_show_in_grid_pro") as Preference?
+
+            homeShowInGrid?.isVisible = isPremium
+            homeShowInGridPro?.isVisible = !isPremium
+
+            homeAlignment?.isVisible = isPremium
+            homeAlignmentPro?.isVisible = !isPremium
+
+            doubleTapGesture?.isVisible = isPremium
+            doubleTapGesturePro?.isVisible = !isPremium
+
+            swipeUpGesture?.isVisible = isPremium
+            swipeUpGesturePro?.isVisible = !isPremium
+
+            swipeDownGesture?.isVisible = isPremium
+            swipeDownGesturePro?.isVisible = !isPremium
+
+            drawerShowInGrid?.isVisible = isPremium
+            drawerShowInGridPro?.isVisible = !isPremium
+
+            if (!isPremium) {
+                homeShowInGridPro?.setOnPreferenceClickListener {
+                    launchPayForPremium()
+                    true
+                }
+                homeAlignmentPro?.setOnPreferenceClickListener {
+                    launchPayForPremium()
+                    true
+                }
+                doubleTapGesturePro?.setOnPreferenceClickListener {
+                    launchPayForPremium()
+                    true
+                }
+                swipeUpGesturePro?.setOnPreferenceClickListener {
+                    launchPayForPremium()
+                    true
+                }
+                swipeDownGesturePro?.setOnPreferenceClickListener {
+                    launchPayForPremium()
+                    true
+                }
+                drawerShowInGridPro?.setOnPreferenceClickListener {
+                    launchPayForPremium()
+                    true
+                }
             }
         }
 

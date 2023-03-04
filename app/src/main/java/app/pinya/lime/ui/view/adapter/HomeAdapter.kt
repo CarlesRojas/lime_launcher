@@ -529,6 +529,11 @@ class HomeAdapter(
                 )
             )
 
+            val marginParams = MarginLayoutParams(imageView.layoutParams)
+            marginParams.setMargins(0, 0, Utils.dpToPx(context, 18), 0)
+            val layoutParams = LinearLayout.LayoutParams(marginParams)
+            imageView.layoutParams = layoutParams
+
             linearLayout.gravity = Gravity.START
             linearLayout.setOnTouchListener(object : OnSwipeTouchListener(context) {
                 override fun onFlingDown() {
