@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import android.provider.Settings
 import android.util.DisplayMetrics
 import androidx.preference.PreferenceManager
 import app.pinya.lime.domain.model.BooleanPref
@@ -111,8 +112,8 @@ class Utils {
 
             val key = when (preference) {
                 StringPref.HOME_ALIGNMENT -> "preference_home_alignment"
-                StringPref.HOME_SWIPE_DOWN_ACTION -> "preference_home_swipe_down_gesture"
-                StringPref.HOME_SWIPE_DOWN_APP -> "preference_home_swipe_down_app"
+                StringPref.HOME_SWIPE_UP_ACTION -> "preference_home_swipe_up_gesture"
+                StringPref.HOME_SWIPE_UP_APP -> "preference_home_swipe_up_app"
                 StringPref.HOME_DOUBLE_TAP_ACTION -> "preference_home_double_tap_gesture"
                 StringPref.HOME_DOUBLE_TAP_APP -> "preference_home_double_tap_app"
 
@@ -125,8 +126,8 @@ class Utils {
 
             val defaultValue = when (preference) {
                 StringPref.HOME_ALIGNMENT -> "left"
-                StringPref.HOME_SWIPE_DOWN_ACTION -> "none"
-                StringPref.HOME_SWIPE_DOWN_APP -> "none"
+                StringPref.HOME_SWIPE_UP_ACTION -> "none"
+                StringPref.HOME_SWIPE_UP_APP -> "none"
                 StringPref.HOME_DOUBLE_TAP_ACTION -> "none"
                 StringPref.HOME_DOUBLE_TAP_APP -> "none"
 
@@ -138,6 +139,26 @@ class Utils {
             }
 
             return prefs.getString(key, defaultValue) ?: defaultValue
+        }
+
+        fun isAccessServiceEnabled(context: Context): Boolean {
+            val enabled = try {
+                Settings.Secure.getInt(
+                    context.applicationContext.contentResolver,
+                    Settings.Secure.ACCESSIBILITY_ENABLED
+                )
+            } catch (e: Exception) {
+                0
+            }
+            if (enabled == 1) {
+                val enabledServicesString: String? = Settings.Secure.getString(
+                    context.contentResolver,
+                    Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
+                )
+                return enabledServicesString?.contains(context.packageName + "/" + MyAccessibilityService::class.java.name)
+                    ?: false
+            }
+            return false
         }
     }
 }

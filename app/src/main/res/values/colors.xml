@@ -18,6 +18,7 @@
 
     <color name="primary">#88FF00</color>
     <color name="primary_variant">#69C500</color>
+    <color name="primary_dark">#5AAA00</color>
     <color name="secondary">#88FF00</color>
     <color name="secondary_variant">#69C500</color>
 </resources>

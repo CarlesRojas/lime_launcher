@@ -69,9 +69,9 @@
     <string name="preference_home_show_in_grid">Use app grid</string>
     <string name="preference_home_show_labels">Show labels</string>
     <string name="preference_home_alignment">Home alignment</string>
-    <string name="preference_home_swipe_down_gesture">Swipe down gesture action</string>
-    <string name="preference_home_swipe_down_app">Select the swipe down app</string>
-    <string name="preference_home_swipe_down_gesture_description">This gesture only works on the home screen.</string>
+    <string name="preference_home_swipe_up_gesture">Swipe up gesture action</string>
+    <string name="preference_home_swipe_up_app">Select the swipe up app</string>
+    <string name="preference_home_swipe_up_gesture_description">This gesture only works on the home screen.</string>
     <string name="preference_home_double_tap_gesture">Double tap gesture action</string>
     <string name="preference_home_double_tap_app">Select the double tap app</string>
     <string name="preference_home_double_tap_gesture_description">This gesture only works on an empty space in the home screen.</string>
@@ -98,4 +98,9 @@
     <!-- LOCK SCREEN -->
     <string name="accessibility_service_description">The accessibility permission is required to enable double tap to lock. Any data acquired by Lime Launcher via this service will not leave your device.</string>
     <string name="lock_layout_description">lock</string>
+
+    <string name="lock_screen_menu_title">Permission to lock screen</string>
+    <string name="lock_screen_menu_disclosure">Please turn on Lime Launcher\'s accessibility service in your device\'s settings to enable this feature.\n\nPlease note that this service is only used to let you turn off your device\'s screen using the double tap or swipe gestures.\n\nOur accessibility service does not collect or share any data.</string>
+    <string name="lock_screen_menu_button">Enable</string>
+
 </resources>

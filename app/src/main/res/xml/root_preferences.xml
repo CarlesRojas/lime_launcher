@@ -80,15 +80,15 @@
             app:defaultValue="none"
             app:entries="@array/preference_actions_entries"
             app:entryValues="@array/preference_actions_values"
-            app:key="preference_home_swipe_down_gesture"
-            app:summary="@string/preference_home_swipe_down_gesture_description"
-            app:title="@string/preference_home_swipe_down_gesture"
+            app:key="preference_home_swipe_up_gesture"
+            app:summary="@string/preference_home_swipe_up_gesture_description"
+            app:title="@string/preference_home_swipe_up_gesture"
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference
             app:defaultValue="none"
-            app:key="preference_home_swipe_down_app"
-            app:title="@string/preference_home_swipe_down_app"
+            app:key="preference_home_swipe_up_app"
+            app:title="@string/preference_home_swipe_up_app"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>

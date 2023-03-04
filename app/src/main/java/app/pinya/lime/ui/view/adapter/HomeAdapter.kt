@@ -98,7 +98,7 @@ class HomeAdapter(
             }
 
             override fun onFlingUp() {
-                when (Utils.getStringPref(context, StringPref.HOME_SWIPE_DOWN_ACTION)) {
+                when (Utils.getStringPref(context, StringPref.HOME_SWIPE_UP_ACTION)) {
                     "openApp" -> openApp(true)
                     "assistant" -> openAssistant()
                     "screenLock" -> lockScreen()
@@ -147,7 +147,7 @@ class HomeAdapter(
             }
 
             override fun onFlingUp() {
-                when (Utils.getStringPref(context, StringPref.HOME_SWIPE_DOWN_ACTION)) {
+                when (Utils.getStringPref(context, StringPref.HOME_SWIPE_UP_ACTION)) {
                     "openApp" -> openApp(true)
                     "assistant" -> openAssistant()
                     "screenLock" -> lockScreen()
@@ -282,7 +282,7 @@ class HomeAdapter(
             }
 
             override fun onFlingUp() {
-                when (Utils.getStringPref(context, StringPref.HOME_SWIPE_DOWN_ACTION)) {
+                when (Utils.getStringPref(context, StringPref.HOME_SWIPE_UP_ACTION)) {
                     "openApp" -> openApp(true)
                     "assistant" -> openAssistant()
                     "screenLock" -> lockScreen()
@@ -337,28 +337,9 @@ class HomeAdapter(
         }
     }
 
-    private fun isAccessServiceEnabled(context: Context): Boolean {
-        val enabled = try {
-            Settings.Secure.getInt(
-                context.applicationContext.contentResolver,
-                Settings.Secure.ACCESSIBILITY_ENABLED
-            )
-        } catch (e: Exception) {
-            0
-        }
-        if (enabled == 1) {
-            val enabledServicesString: String? = Settings.Secure.getString(
-                context.contentResolver,
-                Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
-            )
-            return enabledServicesString?.contains(context.packageName + "/" + MyAccessibilityService::class.java.name)
-                ?: false
-        }
-        return false
-    }
 
     private fun lockScreen() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && isAccessServiceEnabled(context)) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && Utils.isAccessServiceEnabled(context)) {
             Utils.vibrate(context)
             val lock = layout.findViewById<TextView>(R.id.lock)
             lock.performClick()
@@ -368,10 +349,10 @@ class HomeAdapter(
         }
     }
 
-    private fun openApp(fromSwipeDown: Boolean) {
+    private fun openApp(fromSwipeUp: Boolean) {
         val appToOpen = Utils.getStringPref(
             context,
-            if (fromSwipeDown) StringPref.HOME_SWIPE_DOWN_APP else StringPref.HOME_DOUBLE_TAP_APP
+            if (fromSwipeUp) StringPref.HOME_SWIPE_UP_APP else StringPref.HOME_DOUBLE_TAP_APP
         )
 
         if (appToOpen != "none") {
@@ -472,7 +453,7 @@ class HomeAdapter(
                 }
 
                 override fun onFlingUp() {
-                    when (Utils.getStringPref(context, StringPref.HOME_SWIPE_DOWN_ACTION)) {
+                    when (Utils.getStringPref(context, StringPref.HOME_SWIPE_UP_ACTION)) {
                         "openApp" -> openApp(true)
                         "assistant" -> openAssistant()
                         "screenLock" -> lockScreen()
@@ -537,7 +518,7 @@ class HomeAdapter(
                 }
 
                 override fun onFlingUp() {
-                    when (Utils.getStringPref(context, StringPref.HOME_SWIPE_DOWN_ACTION)) {
+                    when (Utils.getStringPref(context, StringPref.HOME_SWIPE_UP_ACTION)) {
                         "openApp" -> openApp(true)
                         "assistant" -> openAssistant()
                         "screenLock" -> lockScreen()
