@@ -11,6 +11,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
+@Suppress("SameParameterValue")
 class InfoRepo @Inject constructor() {
     private val sharedPreferences: SharedPreferences
     private val oldSharedPreferences: SharedPreferences

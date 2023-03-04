@@ -72,6 +72,9 @@
     <string name="preference_home_swipe_up_gesture">Swipe up gesture action</string>
     <string name="preference_home_swipe_up_app">Select the swipe up app</string>
     <string name="preference_home_swipe_up_gesture_description">This gesture only works on the home screen.</string>
+    <string name="preference_home_swipe_down_gesture">Swipe down gesture action</string>
+    <string name="preference_home_swipe_down_app">Select the swipe down app</string>
+    <string name="preference_home_swipe_down_gesture_description">This gesture only works on the home screen.</string>
     <string name="preference_home_double_tap_gesture">Double tap gesture action</string>
     <string name="preference_home_double_tap_app">Select the double tap app</string>
     <string name="preference_home_double_tap_gesture_description">This gesture only works on an empty space in the home screen.</string>

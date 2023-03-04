@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Build
 import android.provider.AlarmClock
 import android.provider.CalendarContract
-import android.provider.Settings
 import android.view.*
 import android.view.ViewGroup.MarginLayoutParams
 import android.view.accessibility.AccessibilityEvent
@@ -22,7 +21,6 @@ import app.pinya.lime.domain.model.AppModel
 import app.pinya.lime.domain.model.BooleanPref
 import app.pinya.lime.domain.model.StringPref
 import app.pinya.lime.domain.model.menus.AppMenu
-import app.pinya.lime.ui.utils.MyAccessibilityService
 import app.pinya.lime.ui.utils.OnSwipeTouchListener
 import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.view.activity.SettingsActivity
@@ -35,9 +33,7 @@ import kotlin.math.floor
 
 
 class HomeAdapter(
-    private val context: Context,
-    private val layout: ViewGroup,
-    private val viewModel: AppViewModel
+    private val context: Context, private val layout: ViewGroup, private val viewModel: AppViewModel
 ) : RecyclerView.Adapter<AppViewHolder>() {
 
     // DATE & TIME
@@ -94,12 +90,18 @@ class HomeAdapter(
 
         date?.setOnTouchListener(object : OnSwipeTouchListener(context) {
             override fun onFlingDown() {
-                expandNotificationBar()
+                when (Utils.getStringPref(context, StringPref.HOME_SWIPE_DOWN_ACTION)) {
+                    "openApp" -> openApp("swipeDown")
+                    "expandNotifications" -> expandNotificationBar()
+                    "assistant" -> openAssistant()
+                    "screenLock" -> lockScreen()
+                }
             }
 
             override fun onFlingUp() {
                 when (Utils.getStringPref(context, StringPref.HOME_SWIPE_UP_ACTION)) {
-                    "openApp" -> openApp(true)
+                    "openApp" -> openApp("swipeUp")
+                    "expandNotifications" -> expandNotificationBar()
                     "assistant" -> openAssistant()
                     "screenLock" -> lockScreen()
                 }
@@ -143,12 +145,18 @@ class HomeAdapter(
 
         time?.setOnTouchListener(object : OnSwipeTouchListener(context) {
             override fun onFlingDown() {
-                expandNotificationBar()
+                when (Utils.getStringPref(context, StringPref.HOME_SWIPE_DOWN_ACTION)) {
+                    "openApp" -> openApp("swipeDown")
+                    "expandNotifications" -> expandNotificationBar()
+                    "assistant" -> openAssistant()
+                    "screenLock" -> lockScreen()
+                }
             }
 
             override fun onFlingUp() {
                 when (Utils.getStringPref(context, StringPref.HOME_SWIPE_UP_ACTION)) {
-                    "openApp" -> openApp(true)
+                    "openApp" -> openApp("swipeUp")
+                    "expandNotifications" -> expandNotificationBar()
                     "assistant" -> openAssistant()
                     "screenLock" -> lockScreen()
                 }
@@ -208,16 +216,14 @@ class HomeAdapter(
 
         date?.setTextColor(
             ContextCompat.getColor(
-                context,
-                if (isTextBlack) R.color.black else R.color.white
+                context, if (isTextBlack) R.color.black else R.color.white
             )
         )
         date?.visibility = if (isDateVisible) View.VISIBLE else View.GONE
 
         time?.setTextColor(
             ContextCompat.getColor(
-                context,
-                if (isTextBlack) R.color.black else R.color.white
+                context, if (isTextBlack) R.color.black else R.color.white
             )
         )
         time?.visibility = if (isTimeVisible) View.VISIBLE else View.GONE
@@ -278,12 +284,18 @@ class HomeAdapter(
     private fun initGestureDetector() {
         layout.setOnTouchListener(object : OnSwipeTouchListener(context) {
             override fun onFlingDown() {
-                expandNotificationBar()
+                when (Utils.getStringPref(context, StringPref.HOME_SWIPE_DOWN_ACTION)) {
+                    "openApp" -> openApp("swipeDown")
+                    "expandNotifications" -> expandNotificationBar()
+                    "assistant" -> openAssistant()
+                    "screenLock" -> lockScreen()
+                }
             }
 
             override fun onFlingUp() {
                 when (Utils.getStringPref(context, StringPref.HOME_SWIPE_UP_ACTION)) {
-                    "openApp" -> openApp(true)
+                    "openApp" -> openApp("swipeUp")
+                    "expandNotifications" -> expandNotificationBar()
                     "assistant" -> openAssistant()
                     "screenLock" -> lockScreen()
                 }
@@ -291,7 +303,8 @@ class HomeAdapter(
 
             override fun onDoubleClick() {
                 when (Utils.getStringPref(context, StringPref.HOME_DOUBLE_TAP_ACTION)) {
-                    "openApp" -> openApp(false)
+                    "openApp" -> openApp("doubleTap")
+                    "expandNotifications" -> expandNotificationBar()
                     "assistant" -> openAssistant()
                     "screenLock" -> lockScreen()
                 }
@@ -302,17 +315,6 @@ class HomeAdapter(
                 context.startActivity(Intent(context, SettingsActivity::class.java))
             }
         })
-    }
-
-    @SuppressLint("WrongConstant", "PrivateApi")
-    private fun expandNotificationBar() {
-        try {
-            val statusBarService = context.getSystemService("statusbar")
-            val statusBarManager = Class.forName("android.app.StatusBarManager")
-            val method = statusBarManager.getMethod("expandNotificationsPanel")
-            method.invoke(statusBarService)
-        } catch (_: Error) {
-        }
     }
 
     // ########################################
@@ -344,21 +346,35 @@ class HomeAdapter(
             val lock = layout.findViewById<TextView>(R.id.lock)
             lock.performClick()
 
-            val event = AccessibilityEvent.obtain(AccessibilityEvent.TYPE_VIEW_CLICKED)
+            @Suppress("DEPRECATION") val event =
+                AccessibilityEvent.obtain(AccessibilityEvent.TYPE_VIEW_CLICKED)
             lock.parent.requestSendAccessibilityEvent(lock, event)
         }
     }
 
-    private fun openApp(fromSwipeUp: Boolean) {
+    @SuppressLint("WrongConstant", "PrivateApi")
+    private fun expandNotificationBar() {
+        try {
+            val statusBarService = context.getSystemService("statusbar")
+            val statusBarManager = Class.forName("android.app.StatusBarManager")
+            val method = statusBarManager.getMethod("expandNotificationsPanel")
+            method.invoke(statusBarService)
+        } catch (_: Error) {
+        }
+    }
+
+    private fun openApp(fromSwipeUp: String) {
         val appToOpen = Utils.getStringPref(
-            context,
-            if (fromSwipeUp) StringPref.HOME_SWIPE_UP_APP else StringPref.HOME_DOUBLE_TAP_APP
+            context, when (fromSwipeUp) {
+                "doubleTap" -> StringPref.HOME_DOUBLE_TAP_APP
+                "swipeUp" -> StringPref.HOME_SWIPE_UP_APP
+                else -> StringPref.HOME_SWIPE_DOWN_APP
+            }
         )
 
         if (appToOpen != "none") {
             Utils.vibrate(context)
-            val launchAppIntent =
-                context.packageManager.getLaunchIntentForPackage(appToOpen)
+            val launchAppIntent = context.packageManager.getLaunchIntentForPackage(appToOpen)
             if (launchAppIntent != null) context.startActivity(launchAppIntent)
         }
     }
@@ -404,8 +420,7 @@ class HomeAdapter(
             textView.isSingleLine = true
             textView.setTextColor(
                 ContextCompat.getColor(
-                    context,
-                    if (isTextBlack) R.color.black else R.color.white
+                    context, if (isTextBlack) R.color.black else R.color.white
                 )
             )
             textView.alpha = if (araLabelsVisible) 1f else 0f
@@ -449,12 +464,18 @@ class HomeAdapter(
 
             linearLayout.setOnTouchListener(object : OnSwipeTouchListener(context) {
                 override fun onFlingDown() {
-                    expandNotificationBar()
+                    when (Utils.getStringPref(context, StringPref.HOME_SWIPE_DOWN_ACTION)) {
+                        "openApp" -> openApp("swipeDown")
+                        "expandNotifications" -> expandNotificationBar()
+                        "assistant" -> openAssistant()
+                        "screenLock" -> lockScreen()
+                    }
                 }
 
                 override fun onFlingUp() {
                     when (Utils.getStringPref(context, StringPref.HOME_SWIPE_UP_ACTION)) {
-                        "openApp" -> openApp(true)
+                        "openApp" -> openApp("swipeUp")
+                        "expandNotifications" -> expandNotificationBar()
                         "assistant" -> openAssistant()
                         "screenLock" -> lockScreen()
                     }
@@ -471,9 +492,7 @@ class HomeAdapter(
                         Utils.vibrate(context)
                         viewModel.appMenu.postValue(
                             AppMenu(
-                                currentApp,
-                                true,
-                                contextMenuContainer!!
+                                currentApp, true, contextMenuContainer!!
                             )
                         )
                     }
@@ -506,20 +525,25 @@ class HomeAdapter(
             textView.isSingleLine = false
             textView.setTextColor(
                 ContextCompat.getColor(
-                    context,
-                    if (isTextBlack) R.color.black else R.color.white
+                    context, if (isTextBlack) R.color.black else R.color.white
                 )
             )
 
             linearLayout.gravity = Gravity.START
             linearLayout.setOnTouchListener(object : OnSwipeTouchListener(context) {
                 override fun onFlingDown() {
-                    expandNotificationBar()
+                    when (Utils.getStringPref(context, StringPref.HOME_SWIPE_DOWN_ACTION)) {
+                        "openApp" -> openApp("swipeDown")
+                        "expandNotifications" -> expandNotificationBar()
+                        "assistant" -> openAssistant()
+                        "screenLock" -> lockScreen()
+                    }
                 }
 
                 override fun onFlingUp() {
                     when (Utils.getStringPref(context, StringPref.HOME_SWIPE_UP_ACTION)) {
-                        "openApp" -> openApp(true)
+                        "openApp" -> openApp("swipeUp")
+                        "expandNotifications" -> expandNotificationBar()
                         "assistant" -> openAssistant()
                         "screenLock" -> lockScreen()
                     }

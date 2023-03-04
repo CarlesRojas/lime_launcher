@@ -20,8 +20,8 @@ class MainPagerAdapter(private val context: Context, private val viewModel: AppV
     var home: HomeAdapter? = null
     var drawer: DrawerAdapter? = null
 
-    var viewHome: RecyclerView? = null
-    var viewDrawer: RecyclerView? = null
+    private var viewHome: RecyclerView? = null
+    private var viewDrawer: RecyclerView? = null
 
     fun onResume() {
         setHomeLayoutManager()

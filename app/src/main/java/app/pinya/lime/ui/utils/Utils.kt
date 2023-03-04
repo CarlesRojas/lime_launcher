@@ -24,11 +24,6 @@ class Utils {
             return round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).toInt()
         }
 
-        fun pxToSp(context: Context, px: Int): Float {
-            val scaledDensity: Float = context.resources.displayMetrics.scaledDensity
-            return px / scaledDensity
-        }
-
         fun spToPx(context: Context, sp: Int): Float {
             val scaledDensity: Float = context.resources.displayMetrics.scaledDensity
             return sp * scaledDensity
@@ -112,10 +107,12 @@ class Utils {
 
             val key = when (preference) {
                 StringPref.HOME_ALIGNMENT -> "preference_home_alignment"
-                StringPref.HOME_SWIPE_UP_ACTION -> "preference_home_swipe_up_gesture"
-                StringPref.HOME_SWIPE_UP_APP -> "preference_home_swipe_up_app"
                 StringPref.HOME_DOUBLE_TAP_ACTION -> "preference_home_double_tap_gesture"
                 StringPref.HOME_DOUBLE_TAP_APP -> "preference_home_double_tap_app"
+                StringPref.HOME_SWIPE_UP_ACTION -> "preference_home_swipe_up_gesture"
+                StringPref.HOME_SWIPE_UP_APP -> "preference_home_swipe_up_app"
+                StringPref.HOME_SWIPE_DOWN_ACTION -> "preference_home_swipe_down_gesture"
+                StringPref.HOME_SWIPE_DOWN_APP -> "preference_home_swipe_down_app"
 
                 StringPref.TIME_FORMAT -> "preference_time_format"
                 StringPref.TIME_CLICK_APP -> "preference_time_click_app"
@@ -126,10 +123,12 @@ class Utils {
 
             val defaultValue = when (preference) {
                 StringPref.HOME_ALIGNMENT -> "left"
-                StringPref.HOME_SWIPE_UP_ACTION -> "none"
-                StringPref.HOME_SWIPE_UP_APP -> "none"
                 StringPref.HOME_DOUBLE_TAP_ACTION -> "none"
                 StringPref.HOME_DOUBLE_TAP_APP -> "none"
+                StringPref.HOME_SWIPE_UP_ACTION -> "none"
+                StringPref.HOME_SWIPE_UP_APP -> "none"
+                StringPref.HOME_SWIPE_DOWN_ACTION -> "expandNotifications"
+                StringPref.HOME_SWIPE_DOWN_APP -> "none"
 
                 StringPref.TIME_FORMAT -> "0"
                 StringPref.TIME_CLICK_APP -> "default"

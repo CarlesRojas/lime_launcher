@@ -5,10 +5,7 @@ import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.Intent
 import android.os.Build
 import android.view.accessibility.AccessibilityEvent
-import android.view.accessibility.AccessibilityNodeInfo
-import android.widget.Toast
 import androidx.annotation.RequiresApi
-import app.pinya.lime.R
 
 
 class MyAccessibilityService : AccessibilityService() {
