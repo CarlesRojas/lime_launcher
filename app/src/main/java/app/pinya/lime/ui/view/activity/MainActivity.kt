@@ -15,6 +15,7 @@ import app.pinya.lime.R
 import app.pinya.lime.data.memory.AppProvider
 import app.pinya.lime.databinding.ActivityMainBinding
 import app.pinya.lime.domain.model.BooleanPref
+import app.pinya.lime.ui.utils.CheckForChangesInAppList
 import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.view.adapter.*
 import app.pinya.lime.ui.viewmodel.AppViewModel
@@ -37,6 +38,8 @@ class MainActivity : AppCompatActivity() {
 
     private var dailyWallpaper: DailyWallpaper? = null
 
+    private var checkForChangesInAppList: CheckForChangesInAppList? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -50,6 +53,8 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
         linkAdapter()
+
+        checkForChangesInAppList = CheckForChangesInAppList(this, appViewModel)
 
         dailyWallpaper = DailyWallpaper(this, appViewModel)
 
@@ -93,6 +98,12 @@ class MainActivity : AppCompatActivity() {
         customPageAdapter.onResume()
 
         hideContextMenus()
+        checkForChangesInAppList?.startUpdates()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        checkForChangesInAppList?.stopUpdates()
     }
 
     private fun linkAdapter() {
