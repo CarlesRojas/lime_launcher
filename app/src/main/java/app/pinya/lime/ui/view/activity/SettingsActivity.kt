@@ -18,10 +18,12 @@ import app.pinya.lime.LimeLauncherApp
 import app.pinya.lime.R
 import app.pinya.lime.data.repo.AppRepo
 import app.pinya.lime.domain.model.AppModel
+import app.pinya.lime.domain.model.menus.BuyProMenu
 import app.pinya.lime.domain.model.menus.LockScreenMenu
 import app.pinya.lime.domain.usecase.RefreshAppList
 import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.utils.billing.BillingHelper
+import app.pinya.lime.ui.view.adapter.BuyProMenuAdapter
 import app.pinya.lime.ui.view.adapter.LockScreenMenuAdapter
 import kotlinx.coroutines.launch
 import java.text.DateFormat
@@ -54,11 +56,11 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         private lateinit var lockScreenMenuAdapter: LockScreenMenuAdapter
+        private lateinit var buyProMenuAdapter: BuyProMenuAdapter
         private var lockMenu: LockScreenMenu? = null
+        private var buyProMenu: BuyProMenu? = null
 
-        private fun setLockScreenMenu(
-            newLockMenu: LockScreenMenu?
-        ) {
+        private fun setLockScreenMenu(newLockMenu: LockScreenMenu?) {
             lockMenu = newLockMenu
             lockScreenMenuAdapter.handleLockScreenMenu(lockMenu)
 
@@ -72,12 +74,24 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
         }
 
+        private fun setBuyProMenu(newBuyProMenu: BuyProMenu?) {
+            buyProMenu = newBuyProMenu
+            buyProMenuAdapter.handleBuyProMenu(buyProMenu)
+        }
+
+        private fun handleBuyProClick() {
+            setBuyProMenu(null)
+            billingHelper.startBillingFlow(requireActivity())
+        }
+
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
 
             lockScreenMenuAdapter = LockScreenMenuAdapter(
                 settingsContext, ::setLockScreenMenu, ::handleEnablePermissionClick
             )
+            buyProMenuAdapter =
+                BuyProMenuAdapter(settingsContext, ::setBuyProMenu, ::handleBuyProClick)
 
             val prefs = PreferenceManager.getDefaultSharedPreferences(settingsContext)
 
@@ -398,8 +412,8 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        private fun launchPayForPremium() {
-            billingHelper.startBillingFlow(requireActivity())
+        private fun openBuyProMenu() {
+            setBuyProMenu(BuyProMenu(layout))
         }
 
         private fun setIsPro(isPro: Boolean = false) {
@@ -408,7 +422,7 @@ class SettingsActivity : AppCompatActivity() {
             val getPremiumMainButton = findPreference("preference_get_pro") as Preference?
             getPremiumMainButton?.isVisible = !isPro
             getPremiumMainButton?.setOnPreferenceClickListener {
-                launchPayForPremium()
+                openBuyProMenu()
                 true
             }
 
@@ -422,8 +436,7 @@ class SettingsActivity : AppCompatActivity() {
                 findPreference("preference_home_show_in_grid_pro") as Preference?
 
             val homeAlignment = findPreference("preference_home_alignment") as ListPreference?
-            val homeAlignmentPro =
-                findPreference("preference_home_alignment_pro") as Preference?
+            val homeAlignmentPro = findPreference("preference_home_alignment_pro") as Preference?
 
             val doubleTapGesture =
                 findPreference("preference_home_double_tap_gesture") as ListPreference?
@@ -468,31 +481,31 @@ class SettingsActivity : AppCompatActivity() {
 
             if (!isPro) {
                 hideStatusBarPro?.setOnPreferenceClickListener {
-                    launchPayForPremium()
+                    openBuyProMenu()
                     true
                 }
                 homeShowInGridPro?.setOnPreferenceClickListener {
-                    launchPayForPremium()
+                    openBuyProMenu()
                     true
                 }
                 homeAlignmentPro?.setOnPreferenceClickListener {
-                    launchPayForPremium()
+                    openBuyProMenu()
                     true
                 }
                 doubleTapGesturePro?.setOnPreferenceClickListener {
-                    launchPayForPremium()
+                    openBuyProMenu()
                     true
                 }
                 swipeUpGesturePro?.setOnPreferenceClickListener {
-                    launchPayForPremium()
+                    openBuyProMenu()
                     true
                 }
                 swipeDownGesturePro?.setOnPreferenceClickListener {
-                    launchPayForPremium()
+                    openBuyProMenu()
                     true
                 }
                 drawerShowInGridPro?.setOnPreferenceClickListener {
-                    launchPayForPremium()
+                    openBuyProMenu()
                     true
                 }
             }
