@@ -15,12 +15,14 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import androidx.preference.SwitchPreference
+import app.pinya.lime.LimeLauncherApp
 import app.pinya.lime.R
 import app.pinya.lime.data.repo.AppRepo
 import app.pinya.lime.domain.model.AppModel
 import app.pinya.lime.domain.model.menus.LockScreenMenu
 import app.pinya.lime.domain.usecase.RefreshAppList
 import app.pinya.lime.ui.utils.Utils
+import app.pinya.lime.ui.utils.billing.BillingHelper
 import app.pinya.lime.ui.view.adapter.LockScreenMenuAdapter
 import kotlinx.coroutines.launch
 import java.text.DateFormat
@@ -29,6 +31,7 @@ import java.util.*
 
 
 class SettingsActivity : AppCompatActivity() {
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +49,10 @@ class SettingsActivity : AppCompatActivity() {
     class SettingsFragment(
         private val settingsContext: Context, private val layout: ConstraintLayout
     ) : PreferenceFragmentCompat() {
+
+        private val billingHelper by lazy {
+            (requireActivity().application as LimeLauncherApp).appContainer.billingHelper
+        }
 
         private lateinit var lockScreenMenuAdapter: LockScreenMenuAdapter
         private var lockMenu: LockScreenMenu? = null
@@ -73,16 +80,13 @@ class SettingsActivity : AppCompatActivity() {
                 settingsContext, ::setLockScreenMenu, ::handleEnablePermissionClick
             )
 
-            setSettingsValues()
-        }
-
-        override fun onResume() {
-            super.onResume()
-            setLockScreenMenu(null)
-        }
-
-        private fun setSettingsValues() {
             val prefs = PreferenceManager.getDefaultSharedPreferences(settingsContext)
+
+
+            billingHelper.purchaseState.observe(this) { purchaseState ->
+                enableDisablePro(purchaseState == BillingHelper.ProPurchaseState.PURCHASED_AND_ACKNOWLEDGED)
+            }
+
 
             lifecycleScope.launch {
                 val appList = RefreshAppList(AppRepo()).invoke()
@@ -97,8 +101,13 @@ class SettingsActivity : AppCompatActivity() {
                 setSwipeUpGestureSettings(prefs, appList)
                 setSwipeDownGestureSettings(prefs, appList)
 
-                lockPremiumFeatures(prefs)
+                enableDisablePro(false)
             }
+        }
+
+        override fun onResume() {
+            super.onResume()
+            setLockScreenMenu(null)
         }
 
         private fun setDateFormatSettings(appList: MutableList<AppModel>) {
@@ -395,17 +404,14 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         private fun launchPayForPremium() {
-            // TODO pay with google service
-            println("PAY")
+            billingHelper.startBillingFlow(requireActivity())
         }
 
         @SuppressLint("PrivateResource")
-        private fun lockPremiumFeatures(prefs: SharedPreferences) {
-
-            val isPremium = false // TODO get from google pay info
+        private fun enableDisablePro(isPro: Boolean = false) {
 
             val getPremiumMainButton = findPreference("preference_get_pro") as Preference?
-            getPremiumMainButton?.isVisible = !isPremium
+            getPremiumMainButton?.isVisible = !isPro
             getPremiumMainButton?.setOnPreferenceClickListener {
                 launchPayForPremium()
                 true
@@ -439,25 +445,25 @@ class SettingsActivity : AppCompatActivity() {
             val drawerShowInGridPro =
                 findPreference("preference_drawer_show_in_grid_pro") as Preference?
 
-            homeShowInGrid?.isVisible = isPremium
-            homeShowInGridPro?.isVisible = !isPremium
+            homeShowInGrid?.isVisible = isPro
+            homeShowInGridPro?.isVisible = !isPro
 
-            homeAlignment?.isVisible = isPremium
-            homeAlignmentPro?.isVisible = !isPremium
+            homeAlignment?.isVisible = isPro
+            homeAlignmentPro?.isVisible = !isPro
 
-            doubleTapGesture?.isVisible = isPremium
-            doubleTapGesturePro?.isVisible = !isPremium
+            doubleTapGesture?.isVisible = isPro
+            doubleTapGesturePro?.isVisible = !isPro
 
-            swipeUpGesture?.isVisible = isPremium
-            swipeUpGesturePro?.isVisible = !isPremium
+            swipeUpGesture?.isVisible = isPro
+            swipeUpGesturePro?.isVisible = !isPro
 
-            swipeDownGesture?.isVisible = isPremium
-            swipeDownGesturePro?.isVisible = !isPremium
+            swipeDownGesture?.isVisible = isPro
+            swipeDownGesturePro?.isVisible = !isPro
 
-            drawerShowInGrid?.isVisible = isPremium
-            drawerShowInGridPro?.isVisible = !isPremium
+            drawerShowInGrid?.isVisible = isPro
+            drawerShowInGridPro?.isVisible = !isPro
 
-            if (!isPremium) {
+            if (!isPro) {
                 homeShowInGridPro?.setOnPreferenceClickListener {
                     launchPayForPremium()
                     true
@@ -484,7 +490,6 @@ class SettingsActivity : AppCompatActivity() {
                 }
             }
         }
-
     }
 
     companion object {
