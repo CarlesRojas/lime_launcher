@@ -111,6 +111,12 @@ class BillingHelper private constructor(
                     handlePurchase(purchase)
                 }
             }
+            BillingResponseCode.ITEM_ALREADY_OWNED -> {
+                if (purchasesResult.purchasesList.isNotEmpty()) {
+                    val purchase = purchasesResult.purchasesList[0]
+                    handlePurchase(purchase)
+                }
+            }
         }
     }
 

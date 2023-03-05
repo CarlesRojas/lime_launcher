@@ -402,7 +402,6 @@ class SettingsActivity : AppCompatActivity() {
             billingHelper.startBillingFlow(requireActivity())
         }
 
-        // TODO not here: update apps on uninstall
         private fun setIsPro(isPro: Boolean = false) {
             requireActivity().setTitle(if (isPro) R.string.title_activity_settings_pro else R.string.title_activity_settings)
 
