@@ -81,10 +81,6 @@ class SettingsActivity : AppCompatActivity() {
 
             val prefs = PreferenceManager.getDefaultSharedPreferences(settingsContext)
 
-            billingHelper.purchaseState.observe(this) { purchaseState ->
-                setIsPro(purchaseState == BillingHelper.ProPurchaseState.PURCHASED_AND_ACKNOWLEDGED)
-            }
-
             lifecycleScope.launch {
                 val appList = RefreshAppList(AppRepo()).invoke()
 
@@ -97,8 +93,10 @@ class SettingsActivity : AppCompatActivity() {
                 setDoubleTapGestureSettings(prefs, appList)
                 setSwipeUpGestureSettings(prefs, appList)
                 setSwipeDownGestureSettings(prefs, appList)
+            }
 
-                setIsPro(true)
+            billingHelper.purchaseState.observe(this) { purchaseState ->
+                setIsPro(purchaseState == BillingHelper.ProPurchaseState.PURCHASED_AND_ACKNOWLEDGED)
             }
         }
 
@@ -404,6 +402,7 @@ class SettingsActivity : AppCompatActivity() {
             billingHelper.startBillingFlow(requireActivity())
         }
 
+        // TODO not here: update apps on uninstall
         private fun setIsPro(isPro: Boolean = false) {
             requireActivity().setTitle(if (isPro) R.string.title_activity_settings_pro else R.string.title_activity_settings)
 
