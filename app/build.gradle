@@ -13,8 +13,8 @@ android {
         applicationId "app.pinya.lime"
         minSdk 26
         targetSdk 33
-        versionCode 5
-        versionName "2.3"
+        versionCode 6
+        versionName "2.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -57,7 +57,6 @@ dependencies {
 
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1"
 
-    implementation 'com.makeramen:roundedimageview:2.3.0'
     implementation 'com.github.bosphere.android-fadingedgelayout:fadingedgelayout:1.0.0'
 
     implementation 'com.android.billingclient:billing:5.1.0'

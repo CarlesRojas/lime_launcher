@@ -10,14 +10,12 @@
     android:paddingBottom="12dp"
     tools:ignore="UseCompoundDrawables">
 
-    <com.makeramen.roundedimageview.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+    <ImageView
         android:id="@+id/appIcon"
         android:layout_width="38dp"
         android:layout_height="38dp"
-        android:background="@drawable/background_rounded"
         android:contentDescription="@string/app_icon_description"
-        android:src="@mipmap/main_icon"
-        app:riv_corner_radius="1000dp" />
+        android:src="@mipmap/main_icon" />
 
     <TextView
         android:id="@+id/appName"

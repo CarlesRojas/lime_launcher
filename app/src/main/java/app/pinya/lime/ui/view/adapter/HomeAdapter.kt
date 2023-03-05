@@ -11,6 +11,7 @@ import android.provider.CalendarContract
 import android.view.*
 import android.view.ViewGroup.MarginLayoutParams
 import android.view.accessibility.AccessibilityEvent
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -26,7 +27,6 @@ import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.view.activity.SettingsActivity
 import app.pinya.lime.ui.view.holder.AppViewHolder
 import app.pinya.lime.ui.viewmodel.AppViewModel
-import com.makeramen.roundedimageview.RoundedImageView
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.floor
@@ -394,7 +394,7 @@ class HomeAdapter(
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: AppViewHolder, position: Int) {
 
-        val imageView: RoundedImageView = holder.itemView.findViewById(R.id.appIcon)
+        val imageView: ImageView = holder.itemView.findViewById(R.id.appIcon)
         val textView: TextView = holder.itemView.findViewById(R.id.appName)
         val linearLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
 
@@ -412,9 +412,6 @@ class HomeAdapter(
 
             imageView.setImageDrawable(currentApp.icon)
             imageView.visibility = if (areIconsVisible) View.VISIBLE else View.GONE
-            imageView.background = ContextCompat.getDrawable(
-                context, R.drawable.background_rounded
-            )
 
             textView.text = currentApp.name
             textView.isSingleLine = true
@@ -519,7 +516,6 @@ class HomeAdapter(
                     context, icon
                 )
             )
-            imageView.background = null
 
             textView.text = text
             textView.isSingleLine = false
