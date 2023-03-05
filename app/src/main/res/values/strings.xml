@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Lime</string>
 
+    <string name="service_accessibility">Lime Accessibility Service</string>
+    <string name="service_notifications">Lime Notifications Service</string>
+
     <string name="back_button_description">Back Button</string>
     <string name="close_button_description">Close Button</string>
     <string name="settings_button_description">Settings Button</string>
@@ -61,6 +64,7 @@
 
     <string name="preference_general_show_hidden_apps">Show hidden apps</string>
     <string name="preference_general_hide_status_bar">Hide status bar</string>
+    <string name="preference_general_notification_badges">Choose notification badge type</string>
     <string name="preference_general_change_wallpaper_daily">Change wallpaper daily</string>
     <string name="preference_general_also_change_lockscreen">Also change the lock screen</string>
     <string name="preference_general_is_text_black">Use black text</string>
@@ -116,6 +120,11 @@
     <string name="buy_pro_menu_disclosure">Upgrade to Lime Launcher Pro for more personalization options!\n\n- Hide the status bar to maximize screen space.\n- Arrange your apps in a grid for easy access.\n- Customize gesture actions to launch your most-used apps with ease.\n- Lock your screen with a double tap or swipe gesture (available on Android 9 Pie onwards).\n\nAnd more! Purchase it one time and enjoy it forever!</string>
     <string name="buy_pro_menu_enable_button">Get PRO</string>
     <string name="buy_pro_menu_cancel_button">Cancel</string>
+
+    <string name="notification_access_menu_title">Access notifications</string>
+    <string name="notification_access_menu_disclosure">Please give Lime Launcher\'s access to the notification service in your device\'s settings to enable this feature.\n\nPlease note that this service is only used to show you notification badges besides your apps.\n\nLime Launcher does not collect or share any data.</string>
+    <string name="notification_access_menu_enable_button">Grant</string>
+    <string name="notification_access_menu_cancel_button">Cancel</string>
 
 
 </resources>

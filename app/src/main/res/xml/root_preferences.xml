@@ -24,6 +24,20 @@
             app:key="preference_general_hide_status_bar"
             app:title="@string/preference_general_hide_status_bar" />
 
+        <Preference
+            app:isPreferenceVisible="false"
+            app:key="preference_general_notification_badges_pro"
+            app:title="@string/preference_general_notification_badges"
+            app:widgetLayout="@layout/get_pro_small_button" />
+
+        <ListPreference
+            app:defaultValue="none"
+            app:entries="@array/preference_general_notification_badges_entries"
+            app:entryValues="@array/preference_general_notification_badges_values"
+            app:key="preference_notification_general_badges"
+            app:title="@string/preference_general_notification_badges"
+            app:useSimpleSummaryProvider="true" />
+
         <SwitchPreference
             app:defaultValue="false"
             app:key="preference_general_change_wallpaper_daily"

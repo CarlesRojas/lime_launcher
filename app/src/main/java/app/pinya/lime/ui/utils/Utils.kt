@@ -7,6 +7,7 @@ import android.os.Vibrator
 import android.os.VibratorManager
 import android.provider.Settings
 import android.util.DisplayMetrics
+import androidx.core.app.NotificationManagerCompat
 import androidx.preference.PreferenceManager
 import app.pinya.lime.domain.model.BooleanPref
 import app.pinya.lime.domain.model.StringPref
@@ -106,6 +107,8 @@ class Utils {
             val prefs = PreferenceManager.getDefaultSharedPreferences(context)
 
             val key = when (preference) {
+                StringPref.GENERAL_NOTIFICATION_BADGES -> "preference_notification_general_badges"
+
                 StringPref.HOME_ALIGNMENT -> "preference_home_alignment"
                 StringPref.HOME_DOUBLE_TAP_ACTION -> "preference_home_double_tap_gesture"
                 StringPref.HOME_DOUBLE_TAP_APP -> "preference_home_double_tap_app"
@@ -122,6 +125,8 @@ class Utils {
             }
 
             val defaultValue = when (preference) {
+                StringPref.GENERAL_NOTIFICATION_BADGES -> "none"
+
                 StringPref.HOME_ALIGNMENT -> "left"
                 StringPref.HOME_DOUBLE_TAP_ACTION -> "none"
                 StringPref.HOME_DOUBLE_TAP_APP -> "none"
@@ -159,5 +164,12 @@ class Utils {
             }
             return false
         }
+
+        fun isNotificationServiceEnabled(context: Context): Boolean {
+            val notificationPackages = NotificationManagerCompat.getEnabledListenerPackages(context)
+
+            return notificationPackages.contains(context.packageName)
+        }
+
     }
 }

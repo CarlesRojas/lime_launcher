@@ -9,22 +9,20 @@ import android.provider.Settings
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.lifecycleScope
-import androidx.preference.ListPreference
-import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceManager
-import androidx.preference.SwitchPreference
+import androidx.preference.*
 import app.pinya.lime.LimeLauncherApp
 import app.pinya.lime.R
 import app.pinya.lime.data.repo.AppRepo
 import app.pinya.lime.domain.model.AppModel
 import app.pinya.lime.domain.model.menus.BuyProMenu
 import app.pinya.lime.domain.model.menus.LockScreenMenu
+import app.pinya.lime.domain.model.menus.NotificationAccessMenu
 import app.pinya.lime.domain.usecase.RefreshAppList
 import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.utils.billing.BillingHelper
 import app.pinya.lime.ui.view.adapter.BuyProMenuAdapter
 import app.pinya.lime.ui.view.adapter.LockScreenMenuAdapter
+import app.pinya.lime.ui.view.adapter.NotificationAccessMenuAdapter
 import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -57,8 +55,11 @@ class SettingsActivity : AppCompatActivity() {
 
         private lateinit var lockScreenMenuAdapter: LockScreenMenuAdapter
         private lateinit var buyProMenuAdapter: BuyProMenuAdapter
+        private lateinit var notificationAccessMenuAdapter: NotificationAccessMenuAdapter
+
         private var lockMenu: LockScreenMenu? = null
         private var buyProMenu: BuyProMenu? = null
+        private var notificationAccessMenu: NotificationAccessMenu? = null
 
         private fun setLockScreenMenu(newLockMenu: LockScreenMenu?) {
             lockMenu = newLockMenu
@@ -84,6 +85,17 @@ class SettingsActivity : AppCompatActivity() {
             billingHelper.startBillingFlow(requireActivity())
         }
 
+        private fun setNotificationAccessMenu(newNotificationAccessMenu: NotificationAccessMenu?) {
+            notificationAccessMenu = newNotificationAccessMenu
+            notificationAccessMenuAdapter.handleNotificationAccessMenu(notificationAccessMenu)
+
+            if (notificationAccessMenu == null) setSettingsAccordingToNotificationAccessStatus()
+        }
+
+        private fun handleEnableNotificationAccessClick() {
+            startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
+        }
+
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
 
@@ -92,6 +104,9 @@ class SettingsActivity : AppCompatActivity() {
             )
             buyProMenuAdapter =
                 BuyProMenuAdapter(settingsContext, ::setBuyProMenu, ::handleBuyProClick)
+            notificationAccessMenuAdapter = NotificationAccessMenuAdapter(
+                settingsContext, ::setNotificationAccessMenu, ::handleEnableNotificationAccessClick
+            )
 
             val prefs = PreferenceManager.getDefaultSharedPreferences(settingsContext)
 
@@ -107,6 +122,8 @@ class SettingsActivity : AppCompatActivity() {
                 setDoubleTapGestureSettings(prefs, appList)
                 setSwipeUpGestureSettings(prefs, appList)
                 setSwipeDownGestureSettings(prefs, appList)
+
+                setNotificationBadgesSettings()
             }
 
             billingHelper.purchaseState.observe(this) { purchaseState ->
@@ -117,6 +134,8 @@ class SettingsActivity : AppCompatActivity() {
         override fun onResume() {
             super.onResume()
             setLockScreenMenu(null)
+            setBuyProMenu(null)
+            setNotificationAccessMenu(null)
         }
 
         private fun setDateFormatSettings(appList: MutableList<AppModel>) {
@@ -412,6 +431,30 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
+
+        private fun setNotificationBadgesSettings() {
+            val notificationBadges =
+                findPreference("preference_notification_general_badges") as ListPreference?
+
+            notificationBadges?.setOnPreferenceChangeListener { _, newValue ->
+                val value = newValue as String
+
+                if (value != "none" && !Utils.isNotificationServiceEnabled(settingsContext))
+                    setNotificationAccessMenu(NotificationAccessMenu(layout))
+
+                true
+            }
+        }
+
+        private fun setSettingsAccordingToNotificationAccessStatus() {
+            val notificationBadges =
+                findPreference("preference_notification_general_badges") as ListPreference?
+
+            val notificationAccessActive = Utils.isNotificationServiceEnabled(settingsContext)
+
+            if (!notificationAccessActive) notificationBadges?.value = "none"
+        }
+
         private fun openBuyProMenu() {
             setBuyProMenu(BuyProMenu(layout))
         }
@@ -430,6 +473,11 @@ class SettingsActivity : AppCompatActivity() {
                 findPreference("preference_general_hide_status_bar") as SwitchPreference?
             val hideStatusBarPro =
                 findPreference("preference_general_hide_status_bar_pro") as Preference?
+
+            val notificationBadges =
+                findPreference("preference_notification_general_badges") as ListPreference?
+            val notificationBadgesPro =
+                findPreference("preference_general_notification_badges_pro") as Preference?
 
             val homeShowInGrid = findPreference("preference_home_show_in_grid") as SwitchPreference?
             val homeShowInGridPro =
@@ -461,6 +509,9 @@ class SettingsActivity : AppCompatActivity() {
             hideStatusBar?.isVisible = isPro
             hideStatusBarPro?.isVisible = !isPro
 
+            notificationBadges?.isVisible = isPro
+            notificationBadgesPro?.isVisible = !isPro
+
             homeShowInGrid?.isVisible = isPro
             homeShowInGridPro?.isVisible = !isPro
 
@@ -481,6 +532,10 @@ class SettingsActivity : AppCompatActivity() {
 
             if (!isPro) {
                 hideStatusBarPro?.setOnPreferenceClickListener {
+                    openBuyProMenu()
+                    true
+                }
+                notificationBadgesPro?.setOnPreferenceClickListener {
                     openBuyProMenu()
                     true
                 }
