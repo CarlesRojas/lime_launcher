@@ -8,7 +8,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/rounded_button"
+        android:background="@drawable/button_rounded_green"
         android:gravity="center"
         android:paddingHorizontal="8dp"
         android:paddingVertical="4dp">

@@ -82,11 +82,11 @@ class MainActivity : AppCompatActivity() {
 
         viewPager.setCurrentItem(0, false)
 
-        val showStatusBar = Utils.getBooleanPref(this, BooleanPref.GENERAL_SHOW_STATUS_BAR)
+        val hideStatusBar = Utils.getBooleanPref(this, BooleanPref.GENERAL_HIDE_STATUS_BAR)
         val dimBackground = Utils.getBooleanPref(this, BooleanPref.GENERAL_DIM_BACKGROUND)
         val isTextBlack = Utils.getBooleanPref(this, BooleanPref.GENERAL_IS_TEXT_BLACK)
 
-        showStatusBar(showStatusBar)
+        showStatusBar(!hideStatusBar)
         dimBackground(dimBackground, isTextBlack)
         changeWallpaper()
 

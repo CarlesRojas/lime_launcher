@@ -13,10 +13,16 @@
             app:key="preference_general_show_hidden_apps"
             app:title="@string/preference_general_show_hidden_apps" />
 
+        <Preference
+            app:isPreferenceVisible="false"
+            app:key="preference_general_hide_status_bar_pro"
+            app:title="@string/preference_general_hide_status_bar"
+            app:widgetLayout="@layout/get_pro_small_button" />
+
         <SwitchPreference
             app:defaultValue="false"
-            app:key="preference_general_show_status_bar"
-            app:title="@string/preference_general_show_status_bar" />
+            app:key="preference_general_hide_status_bar"
+            app:title="@string/preference_general_hide_status_bar" />
 
         <SwitchPreference
             app:defaultValue="false"

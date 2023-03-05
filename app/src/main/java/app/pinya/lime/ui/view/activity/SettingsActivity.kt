@@ -1,6 +1,5 @@
 package app.pinya.lime.ui.view.activity
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -82,11 +81,9 @@ class SettingsActivity : AppCompatActivity() {
 
             val prefs = PreferenceManager.getDefaultSharedPreferences(settingsContext)
 
-
             billingHelper.purchaseState.observe(this) { purchaseState ->
-                enableDisablePro(purchaseState == BillingHelper.ProPurchaseState.PURCHASED_AND_ACKNOWLEDGED)
+                setIsPro(purchaseState == BillingHelper.ProPurchaseState.PURCHASED_AND_ACKNOWLEDGED)
             }
-
 
             lifecycleScope.launch {
                 val appList = RefreshAppList(AppRepo()).invoke()
@@ -101,7 +98,7 @@ class SettingsActivity : AppCompatActivity() {
                 setSwipeUpGestureSettings(prefs, appList)
                 setSwipeDownGestureSettings(prefs, appList)
 
-                enableDisablePro(false)
+                setIsPro(true)
             }
         }
 
@@ -407,8 +404,8 @@ class SettingsActivity : AppCompatActivity() {
             billingHelper.startBillingFlow(requireActivity())
         }
 
-        @SuppressLint("PrivateResource")
-        private fun enableDisablePro(isPro: Boolean = false) {
+        private fun setIsPro(isPro: Boolean = false) {
+            requireActivity().setTitle(if (isPro) R.string.title_activity_settings_pro else R.string.title_activity_settings)
 
             val getPremiumMainButton = findPreference("preference_get_pro") as Preference?
             getPremiumMainButton?.isVisible = !isPro
@@ -416,6 +413,11 @@ class SettingsActivity : AppCompatActivity() {
                 launchPayForPremium()
                 true
             }
+
+            val hideStatusBar =
+                findPreference("preference_general_hide_status_bar") as SwitchPreference?
+            val hideStatusBarPro =
+                findPreference("preference_general_hide_status_bar_pro") as Preference?
 
             val homeShowInGrid = findPreference("preference_home_show_in_grid") as SwitchPreference?
             val homeShowInGridPro =
@@ -445,6 +447,9 @@ class SettingsActivity : AppCompatActivity() {
             val drawerShowInGridPro =
                 findPreference("preference_drawer_show_in_grid_pro") as Preference?
 
+            hideStatusBar?.isVisible = isPro
+            hideStatusBarPro?.isVisible = !isPro
+
             homeShowInGrid?.isVisible = isPro
             homeShowInGridPro?.isVisible = !isPro
 
@@ -464,6 +469,10 @@ class SettingsActivity : AppCompatActivity() {
             drawerShowInGridPro?.isVisible = !isPro
 
             if (!isPro) {
+                hideStatusBarPro?.setOnPreferenceClickListener {
+                    launchPayForPremium()
+                    true
+                }
                 homeShowInGridPro?.setOnPreferenceClickListener {
                     launchPayForPremium()
                     true

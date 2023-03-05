@@ -34,7 +34,9 @@ class LockScreenMenuAdapter(
         val closeButton =
             lockScreenMenuView.findViewById<ImageButton>(R.id.closeLockScreenMenuButton)
         val enableButton =
-            lockScreenMenuView.findViewById<LinearLayout>(R.id.lockScreenMenu_recoverOriginalName)
+            lockScreenMenuView.findViewById<LinearLayout>(R.id.lockScreenMenu_enable)
+        val cancelButton =
+            lockScreenMenuView.findViewById<LinearLayout>(R.id.lockScreenMenu_cancel)
 
         contextMenuWindow = PopupWindow(
             lockScreenMenuView,
@@ -58,6 +60,10 @@ class LockScreenMenuAdapter(
 
         enableButton.setOnClickListener {
             handleEnablePermissionClick()
+        }
+
+        cancelButton.setOnClickListener {
+            setLockScreenMenu(null)
         }
     }
 
