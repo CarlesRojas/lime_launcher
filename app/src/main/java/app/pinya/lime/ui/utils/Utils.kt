@@ -7,10 +7,21 @@ import android.os.Vibrator
 import android.os.VibratorManager
 import android.provider.Settings
 import android.util.DisplayMetrics
+import android.view.Gravity
+import android.view.View
+import android.view.ViewGroup.LayoutParams
+import android.view.ViewGroup.MarginLayoutParams
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
+import app.pinya.lime.R
+import app.pinya.lime.domain.model.AppModel
 import app.pinya.lime.domain.model.BooleanPref
 import app.pinya.lime.domain.model.StringPref
+import app.pinya.lime.ui.view.holder.AppViewHolder
 import kotlin.math.round
 
 class Utils {
@@ -102,7 +113,6 @@ class Utils {
             return prefs.getBoolean(key, defaultValue)
         }
 
-
         fun getStringPref(context: Context, preference: StringPref): String {
             val prefs = PreferenceManager.getDefaultSharedPreferences(context)
 
@@ -169,6 +179,227 @@ class Utils {
             val notificationPackages = NotificationManagerCompat.getEnabledListenerPackages(context)
 
             return notificationPackages.contains(context.packageName)
+        }
+
+        fun setAppViewAccordingToOptions(
+            context: Context,
+            holder: AppViewHolder,
+            currentApp: AppModel,
+            isHome: Boolean,
+            appNotifications: Int
+        ) {
+            setAppViewLayoutAccordingToOptions(context, holder, currentApp, isHome)
+            setAppViewIconAccordingToOptions(context, holder, currentApp, isHome)
+            setAppViewNameAccordingToOptions(context, holder, currentApp, isHome)
+            setAppViewNotificationsAccordingToOptions(context, holder, isHome, appNotifications)
+        }
+
+
+        private fun setAppViewLayoutAccordingToOptions(
+            context: Context,
+            holder: AppViewHolder,
+            currentApp: AppModel,
+            isHome: Boolean
+        ) {
+            val showInGrid = getBooleanPref(
+                context,
+                if (isHome) BooleanPref.HOME_SHOW_IN_GRID else BooleanPref.DRAWER_SHOW_IN_GRID
+            )
+            val areIconsVisible = getBooleanPref(
+                context,
+                if (isHome) BooleanPref.HOME_SHOW_ICONS else BooleanPref.DRAWER_SHOW_ICONS
+            )
+
+            val linearLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
+
+            linearLayout.alpha = if (currentApp.hidden) 0.35f else 1f
+
+            when (showInGrid) {
+                true -> {
+                    linearLayout.orientation = LinearLayout.VERTICAL
+                    val padding = dpToPx(context, 20)
+                    linearLayout.setPadding(0, padding, 0, padding)
+                    linearLayout.gravity = Gravity.CENTER
+                }
+                false -> {
+                    linearLayout.orientation = LinearLayout.HORIZONTAL
+                    val padding = dpToPx(context, if (areIconsVisible) 12 else 18)
+                    linearLayout.setPadding(0, padding, 0, padding)
+
+                    when (isHome) {
+                        true -> {
+                            val alignment = getStringPref(context, StringPref.HOME_ALIGNMENT)
+
+                            linearLayout.gravity = when (alignment) {
+                                "right" -> Gravity.END
+                                "center" -> Gravity.CENTER
+                                else -> Gravity.START
+                            }
+                        }
+                        false -> {
+                            linearLayout.gravity = Gravity.START
+                        }
+                    }
+
+                }
+            }
+        }
+
+        private fun setAppViewIconAccordingToOptions(
+            context: Context,
+            holder: AppViewHolder,
+            currentApp: AppModel,
+            isHome: Boolean
+        ) {
+
+            val showInGrid = getBooleanPref(
+                context,
+                if (isHome) BooleanPref.HOME_SHOW_IN_GRID else BooleanPref.DRAWER_SHOW_IN_GRID
+            )
+            val areIconsVisible = getBooleanPref(
+                context,
+                if (isHome) BooleanPref.HOME_SHOW_ICONS else BooleanPref.DRAWER_SHOW_ICONS
+            )
+
+            val imageView: ImageView = holder.itemView.findViewById(R.id.appIcon)
+
+            imageView.setImageDrawable(currentApp.icon)
+            imageView.visibility = if (areIconsVisible) View.VISIBLE else View.GONE
+
+            when (showInGrid) {
+                true -> {
+                    imageView.layoutParams.height = dpToPx(context, 68)
+                    imageView.layoutParams.width = dpToPx(context, 68)
+
+                    val marginParams = MarginLayoutParams(imageView.layoutParams)
+                    marginParams.setMargins(0, 0, 0, dpToPx(context, 6))
+                    val layoutParams = LinearLayout.LayoutParams(marginParams)
+                    imageView.layoutParams = layoutParams
+                }
+                false -> {
+
+                    imageView.layoutParams.height = dpToPx(context, 42)
+                    imageView.layoutParams.width = dpToPx(context, 42)
+
+                    val marginParams = MarginLayoutParams(imageView.layoutParams)
+                    marginParams.setMargins(0, 0, dpToPx(context, 18), 0)
+                    val layoutParams = LinearLayout.LayoutParams(marginParams)
+                    imageView.layoutParams = layoutParams
+                }
+            }
+        }
+
+        private fun setAppViewNameAccordingToOptions(
+            context: Context,
+            holder: AppViewHolder,
+            currentApp: AppModel,
+            isHome: Boolean
+        ) {
+            val isTextBlack = getBooleanPref(context, BooleanPref.GENERAL_IS_TEXT_BLACK)
+            val showInGrid = getBooleanPref(
+                context,
+                if (isHome) BooleanPref.HOME_SHOW_IN_GRID else BooleanPref.DRAWER_SHOW_IN_GRID
+            )
+            val araLabelsVisible =
+                !showInGrid || getBooleanPref(
+                    context,
+                    if (isHome) BooleanPref.HOME_SHOW_LABELS else BooleanPref.DRAWER_SHOW_LABELS
+                )
+
+            val textView: TextView = holder.itemView.findViewById(R.id.appName)
+
+            textView.text = currentApp.name
+            textView.isSingleLine = true
+            textView.layoutParams.height = LayoutParams.MATCH_PARENT
+            textView.gravity = Gravity.CENTER
+            textView.setTextColor(
+                ContextCompat.getColor(context, if (isTextBlack) R.color.black else R.color.white)
+            )
+            textView.alpha = if (araLabelsVisible) 1f else 0f
+
+            when (showInGrid) {
+                true -> {
+                    textView.textSize = 12f
+                    textView.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
+                }
+                false -> {
+                    textView.textSize = 19.5f
+                    textView.textAlignment = TextView.TEXT_ALIGNMENT_TEXT_START
+                }
+            }
+        }
+
+        private fun setAppViewNotificationsAccordingToOptions(
+            context: Context,
+            holder: AppViewHolder,
+            isHome: Boolean,
+            appNotifications: Int
+        ) {
+            val showInGrid = getBooleanPref(
+                context,
+                if (isHome) BooleanPref.HOME_SHOW_IN_GRID else BooleanPref.DRAWER_SHOW_IN_GRID
+            )
+            val notificationType =
+                getStringPref(context, StringPref.GENERAL_NOTIFICATION_BADGES)
+            val appHasNotifications = notificationType != "none" && appNotifications > 0
+            val showNumbers = notificationType == "showNumbers"
+
+            val notificationBadgeList: LinearLayout =
+                holder.itemView.findViewById(R.id.notificationBadgeList)
+            val notificationBadgeListNumber: TextView =
+                holder.itemView.findViewById(R.id.notificationBadgeListNumber)
+            val notificationBadgeListMarker: LinearLayout =
+                holder.itemView.findViewById(R.id.notificationBadgeListMarker)
+            val notificationBadgeGrid: LinearLayout =
+                holder.itemView.findViewById(R.id.notificationBadgeGrid)
+            val notificationBadgeGridNumber: TextView =
+                holder.itemView.findViewById(R.id.notificationBadgeGridNumber)
+            val notificationBadgeGridMarker: LinearLayout =
+                holder.itemView.findViewById(R.id.notificationBadgeGridMarker)
+
+            val badgeSize = if (showNumbers) 22 else 14
+
+            when (showInGrid) {
+                true -> {
+                    notificationBadgeList.visibility = View.GONE
+                    notificationBadgeGrid.visibility =
+                        if (appHasNotifications) View.VISIBLE else View.GONE
+
+                    notificationBadgeGridNumber.visibility =
+                        if (showNumbers) View.VISIBLE else View.GONE
+
+                    if (appHasNotifications) notificationBadgeGridNumber.text =
+                        if (appNotifications > 99) "+" else appNotifications.toString()
+
+                    val badgeMarginParams = MarginLayoutParams(notificationBadgeGrid.layoutParams)
+                    badgeMarginParams.setMargins(0, dpToPx(context, -68 - badgeSize), 0, 0)
+                    val badgeLayoutParams = LinearLayout.LayoutParams(badgeMarginParams)
+                    notificationBadgeGrid.layoutParams = badgeLayoutParams
+
+                    notificationBadgeGridMarker.layoutParams.height = dpToPx(context, badgeSize)
+                    notificationBadgeGridMarker.layoutParams.width = dpToPx(context, badgeSize)
+                }
+                false -> {
+
+                    notificationBadgeGrid.visibility = View.GONE
+                    notificationBadgeList.visibility =
+                        if (appHasNotifications) View.VISIBLE else View.GONE
+
+                    notificationBadgeListNumber.visibility =
+                        if (showNumbers) View.VISIBLE else View.GONE
+
+                    if (appHasNotifications) notificationBadgeListNumber.text =
+                        if (appNotifications > 99) "+" else appNotifications.toString()
+
+                    val badgeMarginParams = MarginLayoutParams(notificationBadgeList.layoutParams)
+                    badgeMarginParams.setMargins(dpToPx(context, 18), 0, 0, 0)
+                    val badgeLayoutParams = LinearLayout.LayoutParams(badgeMarginParams)
+                    notificationBadgeList.layoutParams = badgeLayoutParams
+
+                    notificationBadgeListMarker.layoutParams.height = dpToPx(context, badgeSize)
+                    notificationBadgeListMarker.layoutParams.width = dpToPx(context, badgeSize)
+                }
+            }
         }
 
     }

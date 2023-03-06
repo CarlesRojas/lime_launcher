@@ -80,7 +80,7 @@
         </service>
 
         <service
-            android:name=".ui.utils.MyNotificationService"
+            android:name=".ui.utils.notifications.MyNotificationService"
             android:enabled="true"
             android:exported="true"
             android:label="@string/service_notifications"

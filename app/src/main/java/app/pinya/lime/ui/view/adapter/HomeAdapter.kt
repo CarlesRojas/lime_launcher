@@ -64,13 +64,13 @@ class HomeAdapter(
         addTimeListeners()
         updateTimeDateStyle()
         startTimerToUpdateDateTime()
-        this.notifyDataSetChanged()
+        notifyDataSetChanged()
     }
 
     @SuppressLint("NotifyDataSetChanged")
     fun handleHomeListUpdate(newHomeList: MutableList<AppModel>) {
         appList = newHomeList
-        this.notifyDataSetChanged()
+        notifyDataSetChanged()
     }
 
     // ########################################
@@ -339,7 +339,6 @@ class HomeAdapter(
         }
     }
 
-
     private fun lockScreen() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && Utils.isAccessServiceEnabled(context)) {
             Utils.vibrate(context)
@@ -379,6 +378,17 @@ class HomeAdapter(
         }
     }
 
+    // ########################################
+    //   NOTIFICATION CHANGE
+    // ########################################
+
+    private var currentNotifications: MutableMap<String, Int> = mutableMapOf()
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun handleNotificationsChange(notifications: MutableMap<String, Int>) {
+        currentNotifications = notifications
+        notifyDataSetChanged()
+    }
 
     // ########################################
     //   RECYCLER VIEW
@@ -393,71 +403,29 @@ class HomeAdapter(
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: AppViewHolder, position: Int) {
+        val showInGrid = Utils.getBooleanPref(context, BooleanPref.DRAWER_SHOW_IN_GRID)
+        val isTextBlack = Utils.getBooleanPref(context, BooleanPref.GENERAL_IS_TEXT_BLACK)
 
         val imageView: ImageView = holder.itemView.findViewById(R.id.appIcon)
         val textView: TextView = holder.itemView.findViewById(R.id.appName)
         val linearLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
-
-        val isTextBlack = Utils.getBooleanPref(context, BooleanPref.GENERAL_IS_TEXT_BLACK)
-        val areIconsVisible = Utils.getBooleanPref(context, BooleanPref.HOME_SHOW_ICONS)
-        val showInGrid = Utils.getBooleanPref(context, BooleanPref.HOME_SHOW_IN_GRID)
-        val araLabelsVisible =
-            !showInGrid || Utils.getBooleanPref(context, BooleanPref.HOME_SHOW_LABELS)
-        val alignment = Utils.getStringPref(context, StringPref.HOME_ALIGNMENT)
+        val notificationBadgeList: LinearLayout =
+            holder.itemView.findViewById(R.id.notificationBadgeList)
+        val notificationBadgeGrid: LinearLayout =
+            holder.itemView.findViewById(R.id.notificationBadgeGrid)
 
         if (appList.size > 0) {
             val currentApp = appList.find { it.homeOrderIndex == position } ?: return
 
-            linearLayout.alpha = if (currentApp.hidden) 0.35f else 1f
+            val appHasNotifications = currentNotifications[currentApp.packageName] ?: 0
 
-            imageView.setImageDrawable(currentApp.icon)
-            imageView.visibility = if (areIconsVisible) View.VISIBLE else View.GONE
-
-            textView.text = currentApp.name
-            textView.isSingleLine = true
-            textView.setTextColor(
-                ContextCompat.getColor(
-                    context, if (isTextBlack) R.color.black else R.color.white
-                )
+            Utils.setAppViewAccordingToOptions(
+                context,
+                holder,
+                currentApp,
+                true,
+                appHasNotifications
             )
-            textView.alpha = if (araLabelsVisible) 1f else 0f
-
-            if (showInGrid) {
-                imageView.layoutParams.height = Utils.dpToPx(context, 68)
-                imageView.layoutParams.width = Utils.dpToPx(context, 68)
-
-                textView.textSize = 12f
-                textView.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
-
-                linearLayout.orientation = LinearLayout.VERTICAL
-                linearLayout.setPadding(0, Utils.dpToPx(context, 20), 0, Utils.dpToPx(context, 20))
-                linearLayout.gravity = Gravity.CENTER
-
-                val marginParams = MarginLayoutParams(imageView.layoutParams)
-                marginParams.setMargins(0, 0, 0, Utils.dpToPx(context, 6))
-                val layoutParams = LinearLayout.LayoutParams(marginParams)
-                imageView.layoutParams = layoutParams
-            } else {
-                imageView.layoutParams.height = Utils.dpToPx(context, 42)
-                imageView.layoutParams.width = Utils.dpToPx(context, 42)
-
-                textView.textSize = 19.5f
-                textView.textAlignment = TextView.TEXT_ALIGNMENT_TEXT_START
-
-                linearLayout.orientation = LinearLayout.HORIZONTAL
-                val padding = Utils.dpToPx(context, if (areIconsVisible) 12 else 18)
-                linearLayout.setPadding(0, padding, 0, padding)
-                linearLayout.gravity = when (alignment) {
-                    "right" -> Gravity.END
-                    "center" -> Gravity.CENTER
-                    else -> Gravity.START
-                }
-
-                val marginParams = MarginLayoutParams(imageView.layoutParams)
-                marginParams.setMargins(0, 0, Utils.dpToPx(context, 18), 0)
-                val layoutParams = LinearLayout.LayoutParams(marginParams)
-                imageView.layoutParams = layoutParams
-            }
 
             linearLayout.setOnTouchListener(object : OnSwipeTouchListener(context) {
                 override fun onFlingDown() {
@@ -496,34 +464,36 @@ class HomeAdapter(
                 }
             })
         } else {
-            if (showInGrid) return
 
-
-            val text = when (position) {
-                0 -> "Long press above to open settings"
-                1 -> "All your apps are to the right"
-                else -> "Long press an app to add it here"
-            }
 
             val icon = when (position) {
                 0 -> R.drawable.icon_settings
                 1 -> R.drawable.icon_arrow_right
                 else -> R.drawable.icon_menu
             }
-
             imageView.setImageDrawable(
                 ContextCompat.getDrawable(
                     context, icon
                 )
             )
 
+            val text = when (position) {
+                0 -> "Long press above to open settings"
+                1 -> "All your apps are to the right"
+                else -> "Long press an app to add it here"
+            }
             textView.text = text
             textView.isSingleLine = false
+            textView.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            textView.gravity = Gravity.START
             textView.setTextColor(
                 ContextCompat.getColor(
                     context, if (isTextBlack) R.color.black else R.color.white
                 )
             )
+
+            notificationBadgeList.visibility = View.GONE
+            notificationBadgeGrid.visibility = View.GONE
 
             val marginParams = MarginLayoutParams(imageView.layoutParams)
             marginParams.setMargins(0, 0, Utils.dpToPx(context, 18), 0)
@@ -531,25 +501,34 @@ class HomeAdapter(
             imageView.layoutParams = layoutParams
 
             linearLayout.gravity = Gravity.START
-            linearLayout.setOnTouchListener(object : OnSwipeTouchListener(context) {
-                override fun onFlingDown() {
-                    when (Utils.getStringPref(context, StringPref.HOME_SWIPE_DOWN_ACTION)) {
-                        "openApp" -> openApp("swipeDown")
-                        "expandNotifications" -> expandNotificationBar()
-                        "assistant" -> openAssistant()
-                        "screenLock" -> lockScreen()
-                    }
-                }
 
-                override fun onFlingUp() {
-                    when (Utils.getStringPref(context, StringPref.HOME_SWIPE_UP_ACTION)) {
-                        "openApp" -> openApp("swipeUp")
-                        "expandNotifications" -> expandNotificationBar()
-                        "assistant" -> openAssistant()
-                        "screenLock" -> lockScreen()
-                    }
+            when (showInGrid) {
+                true -> {
+                    linearLayout.visibility = View.GONE
                 }
-            })
+                false -> {
+                    linearLayout.setOnTouchListener(object : OnSwipeTouchListener(context) {
+                        override fun onFlingDown() {
+                            when (Utils.getStringPref(context, StringPref.HOME_SWIPE_DOWN_ACTION)) {
+                                "openApp" -> openApp("swipeDown")
+                                "expandNotifications" -> expandNotificationBar()
+                                "assistant" -> openAssistant()
+                                "screenLock" -> lockScreen()
+                            }
+                        }
+
+                        override fun onFlingUp() {
+                            when (Utils.getStringPref(context, StringPref.HOME_SWIPE_UP_ACTION)) {
+                                "openApp" -> openApp("swipeUp")
+                                "expandNotifications" -> expandNotificationBar()
+                                "assistant" -> openAssistant()
+                                "screenLock" -> lockScreen()
+                            }
+                        }
+                    })
+                }
+            }
+
         }
     }
 

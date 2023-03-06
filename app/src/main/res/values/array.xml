@@ -32,13 +32,13 @@
 
     <string-array name="preference_general_notification_badges_entries">
         <item>None</item>
-        <item>Show numbers</item>
         <item>Show marker</item>
+        <item>Show numbers</item>
     </string-array>
 
     <string-array name="preference_general_notification_badges_values">
         <item>none</item>
-        <item>showNumbers</item>
         <item>showMarker</item>
+        <item>showNumbers</item>
     </string-array>
 </resources>

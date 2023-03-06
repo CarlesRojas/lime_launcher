@@ -3,10 +3,7 @@ package app.pinya.lime.ui.view.adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.TypedValue
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
@@ -22,6 +19,7 @@ import app.pinya.lime.R
 import app.pinya.lime.domain.model.AlphabetModel
 import app.pinya.lime.domain.model.AppModel
 import app.pinya.lime.domain.model.BooleanPref
+import app.pinya.lime.domain.model.StringPref
 import app.pinya.lime.domain.model.menus.AppMenu
 import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.view.holder.AppViewHolder
@@ -69,7 +67,7 @@ class DrawerAdapter(
     fun onResume() {
         showHideElements()
         updateLettersIncludedInAlphabet()
-        this.notifyDataSetChanged()
+        notifyDataSetChanged()
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -88,10 +86,9 @@ class DrawerAdapter(
         }
 
         updateLettersIncludedInAlphabet()
-        this.notifyDataSetChanged()
+        notifyDataSetChanged()
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun showHideElements() {
         val showSearchBar = Utils.getBooleanPref(context, BooleanPref.DRAWER_SHOW_SEARCH_BAR)
         val showAlphabetFilter =
@@ -289,6 +286,18 @@ class DrawerAdapter(
     }
 
     // ########################################
+    //   NOTIFICATION CHANGE
+    // ########################################
+
+    private var currentNotifications: MutableMap<String, Int> = mutableMapOf()
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun handleNotificationsChange(notifications: MutableMap<String, Int>) {
+        currentNotifications = notifications
+        notifyDataSetChanged()
+    }
+
+    // ########################################
     //   RECYCLER VIEW
     // ########################################
 
@@ -304,60 +313,17 @@ class DrawerAdapter(
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: AppViewHolder, position: Int) {
         val currentApp = appList[position]
-
-        val imageView: ImageView = holder.itemView.findViewById(R.id.appIcon)
-        val textView: TextView = holder.itemView.findViewById(R.id.appName)
         val linearLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
 
-        val isTextBlack = Utils.getBooleanPref(context, BooleanPref.GENERAL_IS_TEXT_BLACK)
-        val areIconsVisible = Utils.getBooleanPref(context, BooleanPref.DRAWER_SHOW_ICONS)
-        val showInGrid = Utils.getBooleanPref(context, BooleanPref.DRAWER_SHOW_IN_GRID)
-        val araLabelsVisible =
-            !showInGrid || Utils.getBooleanPref(context, BooleanPref.DRAWER_SHOW_LABELS)
+        val appHasNotifications = currentNotifications[currentApp.packageName] ?: 0
 
-
-        linearLayout.alpha = if (currentApp.hidden) 0.35f else 1f
-
-        imageView.setImageDrawable(currentApp.icon)
-        imageView.visibility = if (areIconsVisible) View.VISIBLE else View.GONE
-
-        textView.text = currentApp.name
-        textView.setTextColor(
-            ContextCompat.getColor(
-                context, if (isTextBlack) R.color.black else R.color.white
-            )
+        Utils.setAppViewAccordingToOptions(
+            context,
+            holder,
+            currentApp,
+            false,
+            appHasNotifications
         )
-        textView.alpha = if (araLabelsVisible) 1f else 0f
-
-        if (showInGrid) {
-            imageView.layoutParams.height = Utils.dpToPx(context, 68)
-            imageView.layoutParams.width = Utils.dpToPx(context, 68)
-
-            textView.textSize = 12f
-            textView.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
-
-            linearLayout.orientation = LinearLayout.VERTICAL
-            linearLayout.setPadding(0, Utils.dpToPx(context, 20), 0, Utils.dpToPx(context, 20))
-
-            val marginParams = ViewGroup.MarginLayoutParams(imageView.layoutParams)
-            marginParams.setMargins(0, 0, 0, Utils.dpToPx(context, 6))
-            val layoutParams = LinearLayout.LayoutParams(marginParams)
-            imageView.layoutParams = layoutParams
-        } else {
-            imageView.layoutParams.height = Utils.dpToPx(context, 42)
-            imageView.layoutParams.width = Utils.dpToPx(context, 42)
-
-            textView.textSize = 19.5f
-            textView.textAlignment = TextView.TEXT_ALIGNMENT_TEXT_START
-
-            linearLayout.orientation = LinearLayout.HORIZONTAL
-            linearLayout.setPadding(0, Utils.dpToPx(context, 12), 0, Utils.dpToPx(context, 12))
-
-            val marginParams = ViewGroup.MarginLayoutParams(imageView.layoutParams)
-            marginParams.setMargins(0, 0, Utils.dpToPx(context, 18), 0)
-            val layoutParams = LinearLayout.LayoutParams(marginParams)
-            imageView.layoutParams = layoutParams
-        }
 
         linearLayout.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) hideKeyboard()

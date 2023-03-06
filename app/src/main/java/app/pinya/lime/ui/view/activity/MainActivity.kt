@@ -10,17 +10,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
-import app.pinya.lime.ui.utils.DailyWallpaper
 import app.pinya.lime.R
 import app.pinya.lime.data.memory.AppProvider
 import app.pinya.lime.databinding.ActivityMainBinding
 import app.pinya.lime.domain.model.BooleanPref
+import app.pinya.lime.domain.model.StringPref
 import app.pinya.lime.ui.utils.CheckForChangesInAppList
+import app.pinya.lime.ui.utils.DailyWallpaper
 import app.pinya.lime.ui.utils.Utils
+import app.pinya.lime.ui.utils.notifications.NotificationsHandler
 import app.pinya.lime.ui.view.adapter.*
 import app.pinya.lime.ui.viewmodel.AppViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.Calendar
+import java.util.*
 
 
 @AndroidEntryPoint
@@ -40,12 +42,20 @@ class MainActivity : AppCompatActivity() {
 
     private var checkForChangesInAppList: CheckForChangesInAppList? = null
 
+    private var notificationsHandler: NotificationsHandler? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
 
         makeNavbarTransparent()
         AppProvider.initialize(this.application)
+
+        notificationsHandler = NotificationsHandler(this)
+        notificationsHandler?.notifications?.observe(this) { notifications ->
+            customPageAdapter.home?.handleNotificationsChange(notifications)
+            customPageAdapter.drawer?.handleNotificationsChange(notifications)
+        }
 
         appMenuAdapter = AppMenuAdapter(this, appViewModel)
         renameMenuAdapter = RenameMenuAdapter(this, appViewModel)
@@ -179,5 +189,14 @@ class MainActivity : AppCompatActivity() {
         val date = cal.get(Calendar.DATE)
 
         if (wallpaperLastUpdatedDate != date) dailyWallpaper?.updateWallpaper(alsoChangeLockScreen)
+    }
+
+    private fun handleNotificationChange(currentNotifications: MutableMap<String, Int>) {
+        val showNotificationBadges =
+            Utils.getStringPref(this, StringPref.GENERAL_NOTIFICATION_BADGES) != "none"
+
+        if (showNotificationBadges && Utils.isNotificationServiceEnabled(this)) {
+
+        }
     }
 }
