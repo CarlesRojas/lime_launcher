@@ -1,91 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/appLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="start"
     android:orientation="horizontal"
-    android:paddingTop="12dp"
-    android:paddingBottom="12dp"
     tools:ignore="UseCompoundDrawables">
 
-    <ImageView
-        android:id="@+id/appIcon"
-        android:layout_width="38dp"
-        android:layout_height="38dp"
-        android:contentDescription="@string/app_icon_description"
-        android:src="@mipmap/main_icon" />
-
     <LinearLayout
-        android:id="@+id/notificationBadgeGrid"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center"
+        android:id="@+id/listFormat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:orientation="horizontal"
+        android:visibility="gone"
         tools:ignore="UseCompoundDrawables">
 
-        <LinearLayout
-            android:id="@+id/notificationBadgeGridMarker"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/button_rounded_green"
-            android:gravity="center"
-            tools:ignore="UseCompoundDrawables,UselessParent">
+        <ImageView
+            android:id="@+id/listIcon"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:contentDescription="@string/app_icon_description"
+            android:src="@mipmap/main_icon" />
 
-            <TextView
-                android:id="@+id/notificationBadgeGridNumber"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_semibold"
-                android:singleLine="true"
-                android:text="4"
-                android:textAlignment="center"
-                android:textColor="@android:color/white"
-                android:textSize="11sp"
-                tools:ignore="HardcodedText" />
+        <TextView
+            android:id="@+id/listName"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="18dp"
+            android:fontFamily="@font/montserrat"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="@string/app_name"
+            android:textColor="@android:color/white"
+            android:textSize="19sp" />
+
+        <LinearLayout
+            android:id="@+id/listNotification"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            tools:ignore="UseCompoundDrawables">
+
+            <LinearLayout
+                android:id="@+id/listNotificationMarker"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/button_rounded_green"
+                android:gravity="center"
+                tools:ignore="UseCompoundDrawables,UselessParent">
+
+                <TextView
+                    android:id="@+id/listNotificationNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:singleLine="true"
+                    android:text="4"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="12sp"
+                    tools:ignore="HardcodedText" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/appName"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:fontFamily="@font/montserrat"
-        android:gravity="center"
-        android:singleLine="true"
-        android:text="@string/app_name"
-        android:textColor="@android:color/white"
-        android:textSize="19sp" />
 
     <LinearLayout
-        android:id="@+id/notificationBadgeList"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:id="@+id/gridFormat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center"
+        android:paddingTop="18dp"
+        android:paddingBottom="18dp"
         tools:ignore="UseCompoundDrawables">
 
-        <LinearLayout
-            android:id="@+id/notificationBadgeListMarker"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/button_rounded_green"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:gravity="center"
-            tools:ignore="UseCompoundDrawables,UselessParent">
+            tools:ignore="UseCompoundDrawables">
 
-            <TextView
-                android:id="@+id/notificationBadgeListNumber"
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_semibold"
-                android:singleLine="true"
-                android:text="4"
-                android:textAlignment="center"
-                android:textColor="@android:color/white"
-                android:textSize="11sp"
-                tools:ignore="HardcodedText" />
-        </LinearLayout>
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:id="@+id/gridIcon"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_marginBottom="6dp"
+                    android:contentDescription="@string/app_icon_description"
+                    android:src="@mipmap/main_icon" />
+
+                <TextView
+                    android:id="@+id/gridName"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/montserrat"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:text="@string/app_name"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/gridNotification"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="UseCompoundDrawables">
+
+                <LinearLayout
+                    android:id="@+id/gridNotificationMarker"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/button_rounded_green"
+                    android:gravity="center"
+                    tools:ignore="UseCompoundDrawables,UselessParent">
+
+                    <TextView
+                        android:id="@+id/gridNotificationNumber"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_semibold"
+                        android:singleLine="true"
+                        android:text="4"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/white"
+                        android:textSize="12sp"
+                        tools:ignore="HardcodedText" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 
 </LinearLayout>

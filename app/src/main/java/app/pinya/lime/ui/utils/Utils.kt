@@ -10,7 +10,6 @@ import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup.LayoutParams
-import android.view.ViewGroup.MarginLayoutParams
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -31,7 +30,7 @@ class Utils {
             return round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).toInt()
         }
 
-        fun dpToPx(context: Context, dp: Int): Int {
+        private fun dpToPx(context: Context, dp: Int): Int {
             val displayMetrics: DisplayMetrics = context.resources.displayMetrics
             return round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).toInt()
         }
@@ -186,12 +185,24 @@ class Utils {
             holder: AppViewHolder,
             currentApp: AppModel,
             isHome: Boolean,
-            appNotifications: Int
+            appNotifications: Int,
+            isTutorial: Boolean
         ) {
+            val showInGrid = getBooleanPref(
+                context,
+                if (isHome) BooleanPref.HOME_SHOW_IN_GRID else BooleanPref.DRAWER_SHOW_IN_GRID
+            )
+            val appLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
+            val listFormat: LinearLayout = appLayout.findViewById(R.id.listFormat)
+            val gridFormat: LinearLayout = appLayout.findViewById(R.id.gridFormat)
+
+            listFormat.visibility = if (showInGrid) View.GONE else View.VISIBLE
+            gridFormat.visibility = if (showInGrid) View.VISIBLE else View.GONE
+
             setAppViewLayoutAccordingToOptions(context, holder, currentApp, isHome)
             setAppViewIconAccordingToOptions(context, holder, currentApp, isHome)
-            setAppViewNameAccordingToOptions(context, holder, currentApp, isHome)
-            setAppViewNotificationsAccordingToOptions(context, holder, isHome, appNotifications)
+            setAppViewNameAccordingToOptions(context, holder, currentApp, isHome, isTutorial)
+            setAppViewNotificationsAccordingToOptions(context, holder, appNotifications)
         }
 
 
@@ -201,46 +212,32 @@ class Utils {
             currentApp: AppModel,
             isHome: Boolean
         ) {
-            val showInGrid = getBooleanPref(
-                context,
-                if (isHome) BooleanPref.HOME_SHOW_IN_GRID else BooleanPref.DRAWER_SHOW_IN_GRID
-            )
             val areIconsVisible = getBooleanPref(
                 context,
                 if (isHome) BooleanPref.HOME_SHOW_ICONS else BooleanPref.DRAWER_SHOW_ICONS
             )
 
-            val linearLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
+            val appLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
+            val listFormat: LinearLayout = appLayout.findViewById(R.id.listFormat)
+            val gridFormat: LinearLayout = appLayout.findViewById(R.id.gridFormat)
 
-            linearLayout.alpha = if (currentApp.hidden) 0.35f else 1f
+            listFormat.alpha = if (currentApp.hidden) 0.35f else 1f
+            gridFormat.alpha = if (currentApp.hidden) 0.35f else 1f
 
-            when (showInGrid) {
+            val padding = dpToPx(context, if (areIconsVisible) 12 else 18)
+            listFormat.setPadding(0, padding, 0, padding)
+
+            when (isHome) {
                 true -> {
-                    linearLayout.orientation = LinearLayout.VERTICAL
-                    val padding = dpToPx(context, 20)
-                    linearLayout.setPadding(0, padding, 0, padding)
-                    linearLayout.gravity = Gravity.CENTER
+                    val alignment = getStringPref(context, StringPref.HOME_ALIGNMENT)
+                    listFormat.gravity = when (alignment) {
+                        "right" -> Gravity.END
+                        "center" -> Gravity.CENTER
+                        else -> Gravity.START
+                    }
                 }
                 false -> {
-                    linearLayout.orientation = LinearLayout.HORIZONTAL
-                    val padding = dpToPx(context, if (areIconsVisible) 12 else 18)
-                    linearLayout.setPadding(0, padding, 0, padding)
-
-                    when (isHome) {
-                        true -> {
-                            val alignment = getStringPref(context, StringPref.HOME_ALIGNMENT)
-
-                            linearLayout.gravity = when (alignment) {
-                                "right" -> Gravity.END
-                                "center" -> Gravity.CENTER
-                                else -> Gravity.START
-                            }
-                        }
-                        false -> {
-                            linearLayout.gravity = Gravity.START
-                        }
-                    }
-
+                    listFormat.gravity = Gravity.START
                 }
             }
         }
@@ -251,156 +248,101 @@ class Utils {
             currentApp: AppModel,
             isHome: Boolean
         ) {
-
-            val showInGrid = getBooleanPref(
-                context,
-                if (isHome) BooleanPref.HOME_SHOW_IN_GRID else BooleanPref.DRAWER_SHOW_IN_GRID
-            )
             val areIconsVisible = getBooleanPref(
                 context,
                 if (isHome) BooleanPref.HOME_SHOW_ICONS else BooleanPref.DRAWER_SHOW_ICONS
             )
 
-            val imageView: ImageView = holder.itemView.findViewById(R.id.appIcon)
+            val appLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
+            val listIcon: ImageView = appLayout.findViewById(R.id.listIcon)
+            val gridIcon: ImageView = appLayout.findViewById(R.id.gridIcon)
 
-            imageView.setImageDrawable(currentApp.icon)
-            imageView.visibility = if (areIconsVisible) View.VISIBLE else View.GONE
+            listIcon.setImageDrawable(currentApp.icon)
+            gridIcon.setImageDrawable(currentApp.icon)
 
-            when (showInGrid) {
-                true -> {
-                    imageView.layoutParams.height = dpToPx(context, 68)
-                    imageView.layoutParams.width = dpToPx(context, 68)
-
-                    val marginParams = MarginLayoutParams(imageView.layoutParams)
-                    marginParams.setMargins(0, 0, 0, dpToPx(context, 6))
-                    val layoutParams = LinearLayout.LayoutParams(marginParams)
-                    imageView.layoutParams = layoutParams
-                }
-                false -> {
-
-                    imageView.layoutParams.height = dpToPx(context, 42)
-                    imageView.layoutParams.width = dpToPx(context, 42)
-
-                    val marginParams = MarginLayoutParams(imageView.layoutParams)
-                    marginParams.setMargins(0, 0, dpToPx(context, 18), 0)
-                    val layoutParams = LinearLayout.LayoutParams(marginParams)
-                    imageView.layoutParams = layoutParams
-                }
-            }
+            listIcon.visibility = if (areIconsVisible) View.VISIBLE else View.GONE
+            gridIcon.visibility = if (areIconsVisible) View.VISIBLE else View.GONE
         }
 
         private fun setAppViewNameAccordingToOptions(
             context: Context,
             holder: AppViewHolder,
             currentApp: AppModel,
-            isHome: Boolean
+            isHome: Boolean,
+            isTutorial: Boolean
         ) {
             val isTextBlack = getBooleanPref(context, BooleanPref.GENERAL_IS_TEXT_BLACK)
-            val showInGrid = getBooleanPref(
+            val araLabelsVisible = getBooleanPref(
                 context,
-                if (isHome) BooleanPref.HOME_SHOW_IN_GRID else BooleanPref.DRAWER_SHOW_IN_GRID
+                if (isHome) BooleanPref.HOME_SHOW_LABELS else BooleanPref.DRAWER_SHOW_LABELS
             )
-            val araLabelsVisible =
-                !showInGrid || getBooleanPref(
-                    context,
-                    if (isHome) BooleanPref.HOME_SHOW_LABELS else BooleanPref.DRAWER_SHOW_LABELS
-                )
 
-            val textView: TextView = holder.itemView.findViewById(R.id.appName)
+            val appLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
+            val listName: TextView = appLayout.findViewById(R.id.listName)
+            val gridName: TextView = appLayout.findViewById(R.id.gridName)
 
-            textView.text = currentApp.name
-            textView.isSingleLine = true
-            textView.layoutParams.height = LayoutParams.MATCH_PARENT
-            textView.gravity = Gravity.CENTER
-            textView.setTextColor(
+            listName.text = currentApp.name
+            gridName.text = currentApp.name
+
+            listName.isSingleLine = !isTutorial
+            gridName.isSingleLine = true
+
+            listName.layoutParams.height =
+                if (isTutorial) LayoutParams.WRAP_CONTENT else LayoutParams.MATCH_PARENT
+            listName.gravity = if (isTutorial) Gravity.START else Gravity.CENTER
+
+            val color =
                 ContextCompat.getColor(context, if (isTextBlack) R.color.black else R.color.white)
-            )
-            textView.alpha = if (araLabelsVisible) 1f else 0f
+            listName.setTextColor(color)
+            gridName.setTextColor(color)
 
-            when (showInGrid) {
-                true -> {
-                    textView.textSize = 12f
-                    textView.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
-                }
-                false -> {
-                    textView.textSize = 19.5f
-                    textView.textAlignment = TextView.TEXT_ALIGNMENT_TEXT_START
-                }
-            }
+            gridName.alpha = if (araLabelsVisible) 1f else 0f
         }
 
         private fun setAppViewNotificationsAccordingToOptions(
             context: Context,
             holder: AppViewHolder,
-            isHome: Boolean,
             appNotifications: Int
         ) {
-            val showInGrid = getBooleanPref(
-                context,
-                if (isHome) BooleanPref.HOME_SHOW_IN_GRID else BooleanPref.DRAWER_SHOW_IN_GRID
-            )
             val notificationType =
                 getStringPref(context, StringPref.GENERAL_NOTIFICATION_BADGES)
             val appHasNotifications = notificationType != "none" && appNotifications > 0
             val showNumbers = notificationType == "showNumbers"
 
-            val notificationBadgeList: LinearLayout =
-                holder.itemView.findViewById(R.id.notificationBadgeList)
-            val notificationBadgeListNumber: TextView =
-                holder.itemView.findViewById(R.id.notificationBadgeListNumber)
-            val notificationBadgeListMarker: LinearLayout =
-                holder.itemView.findViewById(R.id.notificationBadgeListMarker)
-            val notificationBadgeGrid: LinearLayout =
-                holder.itemView.findViewById(R.id.notificationBadgeGrid)
-            val notificationBadgeGridNumber: TextView =
-                holder.itemView.findViewById(R.id.notificationBadgeGridNumber)
-            val notificationBadgeGridMarker: LinearLayout =
-                holder.itemView.findViewById(R.id.notificationBadgeGridMarker)
+            val appLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
 
-            val badgeSize = if (showNumbers) 22 else 14
+            val listNotification: LinearLayout = appLayout.findViewById(R.id.listNotification)
+            val listNotificationMarker: LinearLayout =
+                appLayout.findViewById(R.id.listNotificationMarker)
+            val listNotificationNumber: TextView =
+                appLayout.findViewById(R.id.listNotificationNumber)
 
-            when (showInGrid) {
-                true -> {
-                    notificationBadgeList.visibility = View.GONE
-                    notificationBadgeGrid.visibility =
-                        if (appHasNotifications) View.VISIBLE else View.GONE
+            val gridNotification: LinearLayout = appLayout.findViewById(R.id.gridNotification)
+            val gridNotificationMarker: LinearLayout =
+                appLayout.findViewById(R.id.gridNotificationMarker)
+            val gridNotificationNumber: TextView =
+                appLayout.findViewById(R.id.gridNotificationNumber)
 
-                    notificationBadgeGridNumber.visibility =
-                        if (showNumbers) View.VISIBLE else View.GONE
+            val visibility = if (appHasNotifications) View.VISIBLE else View.GONE
+            listNotification.visibility = visibility
+            gridNotification.visibility = visibility
 
-                    if (appHasNotifications) notificationBadgeGridNumber.text =
-                        if (appNotifications > 99) "+" else appNotifications.toString()
+            val numbersVisibility = if (showNumbers) View.VISIBLE else View.GONE
+            listNotificationNumber.visibility = numbersVisibility
+            gridNotificationNumber.visibility = numbersVisibility
 
-                    val badgeMarginParams = MarginLayoutParams(notificationBadgeGrid.layoutParams)
-                    badgeMarginParams.setMargins(0, dpToPx(context, -68 - badgeSize), 0, 0)
-                    val badgeLayoutParams = LinearLayout.LayoutParams(badgeMarginParams)
-                    notificationBadgeGrid.layoutParams = badgeLayoutParams
-
-                    notificationBadgeGridMarker.layoutParams.height = dpToPx(context, badgeSize)
-                    notificationBadgeGridMarker.layoutParams.width = dpToPx(context, badgeSize)
-                }
-                false -> {
-
-                    notificationBadgeGrid.visibility = View.GONE
-                    notificationBadgeList.visibility =
-                        if (appHasNotifications) View.VISIBLE else View.GONE
-
-                    notificationBadgeListNumber.visibility =
-                        if (showNumbers) View.VISIBLE else View.GONE
-
-                    if (appHasNotifications) notificationBadgeListNumber.text =
-                        if (appNotifications > 99) "+" else appNotifications.toString()
-
-                    val badgeMarginParams = MarginLayoutParams(notificationBadgeList.layoutParams)
-                    badgeMarginParams.setMargins(dpToPx(context, 18), 0, 0, 0)
-                    val badgeLayoutParams = LinearLayout.LayoutParams(badgeMarginParams)
-                    notificationBadgeList.layoutParams = badgeLayoutParams
-
-                    notificationBadgeListMarker.layoutParams.height = dpToPx(context, badgeSize)
-                    notificationBadgeListMarker.layoutParams.width = dpToPx(context, badgeSize)
-                }
+            if (appHasNotifications) {
+                val number = if (appNotifications > 99) "+" else appNotifications.toString()
+                listNotificationNumber.text = number
+                gridNotificationNumber.text = number
             }
-        }
 
+            val badgeSize = if (showNumbers) 24 else 16
+            listNotificationMarker.layoutParams.height = dpToPx(context, badgeSize)
+            listNotificationMarker.layoutParams.width = dpToPx(context, badgeSize)
+            gridNotificationMarker.layoutParams.height = dpToPx(context, badgeSize)
+            gridNotificationMarker.layoutParams.width = dpToPx(context, badgeSize)
+        }
     }
 }
+

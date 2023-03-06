@@ -6,7 +6,6 @@ import android.util.TypedValue
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -19,7 +18,6 @@ import app.pinya.lime.R
 import app.pinya.lime.domain.model.AlphabetModel
 import app.pinya.lime.domain.model.AppModel
 import app.pinya.lime.domain.model.BooleanPref
-import app.pinya.lime.domain.model.StringPref
 import app.pinya.lime.domain.model.menus.AppMenu
 import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.view.holder.AppViewHolder
@@ -28,9 +26,7 @@ import kotlin.math.floor
 
 
 class DrawerAdapter(
-    private val context: Context,
-    private val layout: ViewGroup,
-    private val viewModel: AppViewModel
+    private val context: Context, private val layout: ViewGroup, private val viewModel: AppViewModel
 ) : RecyclerView.Adapter<AppViewHolder>() {
 
     // APP LIST
@@ -124,8 +120,7 @@ class DrawerAdapter(
             searchBarText = it.toString()
 
             if (filteringByAlphabet) viewModel.filterDrawerAppListByAlphabetLetter(
-                searchBarText.first(),
-                context
+                searchBarText.first(), context
             )
             else viewModel.filterDrawerAppListBySearchedText(searchBarText, context)
 
@@ -313,30 +308,26 @@ class DrawerAdapter(
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: AppViewHolder, position: Int) {
         val currentApp = appList[position]
-        val linearLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
+        val appLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
 
         val appHasNotifications = currentNotifications[currentApp.packageName] ?: 0
 
         Utils.setAppViewAccordingToOptions(
-            context,
-            holder,
-            currentApp,
-            false,
-            appHasNotifications
+            context, holder, currentApp, false, appHasNotifications, false
         )
 
-        linearLayout.setOnTouchListener { _, event ->
+        appLayout.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) hideKeyboard()
             false
         }
 
-        linearLayout.setOnClickListener {
+        appLayout.setOnClickListener {
             val launchAppIntent =
                 context.packageManager.getLaunchIntentForPackage(currentApp.packageName)
             if (launchAppIntent != null) context.startActivity(launchAppIntent)
         }
 
-        linearLayout.setOnLongClickListener {
+        appLayout.setOnLongClickListener {
             if (contextMenuContainer != null) {
                 hideKeyboard()
                 viewModel.appMenu.postValue(AppMenu(currentApp, false, contextMenuContainer!!))
