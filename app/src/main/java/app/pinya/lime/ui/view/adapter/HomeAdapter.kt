@@ -31,7 +31,6 @@ import java.util.*
 import kotlin.math.floor
 
 
-// TODO move to drawer on home click
 class HomeAdapter(
     private val context: Context, private val layout: ViewGroup, private val viewModel: AppViewModel
 ) : RecyclerView.Adapter<AppViewHolder>() {
