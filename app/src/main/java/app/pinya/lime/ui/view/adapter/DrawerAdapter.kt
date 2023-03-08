@@ -284,13 +284,36 @@ class DrawerAdapter(
     //   NOTIFICATION CHANGE
     // ########################################
 
+    private var previousNotifications: MutableMap<String, Int> = mutableMapOf()
     private var currentNotifications: MutableMap<String, Int> = mutableMapOf()
 
-    @SuppressLint("NotifyDataSetChanged")
+    private fun findAppIndex(packageName: String): Int {
+        return appList.indexOfFirst { it.packageName == packageName }
+    }
+
     fun handleNotificationsChange(notifications: MutableMap<String, Int>) {
         currentNotifications = notifications
-        notifyDataSetChanged()
+
+        val changes = mutableSetOf<Int>()
+
+        currentNotifications.forEach { (key, value) ->
+            if (!previousNotifications.contains(key) || value != previousNotifications[key]) {
+                val index = findAppIndex(key)
+                if (index >= 0) changes.add(index)
+            }
+        }
+
+        previousNotifications.forEach { (key, _) ->
+            if (!currentNotifications.contains(key)) {
+                val index = findAppIndex(key)
+                if (index >= 0) changes.add(index)
+            }
+        }
+
+        previousNotifications = currentNotifications
+        changes.forEach { index -> notifyItemChanged(index) }
     }
+
 
     // ########################################
     //   RECYCLER VIEW

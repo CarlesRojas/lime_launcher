@@ -53,8 +53,7 @@ class MainActivity : AppCompatActivity() {
 
         notificationsHandler = NotificationsHandler(this)
         notificationsHandler?.notifications?.observe(this) { notifications ->
-            customPageAdapter.home?.handleNotificationsChange(notifications)
-            customPageAdapter.drawer?.handleNotificationsChange(notifications)
+            handleNotificationChange(notifications)
         }
 
         appMenuAdapter = AppMenuAdapter(this, appViewModel)
@@ -191,12 +190,14 @@ class MainActivity : AppCompatActivity() {
         if (wallpaperLastUpdatedDate != date) dailyWallpaper?.updateWallpaper(alsoChangeLockScreen)
     }
 
-    private fun handleNotificationChange(currentNotifications: MutableMap<String, Int>) {
+    private fun handleNotificationChange(notifications: MutableMap<String, Int>) {
         val showNotificationBadges =
             Utils.getStringPref(this, StringPref.GENERAL_NOTIFICATION_BADGES) != "none"
 
         if (showNotificationBadges && Utils.isNotificationServiceEnabled(this)) {
-
+            if (viewPager.currentItem == 0)
+                customPageAdapter.home?.handleNotificationsChange(notifications)
+            else customPageAdapter.drawer?.handleNotificationsChange(notifications)
         }
     }
 }

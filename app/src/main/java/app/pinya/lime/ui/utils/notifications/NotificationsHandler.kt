@@ -14,29 +14,25 @@ class NotificationsHandler(context: Context) {
 
     init {
         notificationsBroadcastReceiver =
-            NotificationsBroadcasterReceiver(
-                ::handleInitialNotificationsReceived,
-                ::handleAddNotificationReceived,
-                ::handleRemoveNotificationReceived
-            )
+            NotificationsBroadcasterReceiver(::handleNotificationsChange)
         val intentFilter = IntentFilter()
         intentFilter.addAction(MyNotificationService.intentAction)
         context.registerReceiver(notificationsBroadcastReceiver, intentFilter)
     }
 
 
-    private fun handleInitialNotificationsReceived(initialNotifications: Array<String>) {
-        val newNotifications = mutableMapOf<String, Int>()
+    private fun handleNotificationsChange(newNotifications: Array<String>) {
+        val parsedNewNotifications = mutableMapOf<String, Int>()
 
-        initialNotifications.forEach { packageName ->
-            if (newNotifications.contains(packageName))
-                newNotifications[packageName] = newNotifications[packageName]!! + 1
-            else newNotifications[packageName] = 1
+        newNotifications.forEach { packageName ->
+            if (parsedNewNotifications.contains(packageName))
+                parsedNewNotifications[packageName] = parsedNewNotifications[packageName]!! + 1
+            else parsedNewNotifications[packageName] = 1
         }
 
+        // There is a bug that when there is more than one notification of an app, it shows an extra one
         val fixedNotifications = mutableMapOf<String, Int>()
-        newNotifications.forEach { (key, value) ->
-
+        parsedNewNotifications.forEach { (key, value) ->
             if (value <= 1) fixedNotifications[key] = value
             else fixedNotifications[key] = value - 1
         }
@@ -44,52 +40,13 @@ class NotificationsHandler(context: Context) {
         notifications.postValue(fixedNotifications)
     }
 
-    private fun handleAddNotificationReceived(newNotification: String) {
-        val newNotifications = notifications.value ?: return
-
-        if (newNotifications.contains(newNotification)) newNotifications[newNotification] =
-            newNotifications[newNotification]!! + 1
-        else newNotifications[newNotification] = 1
-
-        notifications.postValue(newNotifications)
-    }
-
-    private fun handleRemoveNotificationReceived(newNotification: String) {
-        var newNotifications = notifications.value ?: return
-
-        if (newNotifications.contains(newNotification)) {
-            newNotifications[newNotification] =
-                (newNotifications[newNotification]!! - 1).coerceAtLeast(0)
-
-            if (newNotifications[newNotification] == 0) {
-                newNotifications = newNotifications.filterKeys {
-                    it != newNotification
-                } as MutableMap<String, Int>
-            }
-
-            notifications.postValue(newNotifications)
-        }
-    }
-
     class NotificationsBroadcasterReceiver(
-        private val handleInitialNotificationsReceived: (initialNotifications: Array<String>) -> Unit,
-        private val handleAddNotificationReceived: (initialNotifications: String) -> Unit,
-        private val handleRemoveNotificationReceived: (initialNotifications: String) -> Unit
+        private val onNotificationsChange: (newNotifications: Array<String>) -> Unit,
     ) :
         BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            val initialNotifications = intent.getStringArrayExtra("initialNotifications")
-            val addNotification = intent.getStringExtra("addNotification")
-            val removeNotification = intent.getStringExtra("removeNotification")
-
-            if (initialNotifications != null)
-                handleInitialNotificationsReceived(initialNotifications)
-
-            if (addNotification != null)
-                handleAddNotificationReceived(addNotification)
-
-            if (removeNotification != null)
-                handleRemoveNotificationReceived(removeNotification)
+            val newNotifications = intent.getStringArrayExtra("notificationsChange")
+            if (newNotifications != null) onNotificationsChange(newNotifications)
         }
     }
 }
