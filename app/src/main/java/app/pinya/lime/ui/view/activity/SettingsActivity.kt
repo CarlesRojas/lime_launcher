@@ -1,8 +1,10 @@
 package app.pinya.lime.ui.view.activity
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -32,6 +34,7 @@ import java.util.*
 class SettingsActivity : AppCompatActivity() {
 
 
+    @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -42,6 +45,9 @@ class SettingsActivity : AppCompatActivity() {
                 .replace(R.id.settings, SettingsFragment(this, layout)).commit()
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        if (android.os.Build.VERSION.SDK_INT != Build.VERSION_CODES.O)
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
     }
 
 
@@ -127,7 +133,7 @@ class SettingsActivity : AppCompatActivity() {
             }
 
             billingHelper.purchaseState.observe(this) { purchaseState ->
-                setIsPro(purchaseState == BillingHelper.ProPurchaseState.PURCHASED_AND_ACKNOWLEDGED)
+                setIsPro(true) // TODO setIsPro(purchaseState == BillingHelper.ProPurchaseState.PURCHASED_AND_ACKNOWLEDGED)
             }
         }
 
