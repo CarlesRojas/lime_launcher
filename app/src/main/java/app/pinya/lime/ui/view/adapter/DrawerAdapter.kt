@@ -330,6 +330,8 @@ class DrawerAdapter(
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: AppViewHolder, position: Int) {
+        if (position < 0 || position >= appList.size) return
+
         val currentApp = appList[position]
         val appLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
 
