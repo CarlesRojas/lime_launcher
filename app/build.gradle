@@ -13,8 +13,8 @@ android {
         applicationId "app.pinya.lime"
         minSdk 26
         targetSdk 33
-        versionCode 15
-        versionName "2.0.3"
+        versionCode 16
+        versionName "2.0.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
