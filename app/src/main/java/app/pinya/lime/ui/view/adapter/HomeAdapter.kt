@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView
 import app.pinya.lime.R
 import app.pinya.lime.domain.model.AppModel
 import app.pinya.lime.domain.model.BooleanPref
-import app.pinya.lime.domain.model.InfoModel
 import app.pinya.lime.domain.model.StringPref
 import app.pinya.lime.domain.model.menus.AppMenu
 import app.pinya.lime.ui.utils.OnSwipeTouchListener
@@ -73,7 +72,7 @@ class HomeAdapter(
         notifyDataSetChanged()
     }
 
-    fun handleInfoUpdate(info: InfoModel) {
+    fun handleInfoUpdate() {
         calculateMaxNumberOfAppsInHome()
     }
 

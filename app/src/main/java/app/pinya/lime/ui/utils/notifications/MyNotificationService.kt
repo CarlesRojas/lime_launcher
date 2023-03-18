@@ -19,12 +19,6 @@ class MyNotificationService : NotificationListenerService() {
         return super.onBind(intent)
     }
 
-    private fun broadcastString(key: String, value: String) {
-        val intent = Intent(intentAction)
-        intent.putExtra(key, value)
-        sendBroadcast(intent)
-    }
-
     private fun broadcastStringArray(value: Array<String>) {
         val bundle = Bundle()
         bundle.putStringArray("notificationsChange", value)

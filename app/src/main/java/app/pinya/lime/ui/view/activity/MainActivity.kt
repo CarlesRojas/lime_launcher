@@ -59,9 +59,9 @@ class MainActivity : AppCompatActivity() {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
 
-        appViewModel.info.observe(this) { info ->
+        appViewModel.info.observe(this) {
             appViewModel.updateAppList(this)
-            customPageAdapter.home?.handleInfoUpdate(info)
+            customPageAdapter.home?.handleInfoUpdate()
         }
 
         appViewModel.getInfo()
