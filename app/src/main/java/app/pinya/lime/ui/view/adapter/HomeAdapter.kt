@@ -16,9 +16,11 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import app.pinya.lime.R
 import app.pinya.lime.domain.model.AppModel
 import app.pinya.lime.domain.model.BooleanPref
+import app.pinya.lime.domain.model.IntPref
 import app.pinya.lime.domain.model.StringPref
 import app.pinya.lime.domain.model.menus.AppMenu
 import app.pinya.lime.ui.utils.OnSwipeTouchListener
@@ -72,9 +74,6 @@ class HomeAdapter(
         notifyDataSetChanged()
     }
 
-    fun handleInfoUpdate() {
-        calculateMaxNumberOfAppsInHome()
-    }
 
     // ########################################
     //   DATE & TIME
@@ -83,8 +82,10 @@ class HomeAdapter(
     @SuppressLint("ClickableViewAccessibility")
     private fun addDateListeners() {
         val alignment = Utils.getStringPref(context, StringPref.HOME_ALIGNMENT)
+        val dateTimeScale = Utils.getIntPref(context, IntPref.GENERAL_DATE_TIME_SCALE)
 
         date = layout.findViewById(R.id.homeDate)
+        date?.textSize = Utils.applyScale(20f, dateTimeScale)
         date?.gravity = when (alignment) {
             "right" -> Gravity.END
             "center" -> Gravity.CENTER
@@ -138,8 +139,10 @@ class HomeAdapter(
     @SuppressLint("ClickableViewAccessibility")
     private fun addTimeListeners() {
         val alignment = Utils.getStringPref(context, StringPref.HOME_ALIGNMENT)
+        val dateTimeScale = Utils.getIntPref(context, IntPref.GENERAL_DATE_TIME_SCALE)
 
         time = layout.findViewById(R.id.homeTime)
+        time?.textSize = Utils.applyScale(36f, dateTimeScale)
         time?.gravity = when (alignment) {
             "right" -> Gravity.END
             "center" -> Gravity.CENTER
@@ -236,23 +239,37 @@ class HomeAdapter(
     //   MAX APPS IN HOME
     // ########################################
 
+    private var isTimeVisibleLastValue: Boolean? = null
+    private var isDateVisibleLastValue: Boolean? = null
     private var showInGridLastValue: Boolean? = null
+    private var textScaleLastValue: Int? = null
+    private var iconScaleLastValue: Int? = null
 
     private fun shouldCalculateMaxNumberOfAppsInHome(): Boolean {
-        if (showInGridLastValue == null)
+        if (isTimeVisibleLastValue == null || isDateVisibleLastValue == null || showInGridLastValue == null || textScaleLastValue == null || iconScaleLastValue == null)
             return false
-        val showInGrid = Utils.getBooleanPref(context, BooleanPref.HOME_SHOW_IN_GRID)
 
-        return showInGrid != showInGridLastValue
-    }
-
-    private fun calculateMaxNumberOfAppsInHome() {
         val isTimeVisible = Utils.getBooleanPref(context, BooleanPref.TIME_VISIBLE)
         val isDateVisible = Utils.getBooleanPref(context, BooleanPref.DATE_VISIBLE)
         val showInGrid = Utils.getBooleanPref(context, BooleanPref.HOME_SHOW_IN_GRID)
-        val textSize = Utils.pxToDp(context, Utils.spToPx(context, 12).toInt())
+        val textScale = Utils.getIntPref(context, IntPref.GENERAL_TEXT_SCALE)
+        val iconScale = Utils.getIntPref(context, IntPref.GENERAL_ICON_SCALE)
 
+        return isTimeVisible != isTimeVisibleLastValue || isDateVisible != isDateVisibleLastValue || showInGrid != showInGridLastValue || textScale != textScaleLastValue || iconScale != iconScaleLastValue
+    }
+
+    fun calculateMaxNumberOfAppsInHome() {
+        val isTimeVisible = Utils.getBooleanPref(context, BooleanPref.TIME_VISIBLE)
+        val isDateVisible = Utils.getBooleanPref(context, BooleanPref.DATE_VISIBLE)
+        val showInGrid = Utils.getBooleanPref(context, BooleanPref.HOME_SHOW_IN_GRID)
+        val textScale = Utils.getIntPref(context, IntPref.GENERAL_TEXT_SCALE)
+        val iconScale = Utils.getIntPref(context, IntPref.GENERAL_ICON_SCALE)
+
+        isTimeVisibleLastValue = isTimeVisible
+        isDateVisibleLastValue = isDateVisible
         showInGridLastValue = showInGrid
+        textScaleLastValue = textScale
+        iconScaleLastValue = iconScale
 
         val homeAppListContainer =
             layout.findViewById<View>(R.id.homeAppListContainer) as ConstraintLayout
@@ -272,11 +289,21 @@ class HomeAdapter(
             override fun onGlobalLayout() {
                 layout.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                val heightInDp = Utils.pxToDp(context, homeAppListContainer.height)
-                val appHeightInDp = if (showInGrid) 108f + textSize else 66f
+                val textSizeInDp = Utils.pxToDp(
+                    context,
+                    Utils.spToPx(context, Utils.applyScale(if (showInGrid) 12f else 19f, textScale))
+                )
+                val iconSizeInDp = Utils.applyScale(if (showInGrid) 70f else 43f, iconScale)
+                val paddingSizeInDp = if (showInGrid) 50f else 30f
+
+                val heightInDp = Utils.pxToDp(context, homeAppListContainer.height.toFloat())
+                val appHeightInDp = (if (showInGrid) textSizeInDp + iconSizeInDp else Math.max(
+                    textSizeInDp, iconSizeInDp
+                )) + paddingSizeInDp
 
                 var maxNumberOfHomeApps =
-                    (floor(heightInDp / appHeightInDp).toInt() - 1) * (if (showInGrid) 4 else 1)
+                    (floor(heightInDp / appHeightInDp).toInt()) * (if (showInGrid) 3 else 1)
+
                 maxNumberOfHomeApps = maxNumberOfHomeApps.coerceAtMost(12)
 
                 val info = viewModel.info.value ?: return
@@ -499,9 +526,7 @@ class HomeAdapter(
             val icon = when (position) {
                 0 -> ResourcesCompat.getDrawable(context.resources, R.drawable.icon_settings, null)
                 1 -> ResourcesCompat.getDrawable(
-                    context.resources,
-                    R.drawable.icon_arrow_right,
-                    null
+                    context.resources, R.drawable.icon_arrow_right, null
                 )
                 else -> ResourcesCompat.getDrawable(context.resources, R.drawable.icon_menu, null)
             }

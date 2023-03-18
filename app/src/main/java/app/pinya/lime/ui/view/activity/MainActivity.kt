@@ -58,10 +58,9 @@ class MainActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O)
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-
         appViewModel.info.observe(this) {
             appViewModel.updateAppList(this)
-            customPageAdapter.home?.handleInfoUpdate()
+            customPageAdapter.home?.calculateMaxNumberOfAppsInHome()
         }
 
         appViewModel.getInfo()

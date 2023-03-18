@@ -18,6 +18,7 @@ import app.pinya.lime.R
 import app.pinya.lime.domain.model.AlphabetModel
 import app.pinya.lime.domain.model.AppModel
 import app.pinya.lime.domain.model.BooleanPref
+import app.pinya.lime.domain.model.IntPref
 import app.pinya.lime.domain.model.menus.AppMenu
 import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.view.holder.AppViewHolder
@@ -66,6 +67,7 @@ class DrawerAdapter(
         showHideElements()
         updateLettersIncludedInAlphabet()
         notifyDataSetChanged()
+        updateScale()
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -115,7 +117,10 @@ class DrawerAdapter(
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initSearchBar() {
+        val textScale = Utils.getIntPref(context, IntPref.GENERAL_TEXT_SCALE)
+
         searchBar = layout.findViewById(R.id.drawerSearchBar)
+        searchBar?.textSize = Utils.applyScale(18f, textScale)
 
         searchBar?.doAfterTextChanged {
             if (it.toString() == "") hideClearText() else showClearText()
@@ -331,6 +336,15 @@ class DrawerAdapter(
 
         previousNotifications = currentNotifications
         changes.forEach { index -> notifyItemChanged(index) }
+    }
+
+    // ########################################
+    //   SCALE
+    // ########################################
+
+    fun updateScale() {
+        val textScale = Utils.getIntPref(context, IntPref.GENERAL_TEXT_SCALE)
+        searchBar?.textSize = Utils.applyScale(18f, textScale)
     }
 
 

@@ -62,6 +62,9 @@
     <string name="preference_general_also_change_lockscreen">Also change the lock screen</string>
     <string name="preference_general_is_text_black">Use black text</string>
     <string name="preference_general_dim_wallpaper">Dim wallpaper</string>
+    <string name="preference_general_date_time_scale">Date and Time scale</string>
+    <string name="preference_general_icon_scale">Icon scale</string>
+    <string name="preference_general_text_scale">Text scale</string>
 
     <string name="preference_home_show_icons">Show icons</string>
     <string name="preference_home_show_in_grid">Use app grid</string>

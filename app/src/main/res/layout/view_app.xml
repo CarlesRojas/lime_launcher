@@ -15,6 +15,7 @@
         android:layout_height="wrap_content"
         android:gravity="start"
         android:orientation="horizontal"
+        android:paddingVertical="14dp"
         android:visibility="gone"
         tools:ignore="UseCompoundDrawables">
 
@@ -22,6 +23,7 @@
             android:id="@+id/listIcon"
             android:layout_width="38dp"
             android:layout_height="38dp"
+            android:layout_marginEnd="18dp"
             android:contentDescription="@string/app_icon_description"
             android:src="@mipmap/main_icon" />
 
@@ -29,7 +31,6 @@
             android:id="@+id/listName"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginHorizontal="18dp"
             android:fontFamily="@font/montserrat"
             android:gravity="center"
             android:singleLine="true"
@@ -41,6 +42,7 @@
             android:id="@+id/listNotification"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginStart="18dp"
             android:gravity="center"
             tools:ignore="UseCompoundDrawables">
 
@@ -74,8 +76,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:paddingTop="18dp"
-        android:paddingBottom="18dp"
+        android:paddingVertical="18dp"
         tools:ignore="UseCompoundDrawables">
 
         <androidx.constraintlayout.widget.ConstraintLayout

@@ -19,23 +19,24 @@ import androidx.preference.PreferenceManager
 import app.pinya.lime.R
 import app.pinya.lime.domain.model.AppModel
 import app.pinya.lime.domain.model.BooleanPref
+import app.pinya.lime.domain.model.IntPref
 import app.pinya.lime.domain.model.StringPref
 import app.pinya.lime.ui.view.holder.AppViewHolder
 import kotlin.math.round
 
 class Utils {
     companion object {
-        fun pxToDp(context: Context, px: Int): Int {
+        fun pxToDp(context: Context, px: Float): Float {
             val displayMetrics: DisplayMetrics = context.resources.displayMetrics
-            return round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).toInt()
+            return px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)
         }
 
-        private fun dpToPx(context: Context, dp: Int): Int {
+        fun dpToPx(context: Context, dp: Float): Float {
             val displayMetrics: DisplayMetrics = context.resources.displayMetrics
-            return round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).toInt()
+            return dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)
         }
 
-        fun spToPx(context: Context, sp: Int): Float {
+        fun spToPx(context: Context, sp: Float): Float {
             val scaledDensity: Float = context.resources.displayMetrics.scaledDensity
             return sp * scaledDensity
         }
@@ -116,7 +117,7 @@ class Utils {
             val prefs = PreferenceManager.getDefaultSharedPreferences(context)
 
             val key = when (preference) {
-                StringPref.GENERAL_NOTIFICATION_BADGES -> "preference_notification_general_badges"
+                StringPref.GENERAL_NOTIFICATION_BADGES -> "preference_general_notification_general_badges"
 
                 StringPref.HOME_ALIGNMENT -> "preference_home_alignment"
                 StringPref.HOME_DOUBLE_TAP_ACTION -> "preference_home_double_tap_gesture"
@@ -152,6 +153,41 @@ class Utils {
             }
 
             return prefs.getString(key, defaultValue) ?: defaultValue
+        }
+
+
+        fun getIntPref(context: Context, preference: IntPref): Int {
+            val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+
+            val key = when (preference) {
+                IntPref.GENERAL_DATE_TIME_SCALE -> "preference_general_date_time_scale"
+                IntPref.GENERAL_ICON_SCALE -> "preference_general_icon_scale"
+                IntPref.GENERAL_TEXT_SCALE -> "preference_general_text_scale"
+            }
+
+            val defaultValue = when (preference) {
+                IntPref.GENERAL_DATE_TIME_SCALE -> 3
+                IntPref.GENERAL_ICON_SCALE -> 3
+                IntPref.GENERAL_TEXT_SCALE -> 3
+
+            }
+
+            return prefs.getInt(key, defaultValue)
+        }
+
+        fun applyScale(value: Float, scale: Int): Float {
+            val scaleFactor = when (scale) {
+                0 -> 0.7f
+                1 -> 0.8f
+                2 -> 0.9f
+                3 -> 1f
+                4 -> 1.1f
+                5 -> 1.2f
+                6 -> 1.3f
+                else -> 1f
+            }
+
+            return value * scaleFactor
         }
 
         fun isAccessServiceEnabled(context: Context): Boolean {
@@ -224,9 +260,6 @@ class Utils {
             listFormat.alpha = if (currentApp.hidden) 0.35f else 1f
             gridFormat.alpha = if (currentApp.hidden) 0.35f else 1f
 
-            val padding = dpToPx(context, if (areIconsVisible) 12 else 18)
-            listFormat.setPadding(0, padding, 0, padding)
-
             when (isHome) {
                 true -> {
                     val alignment = getStringPref(context, StringPref.HOME_ALIGNMENT)
@@ -252,6 +285,7 @@ class Utils {
                 context,
                 if (isHome) BooleanPref.HOME_SHOW_ICONS else BooleanPref.DRAWER_SHOW_ICONS
             )
+            val iconScale = Utils.getIntPref(context, IntPref.GENERAL_ICON_SCALE)
 
             val appLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
             val listIcon: ImageView = appLayout.findViewById(R.id.listIcon)
@@ -262,6 +296,15 @@ class Utils {
 
             listIcon.visibility = if (areIconsVisible) View.VISIBLE else View.GONE
             gridIcon.visibility = if (areIconsVisible) View.VISIBLE else View.GONE
+
+            val listIconSize = Utils.dpToPx(context, Utils.applyScale(43f, iconScale)).toInt()
+            val gridIconSize = Utils.dpToPx(context, Utils.applyScale(70f, iconScale)).toInt()
+
+            listIcon.getLayoutParams().height = listIconSize
+            listIcon.getLayoutParams().width = listIconSize
+
+            gridIcon.getLayoutParams().height = gridIconSize
+            gridIcon.getLayoutParams().width = gridIconSize
         }
 
         private fun setAppViewNameAccordingToOptions(
@@ -276,6 +319,7 @@ class Utils {
                 context,
                 if (isHome) BooleanPref.HOME_SHOW_LABELS else BooleanPref.DRAWER_SHOW_LABELS
             )
+            val textScale = Utils.getIntPref(context, IntPref.GENERAL_TEXT_SCALE)
 
             val appLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
             val listName: TextView = appLayout.findViewById(R.id.listName)
@@ -283,6 +327,9 @@ class Utils {
 
             listName.text = currentApp.name
             gridName.text = currentApp.name
+
+            listName.textSize = Utils.applyScale(19f, textScale)
+            gridName.textSize = Utils.applyScale(12f, textScale)
 
             listName.isSingleLine = !isTutorial
             gridName.isSingleLine = true
@@ -337,11 +384,11 @@ class Utils {
                 gridNotificationNumber.text = number
             }
 
-            val badgeSize = if (showNumbers) 24 else 16
-            listNotificationMarker.layoutParams.height = dpToPx(context, badgeSize)
-            listNotificationMarker.layoutParams.width = dpToPx(context, badgeSize)
-            gridNotificationMarker.layoutParams.height = dpToPx(context, badgeSize)
-            gridNotificationMarker.layoutParams.width = dpToPx(context, badgeSize)
+            val badgeSize = if (showNumbers) 24f else 16f
+            listNotificationMarker.layoutParams.height = dpToPx(context, badgeSize).toInt()
+            listNotificationMarker.layoutParams.width = dpToPx(context, badgeSize).toInt()
+            gridNotificationMarker.layoutParams.height = dpToPx(context, badgeSize).toInt()
+            gridNotificationMarker.layoutParams.width = dpToPx(context, badgeSize).toInt()
         }
     }
 }

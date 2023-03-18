@@ -448,7 +448,7 @@ class SettingsActivity : AppCompatActivity() {
 
         private fun setNotificationBadgesSettings() {
             val notificationBadges =
-                findPreference("preference_notification_general_badges") as ListPreference?
+                findPreference("preference_general_notification_general_badges") as ListPreference?
 
             notificationBadges?.setOnPreferenceChangeListener { _, newValue ->
                 val value = newValue as String
@@ -464,7 +464,7 @@ class SettingsActivity : AppCompatActivity() {
 
         private fun setSettingsAccordingToNotificationAccessStatus() {
             val notificationBadges =
-                findPreference("preference_notification_general_badges") as ListPreference?
+                findPreference("preference_general_notification_general_badges") as ListPreference?
 
             val notificationAccessActive = Utils.isNotificationServiceEnabled(requireContext())
 
@@ -491,7 +491,7 @@ class SettingsActivity : AppCompatActivity() {
                 findPreference("preference_general_hide_status_bar_pro") as Preference?
 
             val notificationBadges =
-                findPreference("preference_notification_general_badges") as ListPreference?
+                findPreference("preference_general_notification_general_badges") as ListPreference?
             val notificationBadgesPro =
                 findPreference("preference_general_notification_badges_pro") as Preference?
 
