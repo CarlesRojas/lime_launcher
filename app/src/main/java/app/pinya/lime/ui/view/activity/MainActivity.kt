@@ -50,9 +50,23 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        AppProvider.initialize(this.application)
+
+        setContentView(R.layout.activity_main)
+        linkAdapter()
+
+        if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O)
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
+
+        appViewModel.info.observe(this) { info ->
+            appViewModel.updateAppList(this)
+            customPageAdapter.home?.handleInfoUpdate(info)
+        }
+
+        appViewModel.getInfo()
 
         makeNavbarTransparent()
-        AppProvider.initialize(this.application)
 
         notificationsHandler = NotificationsHandler(this)
         notificationsHandler?.notifications?.observe(this) { notifications ->
@@ -62,12 +76,6 @@ class MainActivity : AppCompatActivity() {
         appMenuAdapter = AppMenuAdapter(this, appViewModel)
         renameMenuAdapter = RenameMenuAdapter(this, appViewModel)
         reorderMenuAdapter = ReorderMenuAdapter(this, appViewModel)
-
-        setContentView(R.layout.activity_main)
-        linkAdapter()
-
-        if (android.os.Build.VERSION.SDK_INT != Build.VERSION_CODES.O)
-            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
 
         checkForChangesInAppList = CheckForChangesInAppList(this, appViewModel)
 
@@ -93,8 +101,6 @@ class MainActivity : AppCompatActivity() {
             reorderMenuAdapter.handleReorderMenu(reorderMenu)
         }
 
-        appViewModel.getInfo()
-        appViewModel.updateAppList(this)
     }
 
     override fun onResume() {

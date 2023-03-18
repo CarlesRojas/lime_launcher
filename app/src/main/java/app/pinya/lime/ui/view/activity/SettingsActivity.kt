@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.preference.*
 import app.pinya.lime.LimeLauncherApp
 import app.pinya.lime.R
+import app.pinya.lime.data.memory.AppProvider
 import app.pinya.lime.data.repo.AppRepo
 import app.pinya.lime.domain.model.AppModel
 import app.pinya.lime.domain.model.menus.BuyProMenu
@@ -37,6 +38,7 @@ class SettingsActivity : AppCompatActivity() {
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppProvider.initialize(this.application)
 
         setContentView(R.layout.activity_settings)
         if (savedInstanceState == null)

@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import app.pinya.lime.R
 import app.pinya.lime.domain.model.AppModel
 import app.pinya.lime.domain.model.BooleanPref
+import app.pinya.lime.domain.model.InfoModel
 import app.pinya.lime.domain.model.StringPref
 import app.pinya.lime.domain.model.menus.AppMenu
 import app.pinya.lime.ui.utils.OnSwipeTouchListener
@@ -58,7 +59,7 @@ class HomeAdapter(
 
     @SuppressLint("NotifyDataSetChanged")
     fun onResume() {
-        calculateMaxNumberOfAppsInHome()
+        if (shouldCalculateMaxNumberOfAppsInHome()) calculateMaxNumberOfAppsInHome()
         addDateListeners()
         addTimeListeners()
         updateTimeDateStyle()
@@ -70,6 +71,10 @@ class HomeAdapter(
     fun handleHomeListUpdate(newHomeList: MutableList<AppModel>) {
         appList = newHomeList
         notifyDataSetChanged()
+    }
+
+    fun handleInfoUpdate(info: InfoModel) {
+        calculateMaxNumberOfAppsInHome()
     }
 
     // ########################################
@@ -232,11 +237,23 @@ class HomeAdapter(
     //   MAX APPS IN HOME
     // ########################################
 
+    private var showInGridLastValue: Boolean? = null
+
+    private fun shouldCalculateMaxNumberOfAppsInHome(): Boolean {
+        if (showInGridLastValue == null)
+            return false
+        val showInGrid = Utils.getBooleanPref(context, BooleanPref.HOME_SHOW_IN_GRID)
+
+        return showInGrid != showInGridLastValue
+    }
+
     private fun calculateMaxNumberOfAppsInHome() {
         val isTimeVisible = Utils.getBooleanPref(context, BooleanPref.TIME_VISIBLE)
         val isDateVisible = Utils.getBooleanPref(context, BooleanPref.DATE_VISIBLE)
         val showInGrid = Utils.getBooleanPref(context, BooleanPref.HOME_SHOW_IN_GRID)
         val textSize = Utils.pxToDp(context, Utils.spToPx(context, 12).toInt())
+
+        showInGridLastValue = showInGrid
 
         val homeAppListContainer =
             layout.findViewById<View>(R.id.homeAppListContainer) as ConstraintLayout
@@ -264,6 +281,8 @@ class HomeAdapter(
                 maxNumberOfHomeApps = maxNumberOfHomeApps.coerceAtMost(12)
 
                 val info = viewModel.info.value ?: return
+                if (info.maxNumberOfHomeApps == maxNumberOfHomeApps) return
+
                 info.maxNumberOfHomeApps = maxNumberOfHomeApps
 
                 val newHomeApps =
