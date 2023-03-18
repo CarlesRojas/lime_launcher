@@ -1,13 +1,13 @@
 package app.pinya.lime.ui.view.activity
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.lifecycleScope
@@ -39,21 +39,20 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_settings)
-        val layout = findViewById<ConstraintLayout>(R.id.contextMenuSettings_parent)
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.settings, SettingsFragment(this, layout)).commit()
-        }
+        if (savedInstanceState == null)
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.settings, SettingsFragment())
+                .commit()
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        if (android.os.Build.VERSION.SDK_INT != Build.VERSION_CODES.O)
-            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+        if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O)
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     }
 
 
-    class SettingsFragment(
-        private val settingsContext: Context, private val layout: ConstraintLayout
-    ) : PreferenceFragmentCompat() {
+    class SettingsFragment : PreferenceFragmentCompat() {
 
         private val billingHelper by lazy {
             (requireActivity().application as LimeLauncherApp).appContainer.billingHelper
@@ -67,12 +66,19 @@ class SettingsActivity : AppCompatActivity() {
         private var buyProMenu: BuyProMenu? = null
         private var notificationAccessMenu: NotificationAccessMenu? = null
 
+        private var constraintLayout: ConstraintLayout? = null
+
+        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+            super.onViewCreated(view, savedInstanceState)
+            constraintLayout = requireActivity().findViewById(R.id.contextMenuSettings_parent)
+        }
+
         private fun setLockScreenMenu(newLockMenu: LockScreenMenu?) {
             lockMenu = newLockMenu
             lockScreenMenuAdapter.handleLockScreenMenu(lockMenu)
 
             if (lockMenu == null) {
-                val prefs = PreferenceManager.getDefaultSharedPreferences(settingsContext)
+                val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
                 setSettingsAccordingToLockScreenAccessibilityStatus(prefs)
             }
         }
@@ -106,15 +112,15 @@ class SettingsActivity : AppCompatActivity() {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
 
             lockScreenMenuAdapter = LockScreenMenuAdapter(
-                settingsContext, ::setLockScreenMenu, ::handleEnablePermissionClick
+                requireContext(), ::setLockScreenMenu, ::handleEnablePermissionClick
             )
             buyProMenuAdapter =
-                BuyProMenuAdapter(settingsContext, ::setBuyProMenu, ::handleBuyProClick)
+                BuyProMenuAdapter(requireContext(), ::setBuyProMenu, ::handleBuyProClick)
             notificationAccessMenuAdapter = NotificationAccessMenuAdapter(
-                settingsContext, ::setNotificationAccessMenu, ::handleEnableNotificationAccessClick
+                requireContext(), ::setNotificationAccessMenu, ::handleEnableNotificationAccessClick
             )
 
-            val prefs = PreferenceManager.getDefaultSharedPreferences(settingsContext)
+            val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
 
             lifecycleScope.launch {
                 val appList = RefreshAppList(AppRepo()).invoke()
@@ -133,7 +139,7 @@ class SettingsActivity : AppCompatActivity() {
             }
 
             billingHelper.purchaseState.observe(this) { purchaseState ->
-                setIsPro(true) // TODO setIsPro(purchaseState == BillingHelper.ProPurchaseState.PURCHASED_AND_ACKNOWLEDGED)
+                setIsPro(purchaseState == BillingHelper.ProPurchaseState.PURCHASED_AND_ACKNOWLEDGED)
             }
         }
 
@@ -285,10 +291,10 @@ class SettingsActivity : AppCompatActivity() {
             doubleTapGesture?.setOnPreferenceChangeListener { _, newValue ->
                 val value = newValue as String
                 doubleTapApp?.isEnabled = value == "openApp"
+                val accessServiceDisabled = !Utils.isAccessServiceEnabled(requireContext())
 
-                if (value == "screenLock" && !Utils.isAccessServiceEnabled(settingsContext)) setLockScreenMenu(
-                    LockScreenMenu(layout)
-                )
+                if (constraintLayout != null && value == "screenLock" && accessServiceDisabled)
+                    setLockScreenMenu(LockScreenMenu(constraintLayout!!))
 
                 true
             }
@@ -323,10 +329,10 @@ class SettingsActivity : AppCompatActivity() {
             swipeUpGesture?.setOnPreferenceChangeListener { _, newValue ->
                 val value = newValue as String
                 swipeUpApp?.isEnabled = value == "openApp"
+                val accessServiceDisabled = !Utils.isAccessServiceEnabled(requireContext())
 
-                if (value == "screenLock" && !Utils.isAccessServiceEnabled(settingsContext)) setLockScreenMenu(
-                    LockScreenMenu(layout)
-                )
+                if (constraintLayout != null && value == "screenLock" && accessServiceDisabled)
+                    setLockScreenMenu(LockScreenMenu(constraintLayout!!))
 
                 true
             }
@@ -361,10 +367,10 @@ class SettingsActivity : AppCompatActivity() {
             swipeDownGesture?.setOnPreferenceChangeListener { _, newValue ->
                 val value = newValue as String
                 swipeDownApp?.isEnabled = value == "openApp"
+                val accessServiceDisabled = !Utils.isAccessServiceEnabled(requireContext())
 
-                if (value == "screenLock" && !Utils.isAccessServiceEnabled(settingsContext)) setLockScreenMenu(
-                    LockScreenMenu(layout)
-                )
+                if (constraintLayout != null && value == "screenLock" && accessServiceDisabled)
+                    setLockScreenMenu(LockScreenMenu(constraintLayout!!))
 
                 true
             }
@@ -395,7 +401,7 @@ class SettingsActivity : AppCompatActivity() {
                 findPreference("preference_home_swipe_down_gesture") as ListPreference?
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                val accessibilityActive = Utils.isAccessServiceEnabled(settingsContext)
+                val accessibilityActive = Utils.isAccessServiceEnabled(requireContext())
 
                 if (!accessibilityActive) {
                     val lockSelectedOnDoubleTap = prefs.getString(
@@ -444,9 +450,11 @@ class SettingsActivity : AppCompatActivity() {
 
             notificationBadges?.setOnPreferenceChangeListener { _, newValue ->
                 val value = newValue as String
+                val notificationServiceDisabled =
+                    !Utils.isNotificationServiceEnabled(requireContext())
 
-                if (value != "none" && !Utils.isNotificationServiceEnabled(settingsContext))
-                    setNotificationAccessMenu(NotificationAccessMenu(layout))
+                if (constraintLayout != null && value != "none" && notificationServiceDisabled)
+                    setNotificationAccessMenu(NotificationAccessMenu(constraintLayout!!))
 
                 true
             }
@@ -456,13 +464,13 @@ class SettingsActivity : AppCompatActivity() {
             val notificationBadges =
                 findPreference("preference_notification_general_badges") as ListPreference?
 
-            val notificationAccessActive = Utils.isNotificationServiceEnabled(settingsContext)
+            val notificationAccessActive = Utils.isNotificationServiceEnabled(requireContext())
 
             if (!notificationAccessActive) notificationBadges?.value = "none"
         }
 
         private fun openBuyProMenu() {
-            setBuyProMenu(BuyProMenu(layout))
+            if (constraintLayout != null) setBuyProMenu(BuyProMenu(constraintLayout!!))
         }
 
         private fun setIsPro(isPro: Boolean = false) {

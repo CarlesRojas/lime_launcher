@@ -34,12 +34,16 @@ class MyNotificationService : NotificationListenerService() {
     }
 
     private fun getCurrentNotifications() {
-        val notifications = mutableListOf<String>()
-        activeNotifications.forEachIndexed { index, statusBarNotification ->
-            notifications.add(index, statusBarNotification.packageName)
-        }
+        try {
+            val notifications = mutableListOf<String>()
+            activeNotifications.forEachIndexed { index, statusBarNotification ->
+                notifications.add(index, statusBarNotification.packageName)
+            }
 
-        broadcastStringArray(notifications.toTypedArray())
+            broadcastStringArray(notifications.toTypedArray())
+        } catch (e: Exception) {
+            return
+        }
     }
 
     override fun onListenerConnected() {

@@ -243,6 +243,7 @@ class DrawerAdapter(
         currentAlphabet.clear()
 
         for (app in viewModel.completeAppList) {
+            if (app.name.isEmpty()) continue
             val char = app.name.first().uppercaseChar()
 
             if (currentAlphabet.contains(char)) continue
