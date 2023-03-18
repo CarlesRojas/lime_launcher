@@ -85,7 +85,7 @@ class HomeAdapter(
         val dateTimeScale = Utils.getIntPref(context, IntPref.GENERAL_DATE_TIME_SCALE)
 
         date = layout.findViewById(R.id.homeDate)
-        date?.textSize = Utils.applyScale(20f, dateTimeScale)
+        date?.textSize = Utils.applyScale(18f, dateTimeScale)
         date?.gravity = when (alignment) {
             "right" -> Gravity.END
             "center" -> Gravity.CENTER
@@ -142,7 +142,7 @@ class HomeAdapter(
         val dateTimeScale = Utils.getIntPref(context, IntPref.GENERAL_DATE_TIME_SCALE)
 
         time = layout.findViewById(R.id.homeTime)
-        time?.textSize = Utils.applyScale(36f, dateTimeScale)
+        time?.textSize = Utils.applyScale(34f, dateTimeScale)
         time?.gravity = when (alignment) {
             "right" -> Gravity.END
             "center" -> Gravity.CENTER
