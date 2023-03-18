@@ -39,8 +39,8 @@ class DrawerAdapter(
     private var searchBarText: String = ""
 
     // ALPHABET
-    private var alphabetLayoutContainer: ConstraintLayout? = null
-    private var alphabetLayout: LinearLayout? = null
+    private lateinit var alphabetLayoutContainer: ConstraintLayout
+    private lateinit var alphabetLayout: LinearLayout
     private lateinit var currentLetter: TextView
     private val currentAlphabet: MutableList<Char> = mutableListOf()
     private var filteringByAlphabet = false
@@ -93,7 +93,7 @@ class DrawerAdapter(
             Utils.getBooleanPref(context, BooleanPref.DRAWER_SHOW_ALPHABET_FILTER)
 
         searchBar?.visibility = if (showSearchBar) View.VISIBLE else View.GONE
-        alphabetLayoutContainer?.visibility = if (showAlphabetFilter) View.VISIBLE else View.GONE
+        alphabetLayoutContainer.visibility = if (showAlphabetFilter) View.VISIBLE else View.GONE
 
         val constraintSet = ConstraintSet()
         constraintSet.clone(drawerConstraintLayout)
@@ -194,6 +194,9 @@ class DrawerAdapter(
     // ########################################
 
     private var lastSelectedChar: Char = '-'
+    private var alphabetTop: Int? = null
+    private var alphabetBottom: Int? = null
+
 
     @SuppressLint("ClickableViewAccessibility")
     fun initAlphabet() {
@@ -201,11 +204,22 @@ class DrawerAdapter(
         alphabetLayout = layout.findViewById(R.id.alphabetLayout)
         currentLetter = layout.findViewById(R.id.currentLetter)
 
-        alphabetLayout?.setOnTouchListener { _, event ->
+        alphabetLayout.setOnTouchListener { _, event ->
             clearText()
             hideKeyboard()
 
-            val perc = event.y / alphabetLayout!!.height
+            val numLetters = alphabetLayout.childCount
+
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                alphabetTop = alphabetLayout.getChildAt(0).top
+                alphabetBottom = alphabetLayout.getChildAt(numLetters - 1).bottom
+            }
+
+            if (numLetters <= 0 || alphabetTop == null || alphabetBottom == null || alphabetBottom!! - alphabetTop!! <= 0)
+                return@setOnTouchListener true
+
+            val perc = (event.y - alphabetTop!!) / (alphabetBottom!! - alphabetTop!!)
+
             val letterHeight = 1f / currentAlphabet.size
             val currentSection = floor(perc / letterHeight).toInt()
 
@@ -233,6 +247,8 @@ class DrawerAdapter(
             if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL || event.action == MotionEvent.ACTION_OUTSIDE) {
                 lastSelectedChar = '-'
                 currentLetter.visibility = View.GONE
+                alphabetTop = null
+                alphabetBottom = null
             }
 
             true
@@ -253,8 +269,8 @@ class DrawerAdapter(
             else if (!currentAlphabet.contains('#')) currentAlphabet.add(0, '#')
         }
 
-        alphabetLayout?.removeAllViews()
-        val alphabetHeight = alphabetLayoutContainer?.height ?: 20
+        alphabetLayout.removeAllViews()
+        val alphabetHeight = alphabetLayoutContainer.height
         val isTextBlack = Utils.getBooleanPref(context, BooleanPref.GENERAL_IS_TEXT_BLACK)
 
         for (char in currentAlphabet) {
@@ -271,7 +287,7 @@ class DrawerAdapter(
             textView.setAutoSizeTextTypeUniformWithConfiguration(
                 8, 14, 1, TypedValue.COMPLEX_UNIT_SP
             )
-            alphabetLayout?.addView(textView)
+            alphabetLayout.addView(textView)
         }
     }
 
