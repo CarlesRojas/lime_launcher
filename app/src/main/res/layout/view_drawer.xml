@@ -60,15 +60,25 @@
         app:layout_constraintStart_toStartOf="@+id/guidelineV1"
         app:layout_constraintTop_toTopOf="@+id/guidelineH1" />
 
-    <LinearLayout
-        android:id="@+id/alphabetLayout"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/alphabetLayoutContainer"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/guidelineH3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guidelineV2"
-        app:layout_constraintTop_toTopOf="@+id/guidelineH2" />
+        app:layout_constraintTop_toTopOf="@+id/guidelineH2">
+
+        <LinearLayout
+            android:id="@+id/alphabetLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/contextMenuDrawer_parent"

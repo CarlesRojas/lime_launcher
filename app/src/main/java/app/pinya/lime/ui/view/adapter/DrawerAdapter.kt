@@ -39,7 +39,9 @@ class DrawerAdapter(
     private var searchBarText: String = ""
 
     // ALPHABET
+    private var alphabetLayoutContainer: ConstraintLayout? = null
     private var alphabetLayout: LinearLayout? = null
+    private lateinit var currentLetter: TextView
     private val currentAlphabet: MutableList<Char> = mutableListOf()
     private var filteringByAlphabet = false
     private var lastFilterWasAlphabet = false
@@ -91,7 +93,7 @@ class DrawerAdapter(
             Utils.getBooleanPref(context, BooleanPref.DRAWER_SHOW_ALPHABET_FILTER)
 
         searchBar?.visibility = if (showSearchBar) View.VISIBLE else View.GONE
-        alphabetLayout?.visibility = if (showAlphabetFilter) View.VISIBLE else View.GONE
+        alphabetLayoutContainer?.visibility = if (showAlphabetFilter) View.VISIBLE else View.GONE
 
         val constraintSet = ConstraintSet()
         constraintSet.clone(drawerConstraintLayout)
@@ -195,19 +197,17 @@ class DrawerAdapter(
 
     @SuppressLint("ClickableViewAccessibility")
     fun initAlphabet() {
+        alphabetLayoutContainer = layout.findViewById(R.id.alphabetLayoutContainer)
         alphabetLayout = layout.findViewById(R.id.alphabetLayout)
-
-        val currentLetter = layout.findViewById<TextView>(R.id.currentLetter)
+        currentLetter = layout.findViewById(R.id.currentLetter)
 
         alphabetLayout?.setOnTouchListener { _, event ->
             clearText()
             hideKeyboard()
-            val startY = alphabetLayout!!.top
-            val endY = alphabetLayout!!.bottom
-            val perc = (event.rawY - startY) / (endY - startY)
-            val letterHeight = 1f / (AlphabetModel.ALPHABET.size + 1)
-            val currentSection = floor(perc / letterHeight).toInt()
 
+            val perc = event.y / alphabetLayout!!.height
+            val letterHeight = 1f / currentAlphabet.size
+            val currentSection = floor(perc / letterHeight).toInt()
 
             if (currentSection >= 0 && currentSection < currentAlphabet.size) {
                 val currentChar = currentAlphabet[currentSection]
@@ -239,11 +239,13 @@ class DrawerAdapter(
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun updateLettersIncludedInAlphabet() {
         currentAlphabet.clear()
+        val showHiddenApps = Utils.getBooleanPref(context, BooleanPref.GENERAL_SHOW_HIDDEN_APPS)
 
         for (app in viewModel.completeAppList) {
-            if (app.name.isEmpty()) continue
+            if (app.name.isEmpty() || (!showHiddenApps && app.hidden)) continue
             val char = app.name.first().uppercaseChar()
 
             if (currentAlphabet.contains(char)) continue
@@ -252,7 +254,7 @@ class DrawerAdapter(
         }
 
         alphabetLayout?.removeAllViews()
-        val alphabetHeight = alphabetLayout?.height ?: 20
+        val alphabetHeight = alphabetLayoutContainer?.height ?: 20
         val isTextBlack = Utils.getBooleanPref(context, BooleanPref.GENERAL_IS_TEXT_BLACK)
 
         for (char in currentAlphabet) {
