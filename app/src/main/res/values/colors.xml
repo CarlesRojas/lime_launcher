@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="gray">#303030</color>
 
     <color name="black">#FF000000</color>
     <color name="black_low">#C8000000</color>
@@ -15,11 +14,6 @@
     <color name="transparent">@android:color/transparent</color>
 
     <color name="popup_background_black">#1E1E1E</color>
-    <color name="popup_background_white">#ECECEC</color>
 
-    <color name="primary">#88FF00</color>
-    <color name="primary_variant">#69C500</color>
     <color name="primary_dark">#5AAA00</color>
-    <color name="secondary">#88FF00</color>
-    <color name="secondary_variant">#69C500</color>
 </resources>

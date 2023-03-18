@@ -1,3 +1,5 @@
+@file:Suppress("SpellCheckingInspection")
+
 package app.pinya.lime
 
 const val PUBLIC_BILLING_KEY =
