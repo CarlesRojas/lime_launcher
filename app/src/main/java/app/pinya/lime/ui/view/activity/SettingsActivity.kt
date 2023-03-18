@@ -1,9 +1,11 @@
 package app.pinya.lime.ui.view.activity
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -12,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.*
+import app.pinya.lime.BuildConfig
 import app.pinya.lime.LimeLauncherApp
 import app.pinya.lime.R
 import app.pinya.lime.data.memory.AppProvider
@@ -127,6 +130,8 @@ class SettingsActivity : AppCompatActivity() {
             lifecycleScope.launch {
                 val appList = RefreshAppList(AppRepo()).invoke()
 
+                setRateAppSettings()
+
                 setDateFormatSettings(appList)
                 setTimeFormatSettings(appList)
 
@@ -150,6 +155,44 @@ class SettingsActivity : AppCompatActivity() {
             setLockScreenMenu(null)
             setBuyProMenu(null)
             setNotificationAccessMenu(null)
+        }
+
+
+        private fun setRateAppSettings() {
+            val rateAppButton = findPreference("preference_rate_app") as SwitchPreference?
+
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O) rateAppButton?.isChecked = true
+
+            fun setVisibility(isChecked: Boolean) {
+                rateAppButton?.isVisible = !isChecked
+                rateAppButton?.isEnabled = !isChecked
+            }
+            setVisibility(rateAppButton?.isChecked ?: false)
+
+            rateAppButton?.setOnPreferenceChangeListener { _, newValue ->
+                if (newValue as Boolean) {
+                    setVisibility(newValue as Boolean)
+
+                    val uri: Uri = Uri.parse("market://details?id=${BuildConfig.APPLICATION_ID}")
+                    val goToMarket = Intent(Intent.ACTION_VIEW, uri)
+
+                    goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_NEW_DOCUMENT or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
+
+                    try {
+                        startActivity(goToMarket)
+                    } catch (e: ActivityNotFoundException) {
+                        startActivity(
+                            Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse("http://play.google.com/store/apps/details?id=${BuildConfig.APPLICATION_ID}")
+                            )
+                        )
+                    }
+                }
+
+                true
+            }
+
         }
 
         private fun setDateFormatSettings(appList: MutableList<AppModel>) {

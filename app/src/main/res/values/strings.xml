@@ -48,6 +48,9 @@
     <string name="title_activity_settings">Lime Launcher Settings</string>
     <string name="title_activity_settings_pro">Lime Launcher PRO Settings</string>
 
+
+    <string name="preference_rate_app">Enjoying Lime Launcher? Rate us!</string>
+
     <string name="preference_title_general">General</string>
     <string name="preference_title_home">Home</string>
     <string name="preference_title_gestures">Home gestures</string>

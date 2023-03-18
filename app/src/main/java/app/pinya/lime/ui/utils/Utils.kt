@@ -248,11 +248,6 @@ class Utils {
             currentApp: AppModel,
             isHome: Boolean
         ) {
-            val areIconsVisible = getBooleanPref(
-                context,
-                if (isHome) BooleanPref.HOME_SHOW_ICONS else BooleanPref.DRAWER_SHOW_ICONS
-            )
-
             val appLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
             val listFormat: LinearLayout = appLayout.findViewById(R.id.listFormat)
             val gridFormat: LinearLayout = appLayout.findViewById(R.id.gridFormat)

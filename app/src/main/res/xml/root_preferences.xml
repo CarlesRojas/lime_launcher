@@ -6,6 +6,13 @@
             app:isPreferenceVisible="false"
             app:key="preference_get_pro"
             app:layout="@layout/get_pro_button" />
+
+        <SwitchPreference
+            app:defaultValue="false"
+            app:isPreferenceVisible="false"
+            app:key="preference_rate_app"
+            app:title="@string/preference_rate_app"
+            app:widgetLayout="@layout/view_transparent" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/preference_title_general">
