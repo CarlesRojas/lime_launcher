@@ -216,8 +216,8 @@ class DrawerAdapter(
             val numLetters = alphabetLayout.childCount
 
             if (event.action == MotionEvent.ACTION_DOWN) {
-                alphabetTop = alphabetLayout.getChildAt(0).top
-                alphabetBottom = alphabetLayout.getChildAt(numLetters - 1).bottom
+                alphabetTop = alphabetLayout.getChildAt(0)?.top
+                alphabetBottom = alphabetLayout.getChildAt(numLetters - 1)?.bottom
             }
 
             if (numLetters <= 0 || alphabetTop == null || alphabetBottom == null || alphabetBottom!! - alphabetTop!! <= 0)
