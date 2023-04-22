@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -45,6 +47,27 @@ class MainActivity : AppCompatActivity() {
     private var checkForChangesInAppList: CheckForChangesInAppList? = null
 
     private var notificationsHandler: NotificationsHandler? = null
+
+
+    val pickAppWidgetLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            result: ActivityResult ->
+        /*if (result.resultCode == Activity.RESULT_OK) {
+            val intent = result.data
+            val showWidgetPage = Utils.getBooleanPref(this@MainActivity, BooleanPref.GENERAL_SHOW_WIDGET_PAGE)
+            if (showWidgetPage) viewPager.setCurrentItem(1, false)
+            else viewPager.setCurrentItem(0, false)
+
+            val appWidgetId = intent?.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1) ?: -1
+            val appWidgetProviderInfo = AppWidgetManager.getInstance(this).getAppWidgetInfo(appWidgetId)
+            customPageAdapter.widget?.notifyWidgetAdded(appWidgetId, appWidgetProviderInfo)
+        }*/
+        customPageAdapter.widget?.notifyPickWidgetResult(result)
+
+    }
+
+    val configureAppWidgetLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        customPageAdapter.widget?.notifyWidgetConfiguredResult(result)
+    }
 
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -128,10 +151,11 @@ class MainActivity : AppCompatActivity() {
         checkForChangesInAppList?.stopUpdates()
     }
 
+
     private fun linkAdapter() {
         viewPager = findViewById(R.id.viewPager)
 
-        customPageAdapter = MainPagerAdapter(this, appViewModel).also { adapter ->
+        customPageAdapter = MainPagerAdapter(this, appViewModel, pickAppWidgetLauncher, configureAppWidgetLauncher).also { adapter ->
             viewPager.adapter = adapter
             viewPager.offscreenPageLimit = 2
 
@@ -223,4 +247,5 @@ class MainActivity : AppCompatActivity() {
             else customPageAdapter.drawer?.handleNotificationsChange(notifications)
         }
     }
+
 }

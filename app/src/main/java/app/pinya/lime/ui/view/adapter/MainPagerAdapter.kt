@@ -1,9 +1,11 @@
 package app.pinya.lime.ui.view.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,8 +17,12 @@ import app.pinya.lime.ui.viewmodel.AppViewModel
 import kotlinx.coroutines.*
 import java.util.ArrayList
 
-class MainPagerAdapter(private val context: Context, private val viewModel: AppViewModel) :
-    PagerAdapter() {
+class MainPagerAdapter(
+    private val context: Context,
+    private val viewModel: AppViewModel,
+    private val pickAppWidgetLauncher: ActivityResultLauncher<Intent>,
+    private val configureAppWidgetLauncher: ActivityResultLauncher<Intent>
+) : PagerAdapter() {
 
     var widget: WidgetPageAdapter? = null
     var home: HomeAdapter? = null
@@ -53,10 +59,10 @@ class MainPagerAdapter(private val context: Context, private val viewModel: AppV
             else -> instantiateHome(collection)
         }
     }
-
+/*
     override fun getItemPosition(`object`: Any): Int {
         return POSITION_NONE
-    }
+    }*/
 
     override fun destroyItem(collection: ViewGroup, position: Int, view: Any) {
         collection.removeView(view as View)
@@ -88,7 +94,7 @@ class MainPagerAdapter(private val context: Context, private val viewModel: AppV
         val layout = inflater.inflate(R.layout.view_widget_page, collection, false) as ViewGroup
         viewWidget = layout.findViewById<View>(R.id.widgetList) as RecyclerView
 
-        this.widget = WidgetPageAdapter(context, layout, viewModel).also { adapter ->
+        this.widget = WidgetPageAdapter(context, layout, viewModel, pickAppWidgetLauncher, configureAppWidgetLauncher).also { adapter ->
             viewWidget!!.adapter = adapter
         }
         setWidgetLayoutManager()
