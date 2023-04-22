@@ -61,6 +61,7 @@ class Utils {
 
             val key = when (preference) {
                 BooleanPref.GENERAL_SHOW_HIDDEN_APPS -> "preference_general_show_hidden_apps"
+                BooleanPref.GENERAL_SHOW_WIDGET_PAGE -> "preference_general_show_widget_page"
                 BooleanPref.GENERAL_HIDE_STATUS_BAR -> "preference_general_hide_status_bar"
                 BooleanPref.GENERAL_CHANGE_WALLPAPER_DAILY -> "preference_general_change_wallpaper_daily"
                 BooleanPref.GENERAL_ALSO_CHANGE_LOCK_SCREEN -> "preference_general_also_change_lockscreen"
@@ -87,6 +88,7 @@ class Utils {
 
             val defaultValue = when (preference) {
                 BooleanPref.GENERAL_SHOW_HIDDEN_APPS -> false
+                BooleanPref.GENERAL_SHOW_WIDGET_PAGE -> false
                 BooleanPref.GENERAL_HIDE_STATUS_BAR -> false
                 BooleanPref.GENERAL_CHANGE_WALLPAPER_DAILY -> false
                 BooleanPref.GENERAL_ALSO_CHANGE_LOCK_SCREEN -> false

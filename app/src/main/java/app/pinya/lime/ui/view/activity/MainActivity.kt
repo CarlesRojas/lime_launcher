@@ -99,13 +99,15 @@ class MainActivity : AppCompatActivity() {
         appViewModel.reorderMenu.observe(this) { reorderMenu ->
             reorderMenuAdapter.handleReorderMenu(reorderMenu)
         }
-
     }
 
     override fun onResume() {
         super.onResume()
 
-        viewPager.setCurrentItem(0, false)
+        val showWidgetPage = Utils.getBooleanPref(this@MainActivity, BooleanPref.GENERAL_SHOW_WIDGET_PAGE)
+        customPageAdapter.notifyDataSetChanged()
+        if (showWidgetPage) viewPager.setCurrentItem(1, false)
+        else viewPager.setCurrentItem(0, false)
 
         val hideStatusBar = Utils.getBooleanPref(this, BooleanPref.GENERAL_HIDE_STATUS_BAR)
         val dimBackground = Utils.getBooleanPref(this, BooleanPref.GENERAL_DIM_BACKGROUND)
@@ -131,6 +133,7 @@ class MainActivity : AppCompatActivity() {
 
         customPageAdapter = MainPagerAdapter(this, appViewModel).also { adapter ->
             viewPager.adapter = adapter
+            viewPager.offscreenPageLimit = 2
 
             viewPager.addOnPageChangeListener(object : OnPageChangeListener {
                 override fun onPageScrolled(
@@ -139,7 +142,16 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onPageSelected(position: Int) {
-                    if (position == 0) adapter.onHomePageSelected() else adapter.onDrawerPageSelected()
+                    val showWidgetPage = Utils.getBooleanPref(this@MainActivity, BooleanPref.GENERAL_SHOW_WIDGET_PAGE)
+
+                    if (showWidgetPage) {
+                        if (position == 0) adapter.onWidgetPageSelected()
+                        else if (position == 1) adapter.onHomePageSelected()
+                        else adapter.onDrawerPageSelected()
+                    } else {
+                        if (position == 0) adapter.onHomePageSelected()
+                        else adapter.onDrawerPageSelected()
+                    }
                 }
 
                 override fun onPageScrollStateChanged(state: Int) {}

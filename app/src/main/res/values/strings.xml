@@ -59,6 +59,7 @@
     <string name="preference_title_time">Time</string>
 
     <string name="preference_general_show_hidden_apps">Show hidden apps</string>
+    <string name="preference_general_show_widget_page">Show widget page</string>
     <string name="preference_general_hide_status_bar">Hide status bar</string>
     <string name="preference_general_notification_badges">Choose notification badge type</string>
     <string name="preference_general_change_wallpaper_daily">Change wallpaper daily</string>

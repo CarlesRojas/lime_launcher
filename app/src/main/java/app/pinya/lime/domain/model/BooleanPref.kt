@@ -1,6 +1,7 @@
 package app.pinya.lime.domain.model
 
 enum class BooleanPref {
+    GENERAL_SHOW_WIDGET_PAGE,
     GENERAL_SHOW_HIDDEN_APPS,
     GENERAL_HIDE_STATUS_BAR,
     GENERAL_CHANGE_WALLPAPER_DAILY,

@@ -13,28 +13,49 @@ import app.pinya.lime.domain.model.BooleanPref
 import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.viewmodel.AppViewModel
 import kotlinx.coroutines.*
+import java.util.ArrayList
 
 class MainPagerAdapter(private val context: Context, private val viewModel: AppViewModel) :
     PagerAdapter() {
 
+    var widget: WidgetPageAdapter? = null
     var home: HomeAdapter? = null
     var drawer: DrawerAdapter? = null
 
+    private var viewWidget: RecyclerView? = null
     private var viewHome: RecyclerView? = null
     private var viewDrawer: RecyclerView? = null
 
     fun onResume() {
+        setWidgetLayoutManager()
         setHomeLayoutManager()
         setDrawerLayoutManager()
 
+        val showWidgetPage = Utils.getBooleanPref(context, BooleanPref.GENERAL_SHOW_WIDGET_PAGE)
+
+        if (showWidgetPage) widget?.onResume()
         home?.onResume()
         drawer?.onResume()
     }
 
 
     override fun instantiateItem(collection: ViewGroup, position: Int): Any {
-        return if (position == 0) instantiateHome(collection)
-        else instantiateDrawer(collection)
+        val showWidgetPage = Utils.getBooleanPref(context, BooleanPref.GENERAL_SHOW_WIDGET_PAGE)
+
+        return if (showWidgetPage) when (position) {
+            0 -> instantiateWidgetPage(collection)
+            1 -> instantiateHome(collection)
+            2 -> instantiateDrawer(collection)
+            else -> instantiateHome(collection)
+        } else when (position) {
+            0 -> instantiateHome(collection)
+            1 -> instantiateDrawer(collection)
+            else -> instantiateHome(collection)
+        }
+    }
+
+    override fun getItemPosition(`object`: Any): Int {
+        return POSITION_NONE
     }
 
     override fun destroyItem(collection: ViewGroup, position: Int, view: Any) {
@@ -42,7 +63,8 @@ class MainPagerAdapter(private val context: Context, private val viewModel: AppV
     }
 
     override fun getCount(): Int {
-        return 2
+        val showWidgetPage = Utils.getBooleanPref(context, BooleanPref.GENERAL_SHOW_WIDGET_PAGE)
+        return if (showWidgetPage) 3 else 2
     }
 
     override fun isViewFromObject(view: View, `object`: Any): Boolean {
@@ -50,7 +72,33 @@ class MainPagerAdapter(private val context: Context, private val viewModel: AppV
     }
 
     override fun getPageTitle(position: Int): CharSequence {
-        return if (position == 0) "Home" else "Drawer"
+        val showWidgetPage = Utils.getBooleanPref(context, BooleanPref.GENERAL_SHOW_WIDGET_PAGE)
+
+        if (showWidgetPage) return when (position) {
+            0 -> "Widget"
+            1 -> "Home"
+            2 -> "Drawer"
+            else -> "Unknown"
+        }
+        else return if (position == 0) "Home" else "Drawer"
+    }
+
+    private fun instantiateWidgetPage(collection: ViewGroup): ViewGroup {
+        val inflater = LayoutInflater.from(context)
+        val layout = inflater.inflate(R.layout.view_widget_page, collection, false) as ViewGroup
+        viewWidget = layout.findViewById<View>(R.id.widgetList) as RecyclerView
+
+        this.widget = WidgetPageAdapter(context, layout, viewModel).also { adapter ->
+            viewWidget!!.adapter = adapter
+        }
+        setWidgetLayoutManager()
+
+        collection.addView(layout)
+        return layout
+    }
+
+    private fun setWidgetLayoutManager() {
+        viewWidget?.layoutManager = LinearLayoutManager(context)
     }
 
 
@@ -63,6 +111,7 @@ class MainPagerAdapter(private val context: Context, private val viewModel: AppV
             viewHome!!.adapter = adapter
         }
         setHomeLayoutManager()
+        this.home?.handleHomeListUpdate(viewModel.homeList.value ?: ArrayList())
 
         collection.addView(layout)
         return layout
@@ -88,6 +137,7 @@ class MainPagerAdapter(private val context: Context, private val viewModel: AppV
             viewDrawer!!.adapter = adapter
         }
         setDrawerLayoutManager()
+        this.drawer?.handleDrawerListUpdate(viewModel.drawerList.value ?: ArrayList())
 
         collection.addView(layout)
         return layout
@@ -98,6 +148,10 @@ class MainPagerAdapter(private val context: Context, private val viewModel: AppV
 
         viewDrawer?.layoutManager =
             if (showInGrid) GridLayoutManager(context, 3) else LinearLayoutManager(context)
+    }
+
+    fun onWidgetPageSelected() {
+        println("WIDGET PAGE SELECTED")
     }
 
 

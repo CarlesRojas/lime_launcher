@@ -21,6 +21,11 @@
             app:key="preference_general_show_hidden_apps"
             app:title="@string/preference_general_show_hidden_apps" />
 
+        <SwitchPreference
+            app:defaultValue="false"
+            app:key="preference_general_show_widget_page"
+            app:title="@string/preference_general_show_widget_page" />
+
         <Preference
             app:isPreferenceVisible="false"
             app:key="preference_general_hide_status_bar_pro"
