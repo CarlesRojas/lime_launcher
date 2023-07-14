@@ -1,10 +1,7 @@
 # Builds the project and uploads a debug APK
 name: Android PR CI
 
-on:
-  pull_request:
-    branches:
-      - 'master'
+on: [ push, pull_request ]
 
 jobs:
   build:
