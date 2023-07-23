@@ -42,7 +42,6 @@ class CheckForChangesInAppList(
         }
     }
 
-
     private fun getSequenceNumber(context: Context): Int {
         val sharedPrefFile = context.getSharedPreferences(preferencesName, JobService.MODE_PRIVATE)
         return sharedPrefFile.getInt(sequencePreferenceName, 0)

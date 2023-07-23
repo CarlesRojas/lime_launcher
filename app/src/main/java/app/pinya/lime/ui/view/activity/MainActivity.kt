@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -100,6 +101,11 @@ class MainActivity : AppCompatActivity() {
             reorderMenuAdapter.handleReorderMenu(reorderMenu)
         }
 
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                viewPager.setCurrentItem(0, true)
+            }
+        })
     }
 
     override fun onResume() {
