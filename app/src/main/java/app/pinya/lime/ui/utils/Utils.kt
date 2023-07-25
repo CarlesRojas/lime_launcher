@@ -1,6 +1,7 @@
 package app.pinya.lime.ui.utils
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -118,6 +119,7 @@ class Utils {
 
             val key = when (preference) {
                 StringPref.GENERAL_NOTIFICATION_BADGES -> "preference_general_notification_general_badges"
+                StringPref.GENERAL_ICON_PACK -> "preference_general_icon_pack"
 
                 StringPref.HOME_ALIGNMENT -> "preference_home_alignment"
                 StringPref.HOME_DOUBLE_TAP_ACTION -> "preference_home_double_tap_gesture"
@@ -136,6 +138,7 @@ class Utils {
 
             val defaultValue = when (preference) {
                 StringPref.GENERAL_NOTIFICATION_BADGES -> "none"
+                StringPref.GENERAL_ICON_PACK -> "None"
 
                 StringPref.HOME_ALIGNMENT -> "left"
                 StringPref.HOME_DOUBLE_TAP_ACTION -> "none"

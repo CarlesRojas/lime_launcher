@@ -20,6 +20,7 @@ import app.pinya.lime.domain.model.BooleanPref
 import app.pinya.lime.domain.model.StringPref
 import app.pinya.lime.ui.utils.CheckForChangesInAppList
 import app.pinya.lime.ui.utils.DailyWallpaper
+import app.pinya.lime.ui.utils.IconPackManager
 import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.utils.notifications.NotificationsHandler
 import app.pinya.lime.ui.view.adapter.*
@@ -46,6 +47,8 @@ class MainActivity : AppCompatActivity() {
     private var checkForChangesInAppList: CheckForChangesInAppList? = null
 
     private var notificationsHandler: NotificationsHandler? = null
+
+    private var lastIconPackSelected: String = "None"
 
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -106,6 +109,16 @@ class MainActivity : AppCompatActivity() {
                 viewPager.setCurrentItem(0, true)
             }
         })
+
+        lastIconPackSelected = Utils.getStringPref(this, StringPref.GENERAL_ICON_PACK)
+
+        /* TODO
+        val iconPackManager = IconPackManager(this)
+        iconPackManager.isSupportedIconPacks().forEach {
+            if (it.value.name == "Whicons") {
+                it.value.drawables
+            }
+        }*/
     }
 
     override fun onResume() {
@@ -125,6 +138,13 @@ class MainActivity : AppCompatActivity() {
 
         hideContextMenus()
         checkForChangesInAppList?.startUpdates()
+
+
+        var newIconPack = Utils.getStringPref(this, StringPref.GENERAL_ICON_PACK)
+        if (newIconPack != lastIconPackSelected) {
+            lastIconPackSelected = newIconPack
+            appViewModel.updateAppList(this)
+        }
     }
 
     override fun onPause() {

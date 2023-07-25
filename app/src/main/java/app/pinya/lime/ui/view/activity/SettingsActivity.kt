@@ -20,10 +20,12 @@ import app.pinya.lime.R
 import app.pinya.lime.data.memory.AppProvider
 import app.pinya.lime.data.repo.AppRepo
 import app.pinya.lime.domain.model.AppModel
+import app.pinya.lime.domain.model.StringPref
 import app.pinya.lime.domain.model.menus.BuyProMenu
 import app.pinya.lime.domain.model.menus.LockScreenMenu
 import app.pinya.lime.domain.model.menus.NotificationAccessMenu
 import app.pinya.lime.domain.usecase.RefreshAppList
+import app.pinya.lime.ui.utils.IconPackManager
 import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.utils.billing.BillingHelper
 import app.pinya.lime.ui.view.adapter.BuyProMenuAdapter
@@ -132,6 +134,8 @@ class SettingsActivity : AppCompatActivity() {
 
                 setRateAppSettings()
 
+                setGeneralSettings(prefs)
+
                 setDateFormatSettings(appList)
                 setTimeFormatSettings(appList)
 
@@ -193,6 +197,30 @@ class SettingsActivity : AppCompatActivity() {
                 true
             }
 
+        }
+
+        private fun setGeneralSettings(prefs: SharedPreferences) {
+            val iconPack = findPreference("preference_general_icon_pack") as ListPreference?
+            val currentIconPack = Utils.getStringPref(requireContext(), StringPref.GENERAL_ICON_PACK)
+
+            if (iconPack != null) {
+                val iconPackManager = IconPackManager(requireContext())
+
+                val iconPackList = mutableListOf<String>()
+                iconPackList.add("None")
+                iconPackManager.isSupportedIconPacks().forEach {
+                    iconPackList.add(it.value.name)
+                }
+
+                iconPack.entries = iconPackList.toTypedArray()
+                iconPack.entryValues = iconPackList.toTypedArray()
+                iconPack.isEnabled = true
+                iconPack.summary = currentIconPack
+                iconPack.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
+                    iconPack.summary = newValue as String
+                    true
+                }
+            }
         }
 
         private fun setDateFormatSettings(appList: MutableList<AppModel>) {
