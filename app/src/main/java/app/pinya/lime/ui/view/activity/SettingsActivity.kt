@@ -150,6 +150,7 @@ class SettingsActivity : AppCompatActivity() {
             }
 
             billingHelper.purchaseState.observe(this) { purchaseState ->
+                // setIsPro(false)
                 setIsPro(purchaseState == BillingHelper.ProPurchaseState.PURCHASED_AND_ACKNOWLEDGED)
             }
         }
@@ -556,6 +557,11 @@ class SettingsActivity : AppCompatActivity() {
                 true
             }
 
+            val chooseIconPack =
+                findPreference("preference_general_icon_pack") as ListPreference?
+            val chooseIconPackPro =
+                findPreference("preference_general_icon_pack_pro") as Preference?
+
             val hideStatusBar =
                 findPreference("preference_general_hide_status_bar") as SwitchPreference?
             val hideStatusBarPro =
@@ -593,6 +599,9 @@ class SettingsActivity : AppCompatActivity() {
             val drawerShowInGridPro =
                 findPreference("preference_drawer_show_in_grid_pro") as Preference?
 
+            chooseIconPack?.isVisible = isPro
+            chooseIconPackPro?.isVisible = !isPro
+
             hideStatusBar?.isVisible = isPro
             hideStatusBarPro?.isVisible = !isPro
 
@@ -618,6 +627,10 @@ class SettingsActivity : AppCompatActivity() {
             drawerShowInGridPro?.isVisible = !isPro
 
             if (!isPro) {
+                chooseIconPackPro?.setOnPreferenceClickListener {
+                    openBuyProMenu()
+                    true
+                }
                 hideStatusBarPro?.setOnPreferenceClickListener {
                     openBuyProMenu()
                     true

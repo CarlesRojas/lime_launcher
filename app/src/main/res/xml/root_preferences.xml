@@ -16,13 +16,18 @@
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/preference_title_general">
+        <Preference
+            app:isPreferenceVisible="false"
+            app:key="preference_general_icon_pack_pro"
+            app:title="@string/preference_general_icon_pack"
+            app:widgetLayout="@layout/get_pro_small_button" />
+
         <ListPreference
             app:defaultValue="None"
             app:key="preference_general_icon_pack"
             app:title="@string/preference_general_icon_pack"
             app:summary="@string/preference_general_icon_pack_summary"
             app:enabled="false"/>
-
 
         <SwitchPreference
             app:defaultValue="false"
