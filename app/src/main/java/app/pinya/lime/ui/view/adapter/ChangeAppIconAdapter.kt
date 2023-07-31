@@ -87,13 +87,23 @@ class ChangeAppIconAdapter(
 
         fun setIcon(iconPackName: String?, iconName: String?): Unit {
             if (info != null) {
-                if (iconName == null || iconPackName == null) {
-                    info.iconRules.removeAll {
-                        val currRule = IconRule.deserialize(it)
-                        currRule.packageName == changeAppIconMenu.app.packageName && currRule.iconPackContext == currentIconPackName
-                    }
+                info.iconRules.removeAll {
+                    val currRule = IconRule.deserialize(it)
+                    currRule.packageName == changeAppIconMenu.app.packageName && currRule.iconPackContext == currentIconPackName
                 }
-                else info.iconRules.add(IconRule.serialize(IconRule(changeAppIconMenu.app.packageName, currentIconPackName, iconPackName, iconName)))
+
+                if (iconName != null && iconPackName != null) {
+                    info.iconRules.add(
+                        IconRule.serialize(
+                            IconRule(
+                                changeAppIconMenu.app.packageName,
+                                currentIconPackName,
+                                iconPackName,
+                                iconName
+                            )
+                        )
+                    )
+                }
 
                 viewModel.updateInfo(info, context)
 
