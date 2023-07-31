@@ -50,10 +50,6 @@ class ChangeAppIconAdapter(
         val closeButton = changeAppIconView.findViewById<ImageButton>(R.id.closeChooseAppIconMenuButton)
         val backButton = changeAppIconView.findViewById<ImageButton>(R.id.backChooseAppIconMenuButton)
 
-        val loadingContainer = changeAppIconView.findViewById<LinearLayout>(R.id.loadingContainer)
-        val loadingIcon = changeAppIconView.findViewById<ImageView>(R.id.loadingIcon)
-        val spinAnimation = AnimationUtils.loadAnimation(context, R.anim.spin)
-
         val chooseIconPackContainer = changeAppIconView.findViewById<LinearLayout>(R.id.chooseIconPackContainer)
         val iconPackList = changeAppIconView.findViewById<FlexboxLayout>(R.id.iconPackList)
         val noIconPacksMessage = changeAppIconView.findViewById<TextView>(R.id.noIconPacksMessage)
@@ -68,14 +64,6 @@ class ChangeAppIconAdapter(
 
         icon.setImageDrawable(changeAppIconMenu.app.icon)
         appName.text = changeAppIconMenu.app.name
-
-        fun showLoadingStep() {
-            loadingIcon.startAnimation(spinAnimation)
-            loadingContainer.visibility = View.VISIBLE
-            chooseIconPackContainer.visibility = View.GONE
-            chooseIconContainer.visibility = View.GONE
-            backButton.visibility = View.GONE
-        }
 
         contextMenuWindow = PopupWindow(
             changeAppIconView,
@@ -98,8 +86,6 @@ class ChangeAppIconAdapter(
         var info = viewModel.info.value
 
         fun setIcon(iconPackName: String?, iconName: String?): Unit {
-            showLoadingStep()
-
             if (info != null) {
                 if (iconName == null || iconPackName == null) {
                     info.iconRules.removeAll {
@@ -139,7 +125,6 @@ class ChangeAppIconAdapter(
             searchIconBar.setText("")
             searchIconBar.focusAndShowKeyboard()
 
-            loadingContainer.visibility = View.GONE
             chooseIconPackContainer.visibility = View.GONE
             chooseIconContainer.visibility = View.VISIBLE
             backButton.visibility = View.VISIBLE
@@ -189,7 +174,6 @@ class ChangeAppIconAdapter(
         }
 
         fun showStepOne() {
-            loadingContainer.visibility = View.GONE
             chooseIconPackContainer.visibility = View.VISIBLE
             chooseIconContainer.visibility = View.GONE
             backButton.visibility = View.GONE

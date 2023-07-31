@@ -66,33 +66,6 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/loadingContainer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:orientation="vertical"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:clickable="false"
-            app:layout_constraintTop_toBottomOf="@+id/chooseAppIconMenu_titleBar">
-
-            <ImageView
-                android:id="@+id/loadingIcon"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_gravity="center"
-                android:clickable="false"
-                android:background="@drawable/icon_load"
-                android:contentDescription="@string/loading_icon_description" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="32dp"
-                android:clickable="false"
-                android:background="@android:color/transparent" />
-        </LinearLayout>
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/chooseIconContainer"
             android:layout_width="match_parent"
@@ -182,7 +155,6 @@
             android:orientation="vertical"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/chooseAppIconMenu_titleBar">
 
             <TextView
