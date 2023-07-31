@@ -162,13 +162,18 @@
                 android:layout_height="16dp"
                 android:background="@android:color/transparent" />
 
-            <LinearLayout
+            <com.google.android.flexbox.FlexboxLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/iconPackList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="vertical"
-                app:layout_constraintTop_toBottomOf="@+id/chooseAppIconMenu_titleBar">
+                app:flexWrap="wrap"
+                app:alignItems="stretch"
+                app:alignContent="stretch"
+                app:showDivider="middle"
+                app:dividerDrawable="@drawable/divider"
+                app:layout_constraintTop_toBottomOf="@+id/chooseAppIconMenu_titleBar" >
 
                 <TextView
                     android:id="@+id/noIconPacksMessage"
@@ -179,7 +184,8 @@
                     android:text="@string/changeAppIconMenu_noIconPacks"
                     android:textColor="@color/white_low"
                     android:textSize="16sp" />
-            </LinearLayout>
+
+            </com.google.android.flexbox.FlexboxLayout>
 
             <View
                 android:layout_width="match_parent"

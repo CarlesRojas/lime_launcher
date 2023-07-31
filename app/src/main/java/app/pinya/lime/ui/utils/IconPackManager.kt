@@ -17,6 +17,7 @@ import android.os.Build
 import android.util.Log
 import android.util.Xml
 import androidx.core.graphics.drawable.toDrawable
+import app.pinya.lime.domain.model.Icon
 import app.pinya.lime.domain.model.IconRule
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
@@ -128,8 +129,8 @@ open class IconPackManager(mContext: Context) {
         }
 
         @SuppressLint("UseCompatLoadingForDrawables")
-        fun getIconsForKeyword(keyword: String): Set<Drawable> {
-            val icons = mutableSetOf<Drawable>()
+        fun getIconsForKeyword(keyword: String): Set<Icon> {
+            val icons = mutableSetOf<Icon>()
             val iconIds = mutableSetOf<Int>()
             var maxIcons = 256
 
@@ -137,10 +138,11 @@ open class IconPackManager(mContext: Context) {
                 it.key?.contains(keyword) == true
             }.forEach {
                 val id = iconPackRes.getIdentifier(it.value, "drawable", packageName)
+                val key = it.key
 
-                if (id > 0 && !iconIds.contains(id) && icons.size < maxIcons) {
+                if (key != null && id > 0 && !iconIds.contains(id) && icons.size < maxIcons) {
                     try {
-                        icons.add(iconPackRes.getDrawable(id, null))
+                        icons.add(Icon(key, iconPackRes.getDrawable(id, null)))
                         iconIds.add(id)
                     } catch (_: Exception) {
                     }

@@ -61,6 +61,8 @@ dependencies {
 
     implementation 'com.android.billingclient:billing:5.1.0'
     implementation 'com.android.billingclient:billing-ktx:5.1.0'
+
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
 }
 
 kapt {
