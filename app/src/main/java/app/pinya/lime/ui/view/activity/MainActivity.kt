@@ -13,14 +13,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import app.pinya.lime.LimeLauncherApp
 import app.pinya.lime.R
 import app.pinya.lime.data.memory.AppProvider
 import app.pinya.lime.databinding.ActivityMainBinding
 import app.pinya.lime.domain.model.BooleanPref
 import app.pinya.lime.domain.model.StringPref
+import app.pinya.lime.domain.model.menus.BuyProMenu
 import app.pinya.lime.ui.utils.CheckForChangesInAppList
 import app.pinya.lime.ui.utils.DailyWallpaper
-import app.pinya.lime.ui.utils.IconPackManager
 import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.utils.notifications.NotificationsHandler
 import app.pinya.lime.ui.view.adapter.*
@@ -41,6 +42,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appMenuAdapter: AppMenuAdapter
     private lateinit var renameMenuAdapter: RenameMenuAdapter
     private lateinit var reorderMenuAdapter: ReorderMenuAdapter
+    private lateinit var buyProMenuAdapter: BuyProMenuAdapter
+    private lateinit var changeAppIconAdapter: ChangeAppIconAdapter
 
     private var dailyWallpaper: DailyWallpaper? = null
 
@@ -49,6 +52,14 @@ class MainActivity : AppCompatActivity() {
     private var notificationsHandler: NotificationsHandler? = null
 
     private var lastIconPackSelected: String = "None"
+
+    private val billingHelper by lazy {
+        (this.application as LimeLauncherApp).appContainer.billingHelper
+    }
+
+    private fun handleBuyProClick() {
+        billingHelper.startBillingFlow(this)
+    }
 
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,9 +87,11 @@ class MainActivity : AppCompatActivity() {
             handleNotificationChange(notifications)
         }
 
-        appMenuAdapter = AppMenuAdapter(this, appViewModel)
+        appMenuAdapter = AppMenuAdapter(this, appViewModel, billingHelper)
         renameMenuAdapter = RenameMenuAdapter(this, appViewModel)
         reorderMenuAdapter = ReorderMenuAdapter(this, appViewModel)
+        buyProMenuAdapter = BuyProMenuAdapter(this, ::handleBuyProClick, null, appViewModel)
+        changeAppIconAdapter = ChangeAppIconAdapter(this, appViewModel)
 
         checkForChangesInAppList = CheckForChangesInAppList(this, appViewModel)
 
@@ -98,6 +111,14 @@ class MainActivity : AppCompatActivity() {
 
         appViewModel.renameMenu.observe(this) { renameMenu ->
             renameMenuAdapter.handleRenameMenu(renameMenu)
+        }
+
+        appViewModel.buyProMenu.observe(this) { buyProMenu ->
+            buyProMenuAdapter.handleBuyProMenu(buyProMenu)
+        }
+
+        appViewModel.changeAppIconMenu.observe(this) { changeAppIconMenu ->
+            changeAppIconAdapter.handleChangeAppIconMenu(changeAppIconMenu)
         }
 
         appViewModel.reorderMenu.observe(this) { reorderMenu ->
@@ -140,7 +161,7 @@ class MainActivity : AppCompatActivity() {
         checkForChangesInAppList?.startUpdates()
 
 
-        var newIconPack = Utils.getStringPref(this, StringPref.GENERAL_ICON_PACK)
+        val newIconPack = Utils.getStringPref(this, StringPref.GENERAL_ICON_PACK)
         if (newIconPack != lastIconPackSelected) {
             lastIconPackSelected = newIconPack
             appViewModel.updateAppList(this)

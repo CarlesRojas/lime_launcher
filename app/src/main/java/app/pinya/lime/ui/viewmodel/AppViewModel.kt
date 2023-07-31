@@ -7,9 +7,7 @@ import androidx.lifecycle.viewModelScope
 import app.pinya.lime.domain.model.AppModel
 import app.pinya.lime.domain.model.BooleanPref
 import app.pinya.lime.domain.model.InfoModel
-import app.pinya.lime.domain.model.menus.AppMenu
-import app.pinya.lime.domain.model.menus.RenameMenu
-import app.pinya.lime.domain.model.menus.ReorderMenu
+import app.pinya.lime.domain.model.menus.*
 import app.pinya.lime.domain.usecase.*
 import app.pinya.lime.ui.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -40,6 +38,8 @@ class AppViewModel @Inject constructor(
     val appMenu = MutableLiveData<AppMenu?>(null)
     val renameMenu = MutableLiveData<RenameMenu?>(null)
     val reorderMenu = MutableLiveData<ReorderMenu?>(null)
+    val changeAppIconMenu = MutableLiveData<ChangeAppIconMenu?>(null)
+    val buyProMenu = MutableLiveData<BuyProMenu?>(null)
 
 
     // ########################################

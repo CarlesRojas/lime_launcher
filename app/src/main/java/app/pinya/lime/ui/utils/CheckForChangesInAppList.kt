@@ -9,7 +9,7 @@ import app.pinya.lime.ui.viewmodel.AppViewModel
 
 class CheckForChangesInAppList(
     private val context: Context,
-    val appViewModel: AppViewModel
+    private val appViewModel: AppViewModel
 ) {
 
     private val preferencesName = "LimeLauncherSharedPreferencesPackageSequence"

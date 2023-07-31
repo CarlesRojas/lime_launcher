@@ -78,7 +78,7 @@ open class IconPackManager(mContext: Context) {
     }
 
     inner class IconPack(private val packageName: String, val name: String) {
-        public val drawables = hashMapOf<String?, String?>()
+        private val drawables = hashMapOf<String?, String?>()
         private val iconPackRes = pm.getResourcesForApplication(packageName)
 
         fun getPackageName(): String = packageName
@@ -130,7 +130,7 @@ open class IconPackManager(mContext: Context) {
 
         fun iconCutCircle(icon: Bitmap) = iconCutCircle(icon, 0.9f)
 
-        fun iconCutCircle(icon: Bitmap, scale: Float): BitmapDrawable {
+        private fun iconCutCircle(icon: Bitmap, scale: Float): BitmapDrawable {
             val side = icon.width / 2f
             val bmp = Bitmap.createBitmap(icon.width, icon.height, Bitmap.Config.ARGB_8888)
             val paint = Paint()

@@ -122,7 +122,7 @@ class SettingsActivity : AppCompatActivity() {
                 requireContext(), ::setLockScreenMenu, ::handleEnablePermissionClick
             )
             buyProMenuAdapter =
-                BuyProMenuAdapter(requireContext(), ::setBuyProMenu, ::handleBuyProClick)
+                BuyProMenuAdapter(requireContext(), ::handleBuyProClick, ::setBuyProMenu)
             notificationAccessMenuAdapter = NotificationAccessMenuAdapter(
                 requireContext(), ::setNotificationAccessMenu, ::handleEnableNotificationAccessClick
             )
@@ -150,7 +150,6 @@ class SettingsActivity : AppCompatActivity() {
             }
 
             billingHelper.purchaseState.observe(this) { purchaseState ->
-                // setIsPro(false)
                 setIsPro(purchaseState == BillingHelper.ProPurchaseState.PURCHASED_AND_ACKNOWLEDGED)
             }
         }
@@ -176,7 +175,7 @@ class SettingsActivity : AppCompatActivity() {
 
             rateAppButton?.setOnPreferenceChangeListener { _, newValue ->
                 if (newValue as Boolean) {
-                    setVisibility(newValue as Boolean)
+                    setVisibility(newValue)
 
                     val uri: Uri = Uri.parse("market://details?id=${BuildConfig.APPLICATION_ID}")
                     val goToMarket = Intent(Intent.ACTION_VIEW, uri)

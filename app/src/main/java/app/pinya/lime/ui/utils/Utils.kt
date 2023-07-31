@@ -1,7 +1,6 @@
 package app.pinya.lime.ui.utils
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -23,7 +22,6 @@ import app.pinya.lime.domain.model.BooleanPref
 import app.pinya.lime.domain.model.IntPref
 import app.pinya.lime.domain.model.StringPref
 import app.pinya.lime.ui.view.holder.AppViewHolder
-import kotlin.math.round
 
 class Utils {
     companion object {
@@ -32,7 +30,7 @@ class Utils {
             return px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)
         }
 
-        fun dpToPx(context: Context, dp: Float): Float {
+        private fun dpToPx(context: Context, dp: Float): Float {
             val displayMetrics: DisplayMetrics = context.resources.displayMetrics
             return dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)
         }
@@ -283,7 +281,7 @@ class Utils {
                 context,
                 if (isHome) BooleanPref.HOME_SHOW_ICONS else BooleanPref.DRAWER_SHOW_ICONS
             )
-            val iconScale = Utils.getIntPref(context, IntPref.GENERAL_ICON_SCALE)
+            val iconScale = getIntPref(context, IntPref.GENERAL_ICON_SCALE)
 
             val appLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
             val listIcon: ImageView = appLayout.findViewById(R.id.listIcon)
@@ -295,14 +293,14 @@ class Utils {
             listIcon.visibility = if (areIconsVisible) View.VISIBLE else View.GONE
             gridIcon.visibility = if (areIconsVisible) View.VISIBLE else View.GONE
 
-            val listIconSize = Utils.dpToPx(context, Utils.applyScale(43f, iconScale)).toInt()
-            val gridIconSize = Utils.dpToPx(context, Utils.applyScale(70f, iconScale)).toInt()
+            val listIconSize = dpToPx(context, applyScale(43f, iconScale)).toInt()
+            val gridIconSize = dpToPx(context, applyScale(70f, iconScale)).toInt()
 
-            listIcon.getLayoutParams().height = listIconSize
-            listIcon.getLayoutParams().width = listIconSize
+            listIcon.layoutParams.height = listIconSize
+            listIcon.layoutParams.width = listIconSize
 
-            gridIcon.getLayoutParams().height = gridIconSize
-            gridIcon.getLayoutParams().width = gridIconSize
+            gridIcon.layoutParams.height = gridIconSize
+            gridIcon.layoutParams.width = gridIconSize
         }
 
         private fun setAppViewNameAccordingToOptions(
@@ -317,7 +315,7 @@ class Utils {
                 context,
                 if (isHome) BooleanPref.HOME_SHOW_LABELS else BooleanPref.DRAWER_SHOW_LABELS
             )
-            val textScale = Utils.getIntPref(context, IntPref.GENERAL_TEXT_SCALE)
+            val textScale = getIntPref(context, IntPref.GENERAL_TEXT_SCALE)
 
             val appLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
             val listName: TextView = appLayout.findViewById(R.id.listName)
@@ -326,8 +324,8 @@ class Utils {
             listName.text = currentApp.name
             gridName.text = currentApp.name
 
-            listName.textSize = Utils.applyScale(19f, textScale)
-            gridName.textSize = Utils.applyScale(12f, textScale)
+            listName.textSize = applyScale(19f, textScale)
+            gridName.textSize = applyScale(12f, textScale)
 
             listName.isSingleLine = !isTutorial
             gridName.isSingleLine = true

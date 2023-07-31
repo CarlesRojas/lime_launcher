@@ -11,11 +11,13 @@ import app.pinya.lime.R
 import app.pinya.lime.domain.model.BooleanPref
 import app.pinya.lime.domain.model.menus.BuyProMenu
 import app.pinya.lime.ui.utils.Utils
+import app.pinya.lime.ui.viewmodel.AppViewModel
 
 class BuyProMenuAdapter(
     private val context: Context,
-    private val setBuyProMenu: (menu: BuyProMenu?) -> Unit,
     private val handleBuyProClick: () -> Unit,
+    private val setBuyProMenu: ((menu: BuyProMenu?) -> Unit)? = null,
+    private val viewModel: AppViewModel? = null
 ) {
 
     private var contextMenuWindow: PopupWindow? = null
@@ -51,11 +53,13 @@ class BuyProMenuAdapter(
         dimBehindMenu(contextMenuWindow)
 
         contextMenuWindow?.setOnDismissListener {
-            setBuyProMenu(null)
+            if (setBuyProMenu != null) setBuyProMenu.let { it(null) }
+            else viewModel?.buyProMenu?.postValue(null)
         }
 
         closeButton.setOnClickListener {
-            setBuyProMenu(null)
+            if (setBuyProMenu != null) setBuyProMenu.let { it(null) }
+            else viewModel?.buyProMenu?.postValue(null)
         }
 
         enableButton.setOnClickListener {
@@ -63,7 +67,8 @@ class BuyProMenuAdapter(
         }
 
         cancelButton.setOnClickListener {
-            setBuyProMenu(null)
+            if (setBuyProMenu != null) setBuyProMenu.let { it(null) }
+            else viewModel?.buyProMenu?.postValue(null)
         }
     }
 

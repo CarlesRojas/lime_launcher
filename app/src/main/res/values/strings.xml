@@ -16,7 +16,9 @@
     <string name="moveUp_icon_description">Move up Icon</string>
     <string name="moveDown_icon_description">Move down Icon</string>
     <string name="renameApp_icon_description">Rename Icon</string>
-    <string name="recoverOriginalName_icon_description">Recover original name Icon</string>
+    <string name="changeAppIcon_icon_description">Choose App Icon Icon</string>
+    <string name="recoverOriginalName_icon_description">Use original name Icon</string>
+    <string name="recoverOriginalIcon_icon_description">Use original icon Icon</string>
     <string name="reorder_icon_description">Reorder home apps Icon</string>
 
 
@@ -27,12 +29,17 @@
     <string name="contextMenu_appInfo">App info</string>
     <string name="contextMenu_uninstall">Uninstall</string>
     <string name="contextMenu_renameApp">Rename</string>
+    <string name="contextMenu_changeAppIcon">Change Icon</string>
     <string name="contextMenu_reorder">Reorder home apps</string>
 
 
     <string name="renameMenu_hint">Rename to</string>
-    <string name="renameMenu_recoverOriginalName">Recover original name</string>
+    <string name="renameMenu_recoverOriginalName">Use original name</string>
 
+    <string name="changeAppIconMenu_title">Choose an icon pack</string>
+    <string name="changeAppIconMenu_hint">Search icons</string>
+    <string name="changeAppIconMenu_noIconPacks">Download icon packs from the store to use this feature</string>
+    <string name="changeAppIconMenu_recoverOriginalIcon">Use original icon</string>
 
     <string name="reorderMenu_title">Reorder home apps</string>
 

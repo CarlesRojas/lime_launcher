@@ -15,15 +15,14 @@ import android.widget.TextView
 import android.widget.Toast
 import app.pinya.lime.R
 import app.pinya.lime.domain.model.BooleanPref
-import app.pinya.lime.domain.model.menus.AppMenu
-import app.pinya.lime.domain.model.menus.RenameMenu
-import app.pinya.lime.domain.model.menus.ReorderMenu
+import app.pinya.lime.domain.model.menus.*
 import app.pinya.lime.ui.utils.Utils
+import app.pinya.lime.ui.utils.billing.BillingHelper
 import app.pinya.lime.ui.view.activity.SettingsActivity
 import app.pinya.lime.ui.viewmodel.AppViewModel
 
 class AppMenuAdapter(
-    private val context: Context, private val viewModel: AppViewModel
+    private val context: Context, private val viewModel: AppViewModel, private val billingHelper: BillingHelper
 ) {
 
     private var contextMenuWindow: PopupWindow? = null
@@ -37,6 +36,8 @@ class AppMenuAdapter(
     private fun show(appMenu: AppMenu) {
         if (isMenuOpen) return
         isMenuOpen = true
+
+        val isPro = billingHelper.isPro()
 
         val contextMenuView = View.inflate(context, R.layout.view_context_menu, null)
         val icon = contextMenuView.findViewById<ImageView>(R.id.appIcon)
@@ -53,6 +54,8 @@ class AppMenuAdapter(
         val appInfoButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_appInfo)
         val uninstallButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_uninstall)
         val renameButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_renameApp)
+        val changeAppIconButton = contextMenuView.findViewById<LinearLayout>(R.id.contextMenu_changeAppIcon)
+        val changeAppIconPro = changeAppIconButton.findViewById<LinearLayout>(R.id.changeAppIconPro)
 
         val homeApps = viewModel.info.value?.homeApps ?: mutableSetOf()
 
@@ -67,6 +70,7 @@ class AppMenuAdapter(
         showAppButton.visibility = if (appMenu.app.hidden) View.VISIBLE else View.GONE
         hideAppButton.visibility = if (appMenu.app.hidden) View.GONE else View.VISIBLE
         uninstallButton.visibility = if (appMenu.app.system) View.GONE else View.VISIBLE
+        changeAppIconPro.visibility = if (isPro) View.GONE else View.VISIBLE
 
         contextMenuWindow = PopupWindow(
             contextMenuView,
@@ -139,6 +143,13 @@ class AppMenuAdapter(
         renameButton.setOnClickListener {
             viewModel.appMenu.postValue(null)
             viewModel.renameMenu.postValue(RenameMenu(appMenu.app, appMenu.container))
+        }
+
+        changeAppIconButton.setOnClickListener {
+            viewModel.appMenu.postValue(null)
+
+            if (isPro) viewModel.changeAppIconMenu.postValue(ChangeAppIconMenu(appMenu.app, appMenu.container))
+            else viewModel.buyProMenu.postValue(BuyProMenu(appMenu.container))
         }
     }
 
