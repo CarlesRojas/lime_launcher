@@ -49,7 +49,7 @@ class AppViewModel @Inject constructor(
     fun updateAppList(context: Context) {
         viewModelScope.launch {
             val result = refreshAppListUseCase()
-            if (info.value != null) updateAppListWithInfoUseCase(result, info.value!!)
+            if (info.value != null) updateAppListWithInfoUseCase(result, info.value!!, context)
             completeAppList = result
 
             updateHomeList()
@@ -70,7 +70,7 @@ class AppViewModel @Inject constructor(
     }
 
     fun updateInfo(newInfo: InfoModel, context: Context) {
-        updateAppListWithInfoUseCase(completeAppList, newInfo)
+        updateAppListWithInfoUseCase(completeAppList, newInfo, context)
 
         updateInfoUseCase(newInfo)
         info.postValue(newInfo)

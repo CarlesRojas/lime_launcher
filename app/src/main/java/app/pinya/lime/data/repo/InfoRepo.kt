@@ -23,6 +23,7 @@ class InfoRepo @Inject constructor() {
         HOME_APPS,
         HIDDEN_APPS,
         RENAMED_APPS,
+        ICON_RULES,
         WALLPAPER_LAST_UPDATED_DATE,
         MAX_NUMBER_OF_HOME_APPS,
         TUTORIAL_DONE,
@@ -46,6 +47,8 @@ class InfoRepo @Inject constructor() {
             info.hiddenApps = getData(InfoDataKey.HIDDEN_APPS, info.hiddenApps)
             info.renamedApps =
                 getData(InfoDataKey.RENAMED_APPS, info.renamedApps)
+            info.iconRules =
+                getData(InfoDataKey.ICON_RULES, info.iconRules)
             info.wallpaperLastUpdatedDate =
                 getData(InfoDataKey.WALLPAPER_LAST_UPDATED_DATE, info.wallpaperLastUpdatedDate)
             info.maxNumberOfHomeApps =
@@ -62,6 +65,7 @@ class InfoRepo @Inject constructor() {
         saveData(InfoDataKey.HOME_APPS, newInfo.homeApps)
         saveData(InfoDataKey.HIDDEN_APPS, newInfo.hiddenApps)
         saveData(InfoDataKey.RENAMED_APPS, newInfo.renamedApps)
+        saveData(InfoDataKey.ICON_RULES, newInfo.iconRules)
         saveData(InfoDataKey.WALLPAPER_LAST_UPDATED_DATE, newInfo.wallpaperLastUpdatedDate)
         saveData(InfoDataKey.MAX_NUMBER_OF_HOME_APPS, newInfo.maxNumberOfHomeApps)
     }

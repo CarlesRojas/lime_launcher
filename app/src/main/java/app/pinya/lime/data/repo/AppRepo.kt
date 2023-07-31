@@ -41,45 +41,6 @@ class AppRepo @Inject constructor() {
             }
             val selectedIconPack = iconPacks[iconPackName]
 
-            // TODO get from settings
-            val rules = mutableMapOf<String, List<IconRule>>(
-                "de.ph1b.audiobook" to listOf<IconRule>(
-                    IconRule(
-                        "de.ph1b.audiobook",
-                        "Whicons",
-                        "LuX Free",
-                        "reddit"
-                    )
-                ),
-                "com.whatsapp" to listOf<IconRule>(
-                    IconRule(
-                        "com.whatsapp",
-                        "None",
-                        "LuX Free",
-                        "photos"
-                    ),
-                    IconRule(
-                        "com.whatsapp",
-                        "Whicons",
-                        "LuX Free",
-                        "firefox"
-                    ),
-                ),
-            )
-
-            fun getIconFromRule(packageName: String): Drawable? {
-                val appRules = rules[packageName] ?: return null
-
-                for (rule in appRules) {
-                    if (rule.iconPackContext != iconPackName) continue
-                    val iconPack = iconPacks[rule.iconPackName] ?: return null
-                    return iconPack.loadIconFromRule(rule)
-                }
-
-                return null
-            }
-
-
             for (untreatedApp in untreatedAppList) {
                 val name = untreatedApp.activityInfo.loadLabel(context.packageManager).toString()
                 val packageName = untreatedApp.activityInfo.packageName
@@ -87,7 +48,7 @@ class AppRepo @Inject constructor() {
                 val packageInfo = packagesInfo.find { it.packageName == packageName }
 
                 if (packageInfo != null){
-                    var newIcon: Drawable? = getIconFromRule(packageName)
+                    var newIcon: Drawable? = null
                     if (newIcon == null && selectedIconPack != null) newIcon = selectedIconPack.loadIcon(packageInfo)
                     if (newIcon != null) icon = newIcon
                 }

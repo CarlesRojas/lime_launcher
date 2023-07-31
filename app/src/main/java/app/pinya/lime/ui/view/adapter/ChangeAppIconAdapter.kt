@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.pinya.lime.R
 import app.pinya.lime.domain.model.BooleanPref
+import app.pinya.lime.domain.model.IconRule
 import app.pinya.lime.domain.model.StringPref
 import app.pinya.lime.domain.model.menus.ChangeAppIconMenu
 import app.pinya.lime.ui.utils.IconPackManager
@@ -68,12 +69,26 @@ class ChangeAppIconAdapter(
             iconPacks[it.value.name] = it.value
         }
 
+        val info = viewModel.info.value
+        val iconRules =
+            info?.iconRules?.map { IconRule.deserialize(it) }?.groupBy { it.packageName }?.get(changeAppIconMenu.app.packageName)
+                ?.find { it.iconPackContext == currentIconPackName }
+
+
         fun setIcon(iconPackName: String?, iconName: String?): Unit {
-            // TODO if iconPack and icon are null -> delete key for that app else -> update key for that app
-            println(currentIconPackName)
-            println(changeAppIconMenu.app.packageName)
-            println(iconPackName)
-            println(iconName)
+            if (info != null) {
+                if (iconName == null || iconPackName == null) {
+                    info.iconRules.removeAll {
+                        val currRule = IconRule.deserialize(it)
+                        currRule.packageName == changeAppIconMenu.app.packageName && currRule.iconPackContext == currentIconPackName
+                    }
+                }
+                else info.iconRules.add(IconRule.serialize(IconRule(changeAppIconMenu.app.packageName, currentIconPackName, iconPackName, iconName)))
+
+                viewModel.updateInfo(info, context)
+
+            }
+
             viewModel.changeAppIconMenu.postValue(null)
         }
 
@@ -170,9 +185,11 @@ class ChangeAppIconAdapter(
             chooseIconContainer.visibility = View.GONE
             backButton.visibility = View.GONE
 
+            val iconHasRulesInThisContext = iconRules != null
+
             iconPackList.visibility = if (iconPacks.isNotEmpty()) View.VISIBLE else View.GONE
             noIconPacksMessage.visibility = if (iconPacks.isEmpty()) View.VISIBLE else View.GONE
-            recoverOriginalIconButton.visibility = View.VISIBLE // TODO if (changeAppIconMenu.app.icon != changeAppIconMenu.app.originalIcon) View.VISIBLE else View.GONE
+            recoverOriginalIconButton.visibility = if (iconRules != null) View.VISIBLE else View.GONE
 
             recoverOriginalIconButton.setOnClickListener {
                 setIcon(null, null)
@@ -180,7 +197,6 @@ class ChangeAppIconAdapter(
         }
 
         showStepOne()
-
 
         contextMenuWindow = PopupWindow(
             changeAppIconView,
