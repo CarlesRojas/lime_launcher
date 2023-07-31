@@ -3,13 +3,13 @@ package app.pinya.lime.ui.view.adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.*
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.doAfterTextChanged
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.pinya.lime.R
@@ -19,14 +19,15 @@ import app.pinya.lime.domain.model.StringPref
 import app.pinya.lime.domain.model.menus.ChangeAppIconMenu
 import app.pinya.lime.ui.utils.IconPackManager
 import app.pinya.lime.ui.utils.Utils
-import app.pinya.lime.ui.view.activity.MainActivity
 import app.pinya.lime.ui.viewmodel.AppViewModel
 import com.google.android.flexbox.FlexboxLayout
+import kotlinx.coroutines.*
 
 
 class ChangeAppIconAdapter(
     private val context: Context,
-    private val viewModel: AppViewModel
+    private val viewModel: AppViewModel,
+    private val lifecycleScope: LifecycleCoroutineScope
 ) {
     private var contextMenuWindow: PopupWindow? = null
     private var isMenuOpen = false
@@ -48,6 +49,9 @@ class ChangeAppIconAdapter(
         val closeButton = changeAppIconView.findViewById<ImageButton>(R.id.closeChooseAppIconMenuButton)
         val backButton = changeAppIconView.findViewById<ImageButton>(R.id.backChooseAppIconMenuButton)
 
+        val loadingContainer = changeAppIconView.findViewById<LinearLayout>(R.id.loadingContainer)
+        val loadingIcon = changeAppIconView.findViewById<ImageView>(R.id.loadingIcon)
+
         val chooseIconPackContainer = changeAppIconView.findViewById<LinearLayout>(R.id.chooseIconPackContainer)
         val iconPackList = changeAppIconView.findViewById<FlexboxLayout>(R.id.iconPackList)
         val noIconPacksMessage = changeAppIconView.findViewById<TextView>(R.id.noIconPacksMessage)
@@ -63,17 +67,35 @@ class ChangeAppIconAdapter(
         icon.setImageDrawable(changeAppIconMenu.app.icon)
         appName.text = changeAppIconMenu.app.name
 
-        val currentIconPackName = Utils.getStringPref(context, StringPref.GENERAL_ICON_PACK)
-        var iconPacks = mutableMapOf<String, IconPackManager.IconPack>()
-        iconPackManager.isSupportedIconPacks(true).forEach {
-            iconPacks[it.value.name] = it.value
+        fun showLoadingStep() {
+            loadingContainer.visibility = View.VISIBLE
+            chooseIconPackContainer.visibility = View.GONE
+            chooseIconContainer.visibility = View.GONE
+            backButton.visibility = View.GONE
         }
 
-        val info = viewModel.info.value
-        val iconRules =
-            info?.iconRules?.map { IconRule.deserialize(it) }?.groupBy { it.packageName }?.get(changeAppIconMenu.app.packageName)
-                ?.find { it.iconPackContext == currentIconPackName }
+        showLoadingStep()
 
+        contextMenuWindow = PopupWindow(
+            changeAppIconView,
+            changeAppIconMenu.container.width - changeAppIconMenu.container.paddingRight - changeAppIconMenu.container.paddingLeft,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            true
+        )
+
+        contextMenuWindow?.animationStyle = R.style.TopPopupWindowAnimation
+
+        contextMenuWindow?.showAtLocation(changeAppIconMenu.container, Gravity.TOP, 0, 0)
+        dimBehindMenu(contextMenuWindow)
+
+        contextMenuWindow?.setOnDismissListener {
+            viewModel.changeAppIconMenu.postValue(null)
+        }
+
+        val currentIconPackName = Utils.getStringPref(context, StringPref.GENERAL_ICON_PACK)
+        var iconPacks:  MutableMap<String, IconPackManager.IconPack>? = null
+        var iconRules: IconRule? = null
+        var info = viewModel.info.value
 
         fun setIcon(iconPackName: String?, iconName: String?): Unit {
             if (info != null) {
@@ -100,7 +122,7 @@ class ChangeAppIconAdapter(
         }
 
         fun showStepTwo(iconPackName: String) {
-            val iconPack = iconPacks[iconPackName]
+            val iconPack = iconPacks?.get(iconPackName)
             if (iconPack == null) {
                 viewModel.changeAppIconMenu.postValue(null)
                 return
@@ -115,6 +137,7 @@ class ChangeAppIconAdapter(
             searchIconBar.setText("")
             searchIconBar.focusAndShowKeyboard()
 
+            loadingContainer.visibility = View.GONE
             chooseIconPackContainer.visibility = View.GONE
             chooseIconContainer.visibility = View.VISIBLE
             backButton.visibility = View.VISIBLE
@@ -163,55 +186,21 @@ class ChangeAppIconAdapter(
             }
         }
 
-
-        iconPacks.forEach {
-            val inflater = LayoutInflater.from(context)
-            val buttonLayout = inflater.inflate(R.layout.view_button, null, false) as LinearLayout
-            val buttonText = buttonLayout.findViewById<TextView>(R.id.buttonText)
-
-            val currIconPackName = it.value.name
-            buttonText.text = currIconPackName
-
-            buttonLayout.setOnClickListener {
-                showStepTwo(currIconPackName)
-            }
-
-            iconPackList.addView(buttonLayout)
-        }
-
-
         fun showStepOne() {
+            loadingContainer.visibility = View.GONE
             chooseIconPackContainer.visibility = View.VISIBLE
             chooseIconContainer.visibility = View.GONE
             backButton.visibility = View.GONE
 
             val iconHasRulesInThisContext = iconRules != null
 
-            iconPackList.visibility = if (iconPacks.isNotEmpty()) View.VISIBLE else View.GONE
-            noIconPacksMessage.visibility = if (iconPacks.isEmpty()) View.VISIBLE else View.GONE
+            iconPackList.visibility = if (iconPacks != null && iconPacks!!.isNotEmpty()) View.VISIBLE else View.GONE
+            noIconPacksMessage.visibility = if (iconPacks != null && iconPacks!!.isEmpty()) View.VISIBLE else View.GONE
             recoverOriginalIconButton.visibility = if (iconRules != null) View.VISIBLE else View.GONE
 
             recoverOriginalIconButton.setOnClickListener {
                 setIcon(null, null)
             }
-        }
-
-        showStepOne()
-
-        contextMenuWindow = PopupWindow(
-            changeAppIconView,
-            changeAppIconMenu.container.width - changeAppIconMenu.container.paddingRight - changeAppIconMenu.container.paddingLeft,
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            true
-        )
-
-        contextMenuWindow?.animationStyle = R.style.TopPopupWindowAnimation
-
-        contextMenuWindow?.showAtLocation(changeAppIconMenu.container, Gravity.TOP, 0, 0)
-        dimBehindMenu(contextMenuWindow)
-
-        contextMenuWindow?.setOnDismissListener {
-            viewModel.changeAppIconMenu.postValue(null)
         }
 
         closeButton.setOnClickListener {
@@ -220,6 +209,38 @@ class ChangeAppIconAdapter(
 
         backButton.setOnClickListener {
             showStepOne()
+        }
+
+        suspend fun loadIconPacks() {
+            iconPacks = mutableMapOf<String, IconPackManager.IconPack>()
+            iconPackManager.isSupportedIconPacks(true).forEach {
+                iconPacks!![it.value.name] = it.value
+            }
+
+            iconRules =
+                info?.iconRules?.map { IconRule.deserialize(it) }?.groupBy { it.packageName }?.get(changeAppIconMenu.app.packageName)
+                    ?.find { it.iconPackContext == currentIconPackName }
+
+            iconPacks!!.forEach {
+                val inflater = LayoutInflater.from(context)
+                val buttonLayout = inflater.inflate(R.layout.view_button, null, false) as LinearLayout
+                val buttonText = buttonLayout.findViewById<TextView>(R.id.buttonText)
+
+                val currIconPackName = it.value.name
+                buttonText.text = currIconPackName
+
+                buttonLayout.setOnClickListener {
+                    showStepTwo(currIconPackName)
+                }
+
+                iconPackList.addView(buttonLayout)
+            }
+
+            showStepOne()
+        }
+
+        lifecycleScope.launch(Dispatchers.Main) {
+            loadIconPacks()
         }
     }
 

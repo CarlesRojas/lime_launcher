@@ -18,6 +18,7 @@
     <string name="moveDown_icon_description">Move down Icon</string>
     <string name="renameApp_icon_description">Rename Icon</string>
     <string name="changeAppIcon_icon_description">Choose App Icon Icon</string>
+    <string name="loading_icon_description">Loading Icon</string>
     <string name="recoverOriginalName_icon_description">Use original name Icon</string>
     <string name="recoverOriginalIcon_icon_description">Use original icon Icon</string>
     <string name="reorder_icon_description">Reorder home apps Icon</string>

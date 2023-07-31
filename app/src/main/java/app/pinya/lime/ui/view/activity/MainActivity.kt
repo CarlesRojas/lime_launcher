@@ -11,6 +11,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import app.pinya.lime.LimeLauncherApp
@@ -90,7 +91,7 @@ class MainActivity : AppCompatActivity() {
         renameMenuAdapter = RenameMenuAdapter(this, appViewModel)
         reorderMenuAdapter = ReorderMenuAdapter(this, appViewModel)
         buyProMenuAdapter = BuyProMenuAdapter(this, ::handleBuyProClick, null, appViewModel)
-        changeAppIconAdapter = ChangeAppIconAdapter(this, appViewModel)
+        changeAppIconAdapter = ChangeAppIconAdapter(this, appViewModel, lifecycleScope)
 
         checkForChangesInAppList = CheckForChangesInAppList(this, appViewModel)
 
