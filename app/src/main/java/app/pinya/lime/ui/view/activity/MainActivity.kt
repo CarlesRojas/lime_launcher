@@ -143,6 +143,8 @@ class MainActivity : AppCompatActivity() {
         lastIconPackSelected = Utils.getStringPref(this, StringPref.GENERAL_ICON_PACK)
     }
 
+    var prevShowHiddenApps: Boolean? = null
+
     override fun onResume() {
         super.onResume()
 
@@ -151,6 +153,7 @@ class MainActivity : AppCompatActivity() {
         val hideStatusBar = Utils.getBooleanPref(this, BooleanPref.GENERAL_HIDE_STATUS_BAR)
         val dimBackground = Utils.getBooleanPref(this, BooleanPref.GENERAL_DIM_BACKGROUND)
         val isTextBlack = Utils.getBooleanPref(this, BooleanPref.GENERAL_IS_TEXT_BLACK)
+        val showHiddenApps = Utils.getBooleanPref(this, BooleanPref.GENERAL_SHOW_HIDDEN_APPS)
 
         showStatusBar(!hideStatusBar)
         dimBackground(dimBackground, isTextBlack)
@@ -162,8 +165,9 @@ class MainActivity : AppCompatActivity() {
         checkForChangesInAppList?.startUpdates()
 
         val newIconPack = Utils.getStringPref(this, StringPref.GENERAL_ICON_PACK)
-        if (newIconPack != lastIconPackSelected) {
+        if (newIconPack != lastIconPackSelected || prevShowHiddenApps != showHiddenApps) {
             lastIconPackSelected = newIconPack
+            prevShowHiddenApps = showHiddenApps
             appViewModel.updateAppList(this)
         }
 
