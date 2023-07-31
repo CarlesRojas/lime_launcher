@@ -30,7 +30,7 @@ class Utils {
             return px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)
         }
 
-        private fun dpToPx(context: Context, dp: Float): Float {
+        fun dpToPx(context: Context, dp: Float): Float {
             val displayMetrics: DisplayMetrics = context.resources.displayMetrics
             return dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)
         }

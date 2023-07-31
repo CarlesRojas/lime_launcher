@@ -37,9 +37,11 @@
     <string name="renameMenu_recoverOriginalName">Use original name</string>
 
     <string name="changeAppIconMenu_title">Choose an icon pack</string>
-    <string name="changeAppIconMenu_hint">Search icons</string>
+    <string name="changeAppIconMenu_hint">Search icon</string>
     <string name="changeAppIconMenu_noIconPacks">Download icon packs from the store to use this feature</string>
     <string name="changeAppIconMenu_recoverOriginalIcon">Use original icon</string>
+    <string name="changeAppIconMenu_noSearchResults">There are no results.</string>
+    <string name="changeAppIconMenu_searchTip">Tip: if you don\'t find any icon when searching by the app\'s name, try searching with related words and find an icon that helps you identify the application.</string>
 
     <string name="reorderMenu_title">Reorder home apps</string>
 

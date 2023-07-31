@@ -17,6 +17,7 @@ import android.os.Build
 import android.util.Log
 import android.util.Xml
 import androidx.core.graphics.drawable.toDrawable
+import app.pinya.lime.domain.model.IconRule
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
@@ -119,6 +120,46 @@ open class IconPackManager(mContext: Context) {
                     }
                 }
             }
+            if (!drawableValue.isNullOrEmpty()) {
+                val id = iconPackRes.getIdentifier(drawableValue, "drawable", packageName)
+                if (id > 0) return iconPackRes.getDrawable(id, null) //load icon from pack
+            }
+            return null
+        }
+
+        @SuppressLint("UseCompatLoadingForDrawables")
+        fun getIconsForKeyword(keyword: String): Set<Drawable> {
+            val icons = mutableSetOf<Drawable>()
+            val iconIds = mutableSetOf<Int>()
+            var maxIcons = 256
+
+            drawables.filter {
+                it.key?.contains(keyword) == true
+            }.forEach {
+                val id = iconPackRes.getIdentifier(it.value, "drawable", packageName)
+
+                if (id > 0 && !iconIds.contains(id) && icons.size < maxIcons) {
+                    try {
+                        icons.add(iconPackRes.getDrawable(id, null))
+                        iconIds.add(id)
+                    } catch (_: Exception) {
+                    }
+                }
+            }
+
+            return icons
+        }
+
+        @SuppressLint("UseCompatLoadingForDrawables")
+        fun loadIconFromRule(rule: IconRule): Drawable? {
+            var drawableValue: String? = null
+
+            drawables.filter {
+                it.key?.contains(rule.icon) == true
+            }.firstNotNullOfOrNull {
+                drawableValue = it.value
+            }
+
             if (!drawableValue.isNullOrEmpty()) {
                 val id = iconPackRes.getIdentifier(drawableValue, "drawable", packageName)
                 if (id > 0) return iconPackRes.getDrawable(id, null) //load icon from pack

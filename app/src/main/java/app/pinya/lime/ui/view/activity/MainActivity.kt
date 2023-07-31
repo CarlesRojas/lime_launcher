@@ -19,7 +19,6 @@ import app.pinya.lime.data.memory.AppProvider
 import app.pinya.lime.databinding.ActivityMainBinding
 import app.pinya.lime.domain.model.BooleanPref
 import app.pinya.lime.domain.model.StringPref
-import app.pinya.lime.domain.model.menus.BuyProMenu
 import app.pinya.lime.ui.utils.CheckForChangesInAppList
 import app.pinya.lime.ui.utils.DailyWallpaper
 import app.pinya.lime.ui.utils.Utils
@@ -132,14 +131,6 @@ class MainActivity : AppCompatActivity() {
         })
 
         lastIconPackSelected = Utils.getStringPref(this, StringPref.GENERAL_ICON_PACK)
-
-        /* TODO
-        val iconPackManager = IconPackManager(this)
-        iconPackManager.isSupportedIconPacks().forEach {
-            if (it.value.name == "Whicons") {
-                it.value.drawables
-            }
-        }*/
     }
 
     override fun onResume() {
