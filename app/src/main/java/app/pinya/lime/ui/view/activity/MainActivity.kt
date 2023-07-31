@@ -22,11 +22,14 @@ import app.pinya.lime.domain.model.BooleanPref
 import app.pinya.lime.domain.model.StringPref
 import app.pinya.lime.ui.utils.CheckForChangesInAppList
 import app.pinya.lime.ui.utils.DailyWallpaper
+import app.pinya.lime.ui.utils.IconPackManager
 import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.utils.notifications.NotificationsHandler
 import app.pinya.lime.ui.view.adapter.*
 import app.pinya.lime.ui.viewmodel.AppViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 
 
@@ -52,6 +55,12 @@ class MainActivity : AppCompatActivity() {
     private var notificationsHandler: NotificationsHandler? = null
 
     private var lastIconPackSelected: String = "None"
+
+    private val iconPackManager: IconPackManager by lazy {
+        IconPackManager(this)
+    }
+
+    private var iconPacks: MutableMap<String, IconPackManager.IconPack> = mutableMapOf()
 
     private val billingHelper by lazy {
         (this.application as LimeLauncherApp).appContainer.billingHelper
@@ -91,7 +100,7 @@ class MainActivity : AppCompatActivity() {
         renameMenuAdapter = RenameMenuAdapter(this, appViewModel)
         reorderMenuAdapter = ReorderMenuAdapter(this, appViewModel)
         buyProMenuAdapter = BuyProMenuAdapter(this, ::handleBuyProClick, null, appViewModel)
-        changeAppIconAdapter = ChangeAppIconAdapter(this, appViewModel, lifecycleScope)
+        changeAppIconAdapter = ChangeAppIconAdapter(this, appViewModel, iconPacks)
 
         checkForChangesInAppList = CheckForChangesInAppList(this, appViewModel)
 
@@ -152,11 +161,17 @@ class MainActivity : AppCompatActivity() {
         hideContextMenus()
         checkForChangesInAppList?.startUpdates()
 
-
         val newIconPack = Utils.getStringPref(this, StringPref.GENERAL_ICON_PACK)
         if (newIconPack != lastIconPackSelected) {
             lastIconPackSelected = newIconPack
             appViewModel.updateAppList(this)
+        }
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            iconPacks.clear()
+            iconPackManager.isSupportedIconPacks(true).forEach {
+                iconPacks[it.value.name] = it.value
+            }
         }
     }
 

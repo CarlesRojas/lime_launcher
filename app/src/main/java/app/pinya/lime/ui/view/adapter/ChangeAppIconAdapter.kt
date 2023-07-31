@@ -27,7 +27,8 @@ import kotlinx.coroutines.*
 class ChangeAppIconAdapter(
     private val context: Context,
     private val viewModel: AppViewModel,
-    private val lifecycleScope: LifecycleCoroutineScope
+    private var iconPacks: MutableMap<String, IconPackManager.IconPack>
+
 ) {
     private var contextMenuWindow: PopupWindow? = null
     private var isMenuOpen = false
@@ -51,6 +52,7 @@ class ChangeAppIconAdapter(
 
         val loadingContainer = changeAppIconView.findViewById<LinearLayout>(R.id.loadingContainer)
         val loadingIcon = changeAppIconView.findViewById<ImageView>(R.id.loadingIcon)
+        val spinAnimation = AnimationUtils.loadAnimation(context, R.anim.spin)
 
         val chooseIconPackContainer = changeAppIconView.findViewById<LinearLayout>(R.id.chooseIconPackContainer)
         val iconPackList = changeAppIconView.findViewById<FlexboxLayout>(R.id.iconPackList)
@@ -68,13 +70,12 @@ class ChangeAppIconAdapter(
         appName.text = changeAppIconMenu.app.name
 
         fun showLoadingStep() {
+            loadingIcon.startAnimation(spinAnimation)
             loadingContainer.visibility = View.VISIBLE
             chooseIconPackContainer.visibility = View.GONE
             chooseIconContainer.visibility = View.GONE
             backButton.visibility = View.GONE
         }
-
-        showLoadingStep()
 
         contextMenuWindow = PopupWindow(
             changeAppIconView,
@@ -93,11 +94,12 @@ class ChangeAppIconAdapter(
         }
 
         val currentIconPackName = Utils.getStringPref(context, StringPref.GENERAL_ICON_PACK)
-        var iconPacks:  MutableMap<String, IconPackManager.IconPack>? = null
         var iconRules: IconRule? = null
         var info = viewModel.info.value
 
         fun setIcon(iconPackName: String?, iconName: String?): Unit {
+            showLoadingStep()
+
             if (info != null) {
                 if (iconName == null || iconPackName == null) {
                     info.iconRules.removeAll {
@@ -122,7 +124,7 @@ class ChangeAppIconAdapter(
         }
 
         fun showStepTwo(iconPackName: String) {
-            val iconPack = iconPacks?.get(iconPackName)
+            val iconPack = iconPacks.get(iconPackName)
             if (iconPack == null) {
                 viewModel.changeAppIconMenu.postValue(null)
                 return
@@ -194,8 +196,8 @@ class ChangeAppIconAdapter(
 
             val iconHasRulesInThisContext = iconRules != null
 
-            iconPackList.visibility = if (iconPacks != null && iconPacks!!.isNotEmpty()) View.VISIBLE else View.GONE
-            noIconPacksMessage.visibility = if (iconPacks != null && iconPacks!!.isEmpty()) View.VISIBLE else View.GONE
+            iconPackList.visibility = if (iconPacks.isNotEmpty()) View.VISIBLE else View.GONE
+            noIconPacksMessage.visibility = if (iconPacks.isEmpty()) View.VISIBLE else View.GONE
             recoverOriginalIconButton.visibility = if (iconRules != null) View.VISIBLE else View.GONE
 
             recoverOriginalIconButton.setOnClickListener {
@@ -211,17 +213,12 @@ class ChangeAppIconAdapter(
             showStepOne()
         }
 
-        suspend fun loadIconPacks() {
-            iconPacks = mutableMapOf<String, IconPackManager.IconPack>()
-            iconPackManager.isSupportedIconPacks(true).forEach {
-                iconPacks!![it.value.name] = it.value
-            }
-
+        fun loadIconPacks() {
             iconRules =
                 info?.iconRules?.map { IconRule.deserialize(it) }?.groupBy { it.packageName }?.get(changeAppIconMenu.app.packageName)
                     ?.find { it.iconPackContext == currentIconPackName }
 
-            iconPacks!!.forEach {
+            iconPacks.forEach {
                 val inflater = LayoutInflater.from(context)
                 val buttonLayout = inflater.inflate(R.layout.view_button, null, false) as LinearLayout
                 val buttonText = buttonLayout.findViewById<TextView>(R.id.buttonText)
@@ -239,9 +236,7 @@ class ChangeAppIconAdapter(
             showStepOne()
         }
 
-        lifecycleScope.launch(Dispatchers.Main) {
-            loadIconPacks()
-        }
+        loadIconPacks()
     }
 
     private fun hide() {
