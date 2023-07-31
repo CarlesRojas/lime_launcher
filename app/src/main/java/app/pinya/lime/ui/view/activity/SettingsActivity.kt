@@ -208,7 +208,7 @@ class SettingsActivity : AppCompatActivity() {
 
                 val iconPackList = mutableListOf<String>()
                 iconPackList.add("None")
-                iconPackManager.isSupportedIconPacks().forEach {
+                iconPackManager.isSupportedIconPacks(true).forEach {
                     iconPackList.add(it.value.name)
                 }
 

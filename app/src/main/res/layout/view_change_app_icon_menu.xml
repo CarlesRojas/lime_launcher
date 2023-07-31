@@ -46,6 +46,16 @@
                 android:textSize="18sp" />
 
             <ImageButton
+                android:id="@+id/backChooseAppIconMenuButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="18dp"
+                android:visibility="gone"
+                android:background="@drawable/icon_arrow_left"
+                android:contentDescription="@string/back_button_description"
+                tools:ignore="RedundantDescriptionCheck,TouchTargetSizeCheck" />
+
+            <ImageButton
                 android:id="@+id/closeChooseAppIconMenuButton"
                 android:layout_width="36dp"
                 android:layout_height="36dp"

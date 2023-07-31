@@ -36,10 +36,12 @@ class AppRepo @Inject constructor() {
             val iconPackName = Utils.getStringPref(context, StringPref.GENERAL_ICON_PACK)
             val iconPackManager = IconPackManager(context)
             var iconPacks = mutableMapOf<String, IconPackManager.IconPack>()
-            iconPackManager.isSupportedIconPacks().forEach {
+            iconPackManager.isSupportedIconPacks(true).forEach {
                 iconPacks[it.value.name] = it.value
             }
             val selectedIconPack = iconPacks[iconPackName]
+
+            // TODO get from settings
             val rules = mutableMapOf<String, List<IconRule>>(
                 "de.ph1b.audiobook" to listOf<IconRule>(
                     IconRule(

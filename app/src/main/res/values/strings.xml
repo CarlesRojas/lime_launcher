@@ -5,6 +5,7 @@
     <string name="service_notifications">Lime Notifications Service</string>
 
     <string name="close_button_description">Close Button</string>
+    <string name="back_button_description">Back Button</string>
     <string name="settings_button_description">Settings Button</string>
     <string name="app_icon_description">App Icon</string>
     <string name="addToHome_icon_description">Add to home Icon</string>
