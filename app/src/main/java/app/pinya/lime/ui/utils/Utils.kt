@@ -221,13 +221,15 @@ class Utils {
         }
 
         fun isMyLauncherDefault(context: Context, packageManager: PackageManager): Boolean {
-            val intent = Intent("android.intent.action.MAIN")
-            intent.addCategory("android.intent.category.HOME")
-            val defaultLauncher = intent.resolveActivity(packageManager).packageName
-            return defaultLauncher == context.packageName
+            try {
+                val intent = Intent("android.intent.action.MAIN")
+                intent.addCategory("android.intent.category.HOME")
+                val defaultLauncher = intent.resolveActivity(packageManager).packageName
+                return defaultLauncher == context.packageName
+            } catch (e: Exception) {
+                return true
+            }
         }
-
-
 
         fun setAppViewAccordingToOptions(
             context: Context,

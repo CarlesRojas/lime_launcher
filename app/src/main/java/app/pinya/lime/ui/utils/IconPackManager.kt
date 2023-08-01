@@ -13,6 +13,7 @@ import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.util.Log
 import android.util.Xml
 import androidx.core.graphics.drawable.toDrawable
@@ -34,34 +35,54 @@ open class IconPackManager(mContext: Context) {
     open fun isSupportedIconPacks() = isSupportedIconPacks(false)
 
     open fun isSupportedIconPacks(reload: Boolean): HashMap<String?, IconPack> {
-        if (iconPacks == null || reload) {
-            iconPacks = hashMapOf()
-            themes.forEach {
-                val intent = Intent(it)
+        try {
+            if (iconPacks == null || reload) {
+                iconPacks = hashMapOf()
+                themes.forEach {
+                    val intent = Intent(it)
 
-                pm.queryIntentActivities(
-                    intent, PackageManager.ResolveInfoFlags.of(flag.toLong())
-                ).forEach { info ->
-                    val iconPackPackageName = info.activityInfo.packageName
-                    try {
-                        iconPacks!![iconPackPackageName] = IconPack(
-                            iconPackPackageName,
-                            pm.getApplicationLabel(getApplicationInfo(iconPackPackageName))
-                                .toString()
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        pm.queryIntentActivities(
+                            intent, PackageManager.ResolveInfoFlags.of(flag.toLong())
                         )
-                    } catch (_: PackageManager.NameNotFoundException) {
+                    } else {
+                        pm.queryIntentActivities(intent, flag)
+                    }.forEach { info ->
+                        val iconPackPackageName = info.activityInfo.packageName
+                        try {
+                            val appInfo = getApplicationInfo(iconPackPackageName)
+
+                            if (appInfo != null) {
+                                iconPacks!![iconPackPackageName] = IconPack(
+                                    iconPackPackageName,
+                                    pm.getApplicationLabel(appInfo).toString()
+                                )
+                            }
+                        } catch (_: PackageManager.NameNotFoundException) {
+                        }
                     }
                 }
             }
+        } catch (_: Exception) {
         }
-        return iconPacks!!
+
+        return iconPacks ?: hashMapOf()
     }
 
-    private fun getApplicationInfo(iconPackPackageName: String): ApplicationInfo {
-        return pm.getApplicationInfo(
-            iconPackPackageName,
-            PackageManager.ApplicationInfoFlags.of(flag.toLong())
-        )
+    private fun getApplicationInfo(iconPackPackageName: String): ApplicationInfo? {
+        try {
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                pm.getApplicationInfo(
+                    iconPackPackageName,
+                    PackageManager.ApplicationInfoFlags.of(flag.toLong())
+                )
+            } else {
+                pm.getApplicationInfo(iconPackPackageName, flag)
+            }
+        } catch (_: Exception) {
+        }
+
+        return null
     }
 
     inner class IconPack(private val packageName: String, val name: String) {
@@ -88,7 +109,7 @@ open class IconPackManager(mContext: Context) {
                 }
             } catch (_: XmlPullParserException) {
                 Log.d(TAG, "Cannot parse icon pack appfilter.xml")
-            } catch (_: IOException) {
+            } catch (_: Exception) {
             }
         }
 

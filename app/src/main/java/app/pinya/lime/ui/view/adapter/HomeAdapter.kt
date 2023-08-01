@@ -115,16 +115,24 @@ class HomeAdapter(
             override fun onClick() {
                 when (val dateClickApp = Utils.getStringPref(context, StringPref.DATE_CLICK_APP)) {
                     "default" -> {
-                        val builder: Uri.Builder =
-                            CalendarContract.CONTENT_URI.buildUpon().appendPath("time")
-                        val intent = Intent(Intent.ACTION_VIEW).setData(builder.build())
-                        context.startActivity(intent)
+                        try {
+                            val builder: Uri.Builder =
+                                CalendarContract.CONTENT_URI.buildUpon().appendPath("time")
+                            val intent = Intent(Intent.ACTION_VIEW).setData(builder.build())
+                            context.startActivity(intent)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
                     }
                     "none" -> return
                     else -> {
-                        val launchAppIntent =
-                            context.packageManager.getLaunchIntentForPackage(dateClickApp)
-                        if (launchAppIntent != null) context.startActivity(launchAppIntent)
+                        try {
+                            val launchAppIntent =
+                                context.packageManager.getLaunchIntentForPackage(dateClickApp)
+                            if (launchAppIntent != null) context.startActivity(launchAppIntent)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
                     }
                 }
             }

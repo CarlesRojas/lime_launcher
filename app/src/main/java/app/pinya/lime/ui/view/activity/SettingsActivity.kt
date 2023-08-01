@@ -185,12 +185,16 @@ class SettingsActivity : AppCompatActivity() {
                     try {
                         startActivity(goToMarket)
                     } catch (e: ActivityNotFoundException) {
-                        startActivity(
-                            Intent(
-                                Intent.ACTION_VIEW,
-                                Uri.parse("http://play.google.com/store/apps/details?id=${BuildConfig.APPLICATION_ID}")
+                        try {
+                            startActivity(
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse("http://play.google.com/store/apps/details?id=${BuildConfig.APPLICATION_ID}")
+                                )
                             )
-                        )
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
                     }
                 }
 

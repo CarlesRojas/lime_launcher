@@ -176,8 +176,13 @@ class MainActivity : AppCompatActivity() {
 
         lifecycleScope.launch(Dispatchers.IO) {
             iconPacks.clear()
-            iconPackManager.isSupportedIconPacks(true).forEach {
-                iconPacks[it.value.name] = it.value
+
+            try {
+                iconPackManager.isSupportedIconPacks(true).forEach {
+                    iconPacks[it.value.name] = it.value
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }
@@ -273,15 +278,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
-        println(activityResult.resultCode)
-    }
-
     private fun askToSetAsDefaultLauncher() {
-        val roleManager = this.getSystemService(Context.ROLE_SERVICE) as RoleManager
-        if (roleManager.isRoleAvailable(RoleManager.ROLE_HOME) && !roleManager.isRoleHeld(RoleManager.ROLE_HOME)) {
-            val intent = roleManager.createRequestRoleIntent(RoleManager.ROLE_HOME)
-            startForResult.launch(intent)
+        try {
+            val roleManager = this.getSystemService(Context.ROLE_SERVICE) as RoleManager
+            if (roleManager.isRoleAvailable(RoleManager.ROLE_HOME) && !roleManager.isRoleHeld(RoleManager.ROLE_HOME)) {
+                val intent = roleManager.createRequestRoleIntent(RoleManager.ROLE_HOME)
+
+                val startForResult =
+                    registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
+                        println(activityResult.resultCode)
+                    }
+
+                startForResult.launch(intent)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }
