@@ -128,6 +128,11 @@ open class IconPackManager(mContext: Context) {
             return null
         }
 
+        fun keywordMatches(keyword: String, key: String, value: String): Boolean {
+            if (keyword.length > 1) return key.contains(keyword) || value.contains(keyword)
+            else return value.startsWith(keyword)
+        }
+
         @SuppressLint("UseCompatLoadingForDrawables")
         fun getIconsForKeyword(keyword: String): Set<Icon> {
             val icons = mutableSetOf<Icon>()
@@ -135,7 +140,7 @@ open class IconPackManager(mContext: Context) {
             var maxIcons = 256
 
             drawables.filter {
-                it.key?.contains(keyword) == true
+                keywordMatches(keyword, it.key ?: "", it.value ?: "")
             }.forEach {
                 val id = iconPackRes.getIdentifier(it.value, "drawable", packageName)
                 val key = it.key
