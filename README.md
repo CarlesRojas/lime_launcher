@@ -6,14 +6,15 @@ Clean and efficient Android launcher with strong privacy and no ads.
 
 ## Screenshots
 
-<img src="./storeAssets/screenshot1.png" alt="drawing" width="256"/>
-<img src="./storeAssets/screenshot2.png" alt="drawing" width="256"/>
-<img src="./storeAssets/screenshot3.png" alt="drawing" width="256"/>
-<img src="./storeAssets/screenshot4.png" alt="drawing" width="256"/>
-<img src="./storeAssets/screenshot5.png" alt="drawing" width="256"/>
-<img src="./storeAssets/screenshot6.png" alt="drawing" width="256"/>
-<img src="./storeAssets/screenshot7.png" alt="drawing" width="256"/>
-
+<div style={{ display: "flex", gap: "1rem" }}>
+   <img src="./storeAssets/screenshot1.png" alt="drawing" width="256"/>
+   <img src="./storeAssets/screenshot2.png" alt="drawing" width="256"/>
+   <img src="./storeAssets/screenshot3.png" alt="drawing" width="256"/>
+   <img src="./storeAssets/screenshot4.png" alt="drawing" width="256"/>
+   <img src="./storeAssets/screenshot5.png" alt="drawing" width="256"/>
+   <img src="./storeAssets/screenshot6.png" alt="drawing" width="256"/>
+   <img src="./storeAssets/screenshot7.png" alt="drawing" width="256"/>
+</div>
 ## Long description
 
 Introducing Lime Launcher - the minimalistic Android launcher that puts simplicity and efficiency first. With a clean and straightforward design, this launcher makes it easy to access and organize your apps.
