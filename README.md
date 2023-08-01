@@ -1,5 +1,9 @@
 # Lime Launcher
 
+<div style={{ borderRadius: "1rem", overflow: "hidden", width: "fit-content", height: "fit-content" }}>
+   <img src="./storeAssets/limeLogo.png" alt="drawing" width="129"/>
+</div>
+
 ## Short description
 
 Clean and efficient Android launcher with strong privacy and no ads.
@@ -15,6 +19,7 @@ Clean and efficient Android launcher with strong privacy and no ads.
    <img src="./storeAssets/screenshot6.png" alt="drawing" width="256"/>
    <img src="./storeAssets/screenshot7.png" alt="drawing" width="256"/>
 </div>
+
 ## Long description
 
 Introducing Lime Launcher - the minimalistic Android launcher that puts simplicity and efficiency first. With a clean and straightforward design, this launcher makes it easy to access and organize your apps.
