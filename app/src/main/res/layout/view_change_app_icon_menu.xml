@@ -171,6 +171,16 @@
                 android:layout_height="16dp"
                 android:background="@android:color/transparent" />
 
+            <TextView
+                android:id="@+id/noIconPacksMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:clickable="false"
+                android:text="@string/changeAppIconMenu_noIconPacks"
+                android:textColor="@color/white_low"
+                android:textSize="16sp" />
+
             <com.google.android.flexbox.FlexboxLayout
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -183,16 +193,6 @@
                 app:showDivider="middle"
                 app:dividerDrawable="@drawable/divider"
                 app:layout_constraintTop_toBottomOf="@+id/chooseAppIconMenu_titleBar" >
-
-                <TextView
-                    android:id="@+id/noIconPacksMessage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:clickable="false"
-                    android:text="@string/changeAppIconMenu_noIconPacks"
-                    android:textColor="@color/white_low"
-                    android:textSize="16sp" />
 
             </com.google.android.flexbox.FlexboxLayout>
 
