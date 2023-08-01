@@ -134,7 +134,7 @@ class SettingsActivity : AppCompatActivity() {
 
                 setRateAppSettings()
 
-                setGeneralSettings(prefs)
+                setGeneralSettings()
 
                 setDateFormatSettings(appList)
                 setTimeFormatSettings(appList)
@@ -199,7 +199,7 @@ class SettingsActivity : AppCompatActivity() {
 
         }
 
-        private fun setGeneralSettings(prefs: SharedPreferences) {
+        private fun setGeneralSettings() {
             val iconPack = findPreference("preference_general_icon_pack") as ListPreference?
             val currentIconPack = Utils.getStringPref(requireContext(), StringPref.GENERAL_ICON_PACK)
 

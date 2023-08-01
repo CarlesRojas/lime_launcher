@@ -1,3 +1,5 @@
+@file:Suppress("ComplexRedundantLet")
+
 package app.pinya.lime.ui.view.adapter
 
 import android.content.Context

@@ -1,6 +1,8 @@
 package app.pinya.lime.ui.utils
 
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -23,6 +25,7 @@ import app.pinya.lime.domain.model.IntPref
 import app.pinya.lime.domain.model.StringPref
 import app.pinya.lime.ui.view.holder.AppViewHolder
 
+
 class Utils {
     companion object {
         fun pxToDp(context: Context, px: Float): Float {
@@ -30,7 +33,7 @@ class Utils {
             return px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)
         }
 
-        fun dpToPx(context: Context, dp: Float): Float {
+        private fun dpToPx(context: Context, dp: Float): Float {
             val displayMetrics: DisplayMetrics = context.resources.displayMetrics
             return dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)
         }
@@ -216,6 +219,15 @@ class Utils {
 
             return notificationPackages.contains(context.packageName)
         }
+
+        fun isMyLauncherDefault(context: Context, packageManager: PackageManager): Boolean {
+            val intent = Intent("android.intent.action.MAIN")
+            intent.addCategory("android.intent.category.HOME")
+            val defaultLauncher = intent.resolveActivity(packageManager).packageName
+            return defaultLauncher == context.packageName
+        }
+
+
 
         fun setAppViewAccordingToOptions(
             context: Context,

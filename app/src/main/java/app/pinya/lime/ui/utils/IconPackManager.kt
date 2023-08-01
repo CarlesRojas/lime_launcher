@@ -13,7 +13,6 @@ import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.util.Log
 import android.util.Xml
 import androidx.core.graphics.drawable.toDrawable
@@ -46,13 +45,10 @@ open class IconPackManager(mContext: Context) {
             iconPacks = hashMapOf()
             themes.forEach {
                 val intent = Intent(it)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    pm.queryIntentActivities(
-                        intent, PackageManager.ResolveInfoFlags.of(flag.toLong())
-                    )
-                } else {
-                    pm.queryIntentActivities(intent, flag)
-                }.forEach { info ->
+
+                pm.queryIntentActivities(
+                    intent, PackageManager.ResolveInfoFlags.of(flag.toLong())
+                ).forEach { info ->
                     val iconPackPackageName = info.activityInfo.packageName
                     try {
                         iconPacks!![iconPackPackageName] = IconPack(
@@ -69,14 +65,10 @@ open class IconPackManager(mContext: Context) {
     }
 
     private fun getApplicationInfo(iconPackPackageName: String): ApplicationInfo {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            pm.getApplicationInfo(
-                iconPackPackageName,
-                PackageManager.ApplicationInfoFlags.of(flag.toLong())
-            )
-        } else {
-            pm.getApplicationInfo(iconPackPackageName, flag)
-        }
+        return pm.getApplicationInfo(
+            iconPackPackageName,
+            PackageManager.ApplicationInfoFlags.of(flag.toLong())
+        )
     }
 
     inner class IconPack(private val packageName: String, val name: String) {
@@ -128,16 +120,15 @@ open class IconPackManager(mContext: Context) {
             return null
         }
 
-        fun keywordMatches(keyword: String, key: String, value: String): Boolean {
-            if (keyword.length > 1) return key.contains(keyword) || value.contains(keyword)
-            else return value.startsWith(keyword)
+        private fun keywordMatches(keyword: String, key: String, value: String): Boolean {
+            return if (keyword.length > 1) key.contains(keyword) || value.contains(keyword) else value.startsWith(keyword)
         }
 
         @SuppressLint("UseCompatLoadingForDrawables")
         fun getIconsForKeyword(keyword: String): Set<Icon> {
             val icons = mutableSetOf<Icon>()
             val iconIds = mutableSetOf<Int>()
-            var maxIcons = 256
+            val maxIcons = 256
 
             drawables.filter {
                 keywordMatches(keyword, it.key ?: "", it.value ?: "")

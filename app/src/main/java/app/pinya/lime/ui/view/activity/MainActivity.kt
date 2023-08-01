@@ -1,6 +1,8 @@
 package app.pinya.lime.ui.view.activity
 
 import android.annotation.SuppressLint
+import android.app.role.RoleManager
+import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
@@ -8,6 +10,7 @@ import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -55,6 +58,7 @@ class MainActivity : AppCompatActivity() {
     private var notificationsHandler: NotificationsHandler? = null
 
     private var lastIconPackSelected: String = "None"
+    private var prevShowHiddenApps: Boolean? = null
 
     private val iconPackManager: IconPackManager by lazy {
         IconPackManager(this)
@@ -141,13 +145,12 @@ class MainActivity : AppCompatActivity() {
         })
 
         lastIconPackSelected = Utils.getStringPref(this, StringPref.GENERAL_ICON_PACK)
-    }
 
-    var prevShowHiddenApps: Boolean? = null
+        if (!Utils.isMyLauncherDefault(this, packageManager)) askToSetAsDefaultLauncher()
+    }
 
     override fun onResume() {
         super.onResume()
-
         viewPager.setCurrentItem(0, false)
 
         val hideStatusBar = Utils.getBooleanPref(this, BooleanPref.GENERAL_HIDE_STATUS_BAR)
@@ -267,6 +270,18 @@ class MainActivity : AppCompatActivity() {
             if (viewPager.currentItem == 0)
                 customPageAdapter.home?.handleNotificationsChange(notifications)
             else customPageAdapter.drawer?.handleNotificationsChange(notifications)
+        }
+    }
+
+    private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
+        println(activityResult.resultCode)
+    }
+
+    private fun askToSetAsDefaultLauncher() {
+        val roleManager = this.getSystemService(Context.ROLE_SERVICE) as RoleManager
+        if (roleManager.isRoleAvailable(RoleManager.ROLE_HOME) && !roleManager.isRoleHeld(RoleManager.ROLE_HOME)) {
+            val intent = roleManager.createRequestRoleIntent(RoleManager.ROLE_HOME)
+            startForResult.launch(intent)
         }
     }
 }

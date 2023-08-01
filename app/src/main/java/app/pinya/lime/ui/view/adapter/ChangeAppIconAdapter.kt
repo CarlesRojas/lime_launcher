@@ -3,13 +3,11 @@ package app.pinya.lime.ui.view.adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.*
-import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.doAfterTextChanged
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.pinya.lime.R
@@ -32,7 +30,6 @@ class ChangeAppIconAdapter(
 ) {
     private var contextMenuWindow: PopupWindow? = null
     private var isMenuOpen = false
-    private val iconPackManager = IconPackManager(context)
 
     fun handleChangeAppIconMenu(changeAppIconMenu: ChangeAppIconMenu?) {
         if (changeAppIconMenu == null) hide()
@@ -83,9 +80,9 @@ class ChangeAppIconAdapter(
 
         val currentIconPackName = Utils.getStringPref(context, StringPref.GENERAL_ICON_PACK)
         var iconRules: IconRule? = null
-        var info = viewModel.info.value
+        val info = viewModel.info.value
 
-        fun setIcon(iconPackName: String?, iconName: String?): Unit {
+        fun setIcon(iconPackName: String?, iconName: String?) {
             if (info != null) {
                 info.iconRules.removeAll {
                     val currRule = IconRule.deserialize(it)
@@ -120,13 +117,13 @@ class ChangeAppIconAdapter(
         }
 
         fun showStepTwo(iconPackName: String) {
-            val iconPack = iconPacks.get(iconPackName)
+            val iconPack = iconPacks[iconPackName]
             if (iconPack == null) {
                 viewModel.changeAppIconMenu.postValue(null)
                 return
             }
 
-            val iconListAdapter = IconListAdapter(context, viewModel, iconPackName, ::setIcon).also { adapter ->
+            val iconListAdapter = IconListAdapter(iconPackName, ::setIcon).also { adapter ->
                 iconList!!.adapter = adapter
             }
             iconList?.layoutManager = GridLayoutManager(context, 3)
@@ -147,8 +144,8 @@ class ChangeAppIconAdapter(
 
             fun searchIcon() {
                 val icons = iconPack.getIconsForKeyword(iconKeyword)
-                searchTip.visibility = if (icons.size > 0) TextView.GONE else TextView.VISIBLE
-                noSearchResults.visibility = if (icons.size > 0) TextView.GONE else TextView.VISIBLE
+                searchTip.visibility = if (icons.isNotEmpty()) TextView.GONE else TextView.VISIBLE
+                noSearchResults.visibility = if (icons.isNotEmpty()) TextView.GONE else TextView.VISIBLE
 
                 iconListAdapter.updateIcons(icons.toList())
             }
@@ -187,8 +184,6 @@ class ChangeAppIconAdapter(
             chooseIconPackContainer.visibility = View.VISIBLE
             chooseIconContainer.visibility = View.GONE
             backButton.visibility = View.GONE
-
-            val iconHasRulesInThisContext = iconRules != null
 
             iconPackList.visibility = if (iconPacks.isNotEmpty()) View.VISIBLE else View.GONE
             noIconPacksMessage.visibility = if (iconPacks.isEmpty()) View.VISIBLE else View.GONE

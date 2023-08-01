@@ -1,28 +1,21 @@
 package app.pinya.lime.ui.view.adapter
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import app.pinya.lime.R
 import app.pinya.lime.domain.model.Icon
-import app.pinya.lime.domain.model.menus.BuyProMenu
 import app.pinya.lime.ui.view.holder.AppViewHolder
-import app.pinya.lime.ui.viewmodel.AppViewModel
 
 class IconListAdapter(
-    private val context: Context,
-    private val viewModel: AppViewModel,
     private val iconPack: String,
     private val onIconClick: (iconPack: String?, icon: String?) -> Unit,
     ) : RecyclerView.Adapter<AppViewHolder>() {
 
-    private var icons: List<Icon> = listOf<Icon>()
+    private var icons: List<Icon> = listOf()
 
     // ########################################
     //   GENERAL

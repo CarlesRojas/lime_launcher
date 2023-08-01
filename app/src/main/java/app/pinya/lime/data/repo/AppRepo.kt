@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import app.pinya.lime.data.memory.AppProvider
 import app.pinya.lime.domain.model.AppModel
-import app.pinya.lime.domain.model.IconRule
 import app.pinya.lime.domain.model.StringPref
 import app.pinya.lime.ui.utils.IconPackManager
 import app.pinya.lime.ui.utils.Utils
@@ -35,7 +34,7 @@ class AppRepo @Inject constructor() {
 
             val iconPackName = Utils.getStringPref(context, StringPref.GENERAL_ICON_PACK)
             val iconPackManager = IconPackManager(context)
-            var iconPacks = mutableMapOf<String, IconPackManager.IconPack>()
+            val iconPacks = mutableMapOf<String, IconPackManager.IconPack>()
             iconPackManager.isSupportedIconPacks(true).forEach {
                 iconPacks[it.value.name] = it.value
             }
@@ -49,7 +48,7 @@ class AppRepo @Inject constructor() {
 
                 if (packageInfo != null){
                     var newIcon: Drawable? = null
-                    if (newIcon == null && selectedIconPack != null) newIcon = selectedIconPack.loadIcon(packageInfo)
+                    if (selectedIconPack != null) newIcon = selectedIconPack.loadIcon(packageInfo)
                     if (newIcon != null) icon = newIcon
                 }
 

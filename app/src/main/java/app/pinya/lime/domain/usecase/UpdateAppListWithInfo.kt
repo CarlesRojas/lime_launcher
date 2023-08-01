@@ -35,7 +35,7 @@ class UpdateAppListWithInfo @Inject constructor() {
 
         val iconPackName = Utils.getStringPref(context, StringPref.GENERAL_ICON_PACK)
         val iconPackManager = IconPackManager(context)
-        var iconPacks = mutableMapOf<String, IconPackManager.IconPack>()
+        val iconPacks = mutableMapOf<String, IconPackManager.IconPack>()
         iconPackManager.isSupportedIconPacks(true).forEach {
             iconPacks[it.value.name] = it.value
         }
