@@ -1,26 +1,6 @@
-# Lime Launcher
+<img src="./storeAssets/FeatureArt.png" alt="drawing" width="100%"/>
 
-<div style={{ borderRadius: "1rem", overflow: "hidden", width: "fit-content", height: "fit-content" }}>
-   <img src="./storeAssets/limeLogo.png" alt="drawing" width="129"/>
-</div>
-
-## Short description
-
-Clean and efficient Android launcher with strong privacy and no ads.
-
-## Screenshots
-
-<div style={{ display: "flex", gap: "1rem" }}>
-   <img src="./storeAssets/screenshot1.png" alt="drawing" width="256"/>
-   <img src="./storeAssets/screenshot2.png" alt="drawing" width="256"/>
-   <img src="./storeAssets/screenshot3.png" alt="drawing" width="256"/>
-   <img src="./storeAssets/screenshot4.png" alt="drawing" width="256"/>
-   <img src="./storeAssets/screenshot5.png" alt="drawing" width="256"/>
-   <img src="./storeAssets/screenshot6.png" alt="drawing" width="256"/>
-   <img src="./storeAssets/screenshot7.png" alt="drawing" width="256"/>
-</div>
-
-## Long description
+## Description
 
 Introducing Lime Launcher - the minimalistic Android launcher that puts simplicity and efficiency first. With a clean and straightforward design, this launcher makes it easy to access and organize your apps.
 
@@ -34,6 +14,18 @@ Some of the key features of Lime Launcher include:
 - Icon pack support to customize your home screen to your liking.
 
 Whether you're looking for a launcher that's easy to use or one that simply gets out of your way, Lime Launcher is the perfect choice. So if you want a minimalistic, hassle-free experience on your Android device that also prioritizes your privacy and is ad-free, give Lime Launcher a try today!
+
+## Screenshots
+
+<div style={{ display: "flex", gap: "1rem" }}>
+   <img src="./storeAssets/screenshot1.png" alt="drawing" width="256"/>
+   <img src="./storeAssets/screenshot2.png" alt="drawing" width="256"/>
+   <img src="./storeAssets/screenshot3.png" alt="drawing" width="256"/>
+   <img src="./storeAssets/screenshot4.png" alt="drawing" width="256"/>
+   <img src="./storeAssets/screenshot5.png" alt="drawing" width="256"/>
+   <img src="./storeAssets/screenshot6.png" alt="drawing" width="256"/>
+   <img src="./storeAssets/screenshot7.png" alt="drawing" width="256"/>
+</div>
 
 ## Development
 
