@@ -31,13 +31,6 @@ open class IconPackManager(mContext: Context) {
     private val themes = mutableListOf("org.adw.launcher.THEMES", "com.gau.go.launcherex.theme")
     private var iconPacks: HashMap<String?, IconPack>? = null
 
-    open fun addRule(key: String, value: String): IconPackManager {
-        customRules[key] = value
-        return this
-    }
-
-    open fun clearRules() = customRules.clear()
-
     open fun isSupportedIconPacks() = isSupportedIconPacks(false)
 
     open fun isSupportedIconPacks(reload: Boolean): HashMap<String?, IconPack> {
@@ -103,16 +96,7 @@ open class IconPackManager(mContext: Context) {
         private fun getDrawable(appPackageName: String): Drawable? {
             var drawableValue =
                 drawables[pm.getLaunchIntentForPackage(appPackageName)?.component.toString()]
-            if (drawableValue.isNullOrEmpty()) {
-                val keywords = getKeywordsForRules(appPackageName)
-                if (keywords != null) {
-                    drawables.filter {
-                        it.key?.contains(keywords) == true
-                    }.firstNotNullOfOrNull {
-                        drawableValue = it.value
-                    }
-                }
-            }
+
             if (!drawableValue.isNullOrEmpty()) {
                 val id = iconPackRes.getIdentifier(drawableValue, "drawable", packageName)
                 if (id > 0) return iconPackRes.getDrawable(id, null) //load icon from pack
@@ -184,11 +168,6 @@ open class IconPackManager(mContext: Context) {
             val rect = Rect(0, 0, bmp.width, bmp.height)
             canvas.drawBitmap(icon, rect, rect, paint)
             return bmp.toDrawable(contextRes)
-        }
-
-        private fun getKeywordsForRules(appPackageName: String): String? {
-            customRules.forEach { if (appPackageName.contains(it.key)) return it.value }
-            return null
         }
     }
 
