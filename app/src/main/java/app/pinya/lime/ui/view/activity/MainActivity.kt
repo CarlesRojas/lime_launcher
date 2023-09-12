@@ -1,17 +1,23 @@
 package app.pinya.lime.ui.view.activity
 
 import android.annotation.SuppressLint
+import android.app.role.RoleManager
+import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import app.pinya.lime.LimeLauncherApp
 import app.pinya.lime.R
 import app.pinya.lime.data.memory.AppProvider
 import app.pinya.lime.databinding.ActivityMainBinding
@@ -19,11 +25,14 @@ import app.pinya.lime.domain.model.BooleanPref
 import app.pinya.lime.domain.model.StringPref
 import app.pinya.lime.ui.utils.CheckForChangesInAppList
 import app.pinya.lime.ui.utils.DailyWallpaper
+import app.pinya.lime.ui.utils.IconPackManager
 import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.utils.notifications.NotificationsHandler
 import app.pinya.lime.ui.view.adapter.*
 import app.pinya.lime.ui.viewmodel.AppViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 
 
@@ -39,12 +48,31 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appMenuAdapter: AppMenuAdapter
     private lateinit var renameMenuAdapter: RenameMenuAdapter
     private lateinit var reorderMenuAdapter: ReorderMenuAdapter
+    private lateinit var buyProMenuAdapter: BuyProMenuAdapter
+    private lateinit var changeAppIconAdapter: ChangeAppIconAdapter
 
     private var dailyWallpaper: DailyWallpaper? = null
 
     private var checkForChangesInAppList: CheckForChangesInAppList? = null
 
     private var notificationsHandler: NotificationsHandler? = null
+
+    private var lastIconPackSelected: String = "None"
+    private var prevShowHiddenApps: Boolean? = null
+
+    private val iconPackManager: IconPackManager by lazy {
+        IconPackManager(this)
+    }
+
+    private var iconPacks: MutableMap<String, IconPackManager.IconPack> = mutableMapOf()
+
+    private val billingHelper by lazy {
+        (this.application as LimeLauncherApp).appContainer.billingHelper
+    }
+
+    private fun handleBuyProClick() {
+        billingHelper.startBillingFlow(this)
+    }
 
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,9 +100,11 @@ class MainActivity : AppCompatActivity() {
             handleNotificationChange(notifications)
         }
 
-        appMenuAdapter = AppMenuAdapter(this, appViewModel)
+        appMenuAdapter = AppMenuAdapter(this, appViewModel, billingHelper)
         renameMenuAdapter = RenameMenuAdapter(this, appViewModel)
         reorderMenuAdapter = ReorderMenuAdapter(this, appViewModel)
+        buyProMenuAdapter = BuyProMenuAdapter(this, ::handleBuyProClick, null, appViewModel)
+        changeAppIconAdapter = ChangeAppIconAdapter(this, appViewModel, iconPacks)
 
         checkForChangesInAppList = CheckForChangesInAppList(this, appViewModel)
 
@@ -96,20 +126,37 @@ class MainActivity : AppCompatActivity() {
             renameMenuAdapter.handleRenameMenu(renameMenu)
         }
 
+        appViewModel.buyProMenu.observe(this) { buyProMenu ->
+            buyProMenuAdapter.handleBuyProMenu(buyProMenu)
+        }
+
+        appViewModel.changeAppIconMenu.observe(this) { changeAppIconMenu ->
+            changeAppIconAdapter.handleChangeAppIconMenu(changeAppIconMenu)
+        }
+
         appViewModel.reorderMenu.observe(this) { reorderMenu ->
             reorderMenuAdapter.handleReorderMenu(reorderMenu)
         }
 
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                viewPager.setCurrentItem(0, true)
+            }
+        })
+
+        lastIconPackSelected = Utils.getStringPref(this, StringPref.GENERAL_ICON_PACK)
+
+        if (!Utils.isMyLauncherDefault(this, packageManager)) askToSetAsDefaultLauncher()
     }
 
     override fun onResume() {
         super.onResume()
-
         viewPager.setCurrentItem(0, false)
 
         val hideStatusBar = Utils.getBooleanPref(this, BooleanPref.GENERAL_HIDE_STATUS_BAR)
         val dimBackground = Utils.getBooleanPref(this, BooleanPref.GENERAL_DIM_BACKGROUND)
         val isTextBlack = Utils.getBooleanPref(this, BooleanPref.GENERAL_IS_TEXT_BLACK)
+        val showHiddenApps = Utils.getBooleanPref(this, BooleanPref.GENERAL_SHOW_HIDDEN_APPS)
 
         showStatusBar(!hideStatusBar)
         dimBackground(dimBackground, isTextBlack)
@@ -119,6 +166,25 @@ class MainActivity : AppCompatActivity() {
 
         hideContextMenus()
         checkForChangesInAppList?.startUpdates()
+
+        val newIconPack = Utils.getStringPref(this, StringPref.GENERAL_ICON_PACK)
+        if (newIconPack != lastIconPackSelected || prevShowHiddenApps != showHiddenApps) {
+            lastIconPackSelected = newIconPack
+            prevShowHiddenApps = showHiddenApps
+            appViewModel.updateAppList(this)
+        }
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            iconPacks.clear()
+
+            try {
+                iconPackManager.isSupportedIconPacks(true).forEach {
+                    iconPacks[it.value.name] = it.value
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 
     override fun onPause() {
@@ -209,6 +275,24 @@ class MainActivity : AppCompatActivity() {
             if (viewPager.currentItem == 0)
                 customPageAdapter.home?.handleNotificationsChange(notifications)
             else customPageAdapter.drawer?.handleNotificationsChange(notifications)
+        }
+    }
+
+    private fun askToSetAsDefaultLauncher() {
+        try {
+            val roleManager = this.getSystemService(Context.ROLE_SERVICE) as RoleManager
+            if (roleManager.isRoleAvailable(RoleManager.ROLE_HOME) && !roleManager.isRoleHeld(RoleManager.ROLE_HOME)) {
+                val intent = roleManager.createRequestRoleIntent(RoleManager.ROLE_HOME)
+
+                val startForResult =
+                    registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
+                        println(activityResult.resultCode)
+                    }
+
+                startForResult.launch(intent)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }

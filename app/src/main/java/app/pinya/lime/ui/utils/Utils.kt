@@ -1,6 +1,8 @@
 package app.pinya.lime.ui.utils
 
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -22,7 +24,7 @@ import app.pinya.lime.domain.model.BooleanPref
 import app.pinya.lime.domain.model.IntPref
 import app.pinya.lime.domain.model.StringPref
 import app.pinya.lime.ui.view.holder.AppViewHolder
-import kotlin.math.round
+
 
 class Utils {
     companion object {
@@ -31,7 +33,7 @@ class Utils {
             return px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)
         }
 
-        fun dpToPx(context: Context, dp: Float): Float {
+        private fun dpToPx(context: Context, dp: Float): Float {
             val displayMetrics: DisplayMetrics = context.resources.displayMetrics
             return dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)
         }
@@ -118,6 +120,7 @@ class Utils {
 
             val key = when (preference) {
                 StringPref.GENERAL_NOTIFICATION_BADGES -> "preference_general_notification_general_badges"
+                StringPref.GENERAL_ICON_PACK -> "preference_general_icon_pack"
 
                 StringPref.HOME_ALIGNMENT -> "preference_home_alignment"
                 StringPref.HOME_DOUBLE_TAP_ACTION -> "preference_home_double_tap_gesture"
@@ -136,6 +139,7 @@ class Utils {
 
             val defaultValue = when (preference) {
                 StringPref.GENERAL_NOTIFICATION_BADGES -> "none"
+                StringPref.GENERAL_ICON_PACK -> "None"
 
                 StringPref.HOME_ALIGNMENT -> "left"
                 StringPref.HOME_DOUBLE_TAP_ACTION -> "none"
@@ -216,6 +220,17 @@ class Utils {
             return notificationPackages.contains(context.packageName)
         }
 
+        fun isMyLauncherDefault(context: Context, packageManager: PackageManager): Boolean {
+            try {
+                val intent = Intent("android.intent.action.MAIN")
+                intent.addCategory("android.intent.category.HOME")
+                val defaultLauncher = intent.resolveActivity(packageManager).packageName
+                return defaultLauncher == context.packageName
+            } catch (e: Exception) {
+                return true
+            }
+        }
+
         fun setAppViewAccordingToOptions(
             context: Context,
             holder: AppViewHolder,
@@ -280,7 +295,7 @@ class Utils {
                 context,
                 if (isHome) BooleanPref.HOME_SHOW_ICONS else BooleanPref.DRAWER_SHOW_ICONS
             )
-            val iconScale = Utils.getIntPref(context, IntPref.GENERAL_ICON_SCALE)
+            val iconScale = getIntPref(context, IntPref.GENERAL_ICON_SCALE)
 
             val appLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
             val listIcon: ImageView = appLayout.findViewById(R.id.listIcon)
@@ -292,14 +307,14 @@ class Utils {
             listIcon.visibility = if (areIconsVisible) View.VISIBLE else View.GONE
             gridIcon.visibility = if (areIconsVisible) View.VISIBLE else View.GONE
 
-            val listIconSize = Utils.dpToPx(context, Utils.applyScale(43f, iconScale)).toInt()
-            val gridIconSize = Utils.dpToPx(context, Utils.applyScale(70f, iconScale)).toInt()
+            val listIconSize = dpToPx(context, applyScale(43f, iconScale)).toInt()
+            val gridIconSize = dpToPx(context, applyScale(70f, iconScale)).toInt()
 
-            listIcon.getLayoutParams().height = listIconSize
-            listIcon.getLayoutParams().width = listIconSize
+            listIcon.layoutParams.height = listIconSize
+            listIcon.layoutParams.width = listIconSize
 
-            gridIcon.getLayoutParams().height = gridIconSize
-            gridIcon.getLayoutParams().width = gridIconSize
+            gridIcon.layoutParams.height = gridIconSize
+            gridIcon.layoutParams.width = gridIconSize
         }
 
         private fun setAppViewNameAccordingToOptions(
@@ -314,7 +329,7 @@ class Utils {
                 context,
                 if (isHome) BooleanPref.HOME_SHOW_LABELS else BooleanPref.DRAWER_SHOW_LABELS
             )
-            val textScale = Utils.getIntPref(context, IntPref.GENERAL_TEXT_SCALE)
+            val textScale = getIntPref(context, IntPref.GENERAL_TEXT_SCALE)
 
             val appLayout: LinearLayout = holder.itemView.findViewById(R.id.appLayout)
             val listName: TextView = appLayout.findViewById(R.id.listName)
@@ -323,8 +338,8 @@ class Utils {
             listName.text = currentApp.name
             gridName.text = currentApp.name
 
-            listName.textSize = Utils.applyScale(19f, textScale)
-            gridName.textSize = Utils.applyScale(12f, textScale)
+            listName.textSize = applyScale(19f, textScale)
+            gridName.textSize = applyScale(12f, textScale)
 
             listName.isSingleLine = !isTutorial
             gridName.isSingleLine = true

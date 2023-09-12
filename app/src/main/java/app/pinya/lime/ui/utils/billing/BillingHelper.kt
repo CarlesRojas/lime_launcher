@@ -45,6 +45,10 @@ class BillingHelper private constructor(
         connectToBillingService()
     }
 
+    fun isPro(): Boolean {
+        return purchaseState.value == ProPurchaseState.PURCHASED_AND_ACKNOWLEDGED
+    }
+
     private fun connectToBillingService() {
         billingClient.startConnection(this)
     }

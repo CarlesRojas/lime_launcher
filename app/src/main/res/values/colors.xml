@@ -10,6 +10,7 @@
     <color name="white_low">#C8FFFFFF</color>
     <color name="white_lower">#96FFFFFF</color>
     <color name="white_extra_low">#64FFFFFF</color>
+    <color name="white_extra_extra_low">#30FFFFFF</color>
 
     <color name="transparent">@android:color/transparent</color>
 

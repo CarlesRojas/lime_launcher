@@ -9,7 +9,7 @@ import app.pinya.lime.ui.viewmodel.AppViewModel
 
 class CheckForChangesInAppList(
     private val context: Context,
-    val appViewModel: AppViewModel
+    private val appViewModel: AppViewModel
 ) {
 
     private val preferencesName = "LimeLauncherSharedPreferencesPackageSequence"
@@ -17,6 +17,7 @@ class CheckForChangesInAppList(
 
     private val handler: Handler = Handler(Looper.getMainLooper())
     private var updateInterval: Long = 2000
+    private var firstTime = true
 
     private var checkForChangesInAppListRunnable: Runnable = object : Runnable {
         override fun run() {
@@ -30,7 +31,8 @@ class CheckForChangesInAppList(
 
     private fun checkForPackageChanges() {
         val packageManager = context.packageManager
-        val sequenceNumber = getSequenceNumber(context)
+        val sequenceNumber = if (firstTime) 0 else getSequenceNumber(context)
+        firstTime = false
 
         val changedPackages = packageManager.getChangedPackages(sequenceNumber)
 
@@ -39,7 +41,6 @@ class CheckForChangesInAppList(
             saveSequenceNumber(context, changedPackages.sequenceNumber)
         }
     }
-
 
     private fun getSequenceNumber(context: Context): Int {
         val sharedPrefFile = context.getSharedPreferences(preferencesName, JobService.MODE_PRIVATE)

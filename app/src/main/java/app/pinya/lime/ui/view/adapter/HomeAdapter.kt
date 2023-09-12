@@ -16,7 +16,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import app.pinya.lime.R
 import app.pinya.lime.domain.model.AppModel
 import app.pinya.lime.domain.model.BooleanPref
@@ -31,6 +30,7 @@ import app.pinya.lime.ui.viewmodel.AppViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.floor
+import kotlin.math.max
 
 
 class HomeAdapter(
@@ -115,16 +115,24 @@ class HomeAdapter(
             override fun onClick() {
                 when (val dateClickApp = Utils.getStringPref(context, StringPref.DATE_CLICK_APP)) {
                     "default" -> {
-                        val builder: Uri.Builder =
-                            CalendarContract.CONTENT_URI.buildUpon().appendPath("time")
-                        val intent = Intent(Intent.ACTION_VIEW).setData(builder.build())
-                        context.startActivity(intent)
+                        try {
+                            val builder: Uri.Builder =
+                                CalendarContract.CONTENT_URI.buildUpon().appendPath("time")
+                            val intent = Intent(Intent.ACTION_VIEW).setData(builder.build())
+                            context.startActivity(intent)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
                     }
                     "none" -> return
                     else -> {
-                        val launchAppIntent =
-                            context.packageManager.getLaunchIntentForPackage(dateClickApp)
-                        if (launchAppIntent != null) context.startActivity(launchAppIntent)
+                        try {
+                            val launchAppIntent =
+                                context.packageManager.getLaunchIntentForPackage(dateClickApp)
+                            if (launchAppIntent != null) context.startActivity(launchAppIntent)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
                     }
                 }
             }
@@ -297,7 +305,7 @@ class HomeAdapter(
                 val paddingSizeInDp = if (showInGrid) 50f else 30f
 
                 val heightInDp = Utils.pxToDp(context, homeAppListContainer.height.toFloat())
-                val appHeightInDp = (if (showInGrid) textSizeInDp + iconSizeInDp else Math.max(
+                val appHeightInDp = (if (showInGrid) textSizeInDp + iconSizeInDp else max(
                     textSizeInDp, iconSizeInDp
                 )) + paddingSizeInDp
 

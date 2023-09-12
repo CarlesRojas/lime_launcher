@@ -342,7 +342,7 @@ class DrawerAdapter(
     //   SCALE
     // ########################################
 
-    fun updateScale() {
+    private fun updateScale() {
         val textScale = Utils.getIntPref(context, IntPref.GENERAL_TEXT_SCALE)
         searchBar?.textSize = Utils.applyScale(18f, textScale)
     }

@@ -5,6 +5,7 @@
     <string name="service_notifications">Lime Notifications Service</string>
 
     <string name="close_button_description">Close Button</string>
+    <string name="back_button_description">Back Button</string>
     <string name="settings_button_description">Settings Button</string>
     <string name="app_icon_description">App Icon</string>
     <string name="addToHome_icon_description">Add to home Icon</string>
@@ -16,7 +17,10 @@
     <string name="moveUp_icon_description">Move up Icon</string>
     <string name="moveDown_icon_description">Move down Icon</string>
     <string name="renameApp_icon_description">Rename Icon</string>
-    <string name="recoverOriginalName_icon_description">Recover original name Icon</string>
+    <string name="changeAppIcon_icon_description">Choose App Icon Icon</string>
+    <string name="loading_icon_description">Loading Icon</string>
+    <string name="recoverOriginalName_icon_description">Use original name Icon</string>
+    <string name="recoverOriginalIcon_icon_description">Use original icon Icon</string>
     <string name="reorder_icon_description">Reorder home apps Icon</string>
 
 
@@ -27,12 +31,19 @@
     <string name="contextMenu_appInfo">App info</string>
     <string name="contextMenu_uninstall">Uninstall</string>
     <string name="contextMenu_renameApp">Rename</string>
+    <string name="contextMenu_changeAppIcon">Change Icon</string>
     <string name="contextMenu_reorder">Reorder home apps</string>
 
 
     <string name="renameMenu_hint">Rename to</string>
-    <string name="renameMenu_recoverOriginalName">Recover original name</string>
+    <string name="renameMenu_recoverOriginalName">Use original name</string>
 
+    <string name="changeAppIconMenu_title">Choose an icon pack</string>
+    <string name="changeAppIconMenu_hint">Search icon</string>
+    <string name="changeAppIconMenu_noIconPacks">Download icon packs from the store to use this feature</string>
+    <string name="changeAppIconMenu_recoverOriginalIcon">Use original icon</string>
+    <string name="changeAppIconMenu_noSearchResults">There are no results.</string>
+    <string name="changeAppIconMenu_searchTip">Tip: if you don\'t find any icon when searching by the app\'s name, try searching with related words and find an icon that helps you identify the application.</string>
 
     <string name="reorderMenu_title">Reorder home apps</string>
 
@@ -68,6 +79,9 @@
     <string name="preference_general_date_time_scale">Date and Time scale</string>
     <string name="preference_general_icon_scale">Icon scale</string>
     <string name="preference_general_text_scale">Text scale</string>
+    <string name="preference_general_icon_pack">Choose icon pack</string>
+    <string name="preference_general_icon_pack_summary">Loading icon packs...</string>
+
 
     <string name="preference_home_show_icons">Show icons</string>
     <string name="preference_home_show_in_grid">Use app grid</string>
@@ -115,7 +129,7 @@
     <string name="lock_screen_menu_cancel_button">Cancel</string>
 
     <string name="buy_pro_menu_title">Get Lime Launcher PRO</string>
-    <string name="buy_pro_menu_disclosure">Upgrade to Lime Launcher Pro for more personalization options!\n\n- Hide the status bar to maximize screen space.\n- Arrange your apps in a grid for easy access.\n- Customize gesture actions to launch your most-used apps with ease.\n- Lock your screen with a double tap or swipe gesture (available on Android 9 Pie onwards).\n\nAnd more! Purchase it one time and enjoy it forever!</string>
+    <string name="buy_pro_menu_disclosure">Upgrade to Lime Launcher Pro for more personalization options!\n\n- Customize icons with Icon Packs.\n- Hide the status bar to maximize screen space.\n- Arrange your apps in a grid for easy access.\n- Customize gesture actions to launch your most-used apps with ease.\n- Lock your screen with a double tap or swipe gesture (available on Android 9 Pie onwards).\n\nAnd more! Purchase it one time and enjoy it forever!</string>
     <string name="buy_pro_menu_enable_button">Get PRO</string>
     <string name="buy_pro_menu_cancel_button">Cancel</string>
 

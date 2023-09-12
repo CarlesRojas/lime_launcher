@@ -20,10 +20,12 @@ import app.pinya.lime.R
 import app.pinya.lime.data.memory.AppProvider
 import app.pinya.lime.data.repo.AppRepo
 import app.pinya.lime.domain.model.AppModel
+import app.pinya.lime.domain.model.StringPref
 import app.pinya.lime.domain.model.menus.BuyProMenu
 import app.pinya.lime.domain.model.menus.LockScreenMenu
 import app.pinya.lime.domain.model.menus.NotificationAccessMenu
 import app.pinya.lime.domain.usecase.RefreshAppList
+import app.pinya.lime.ui.utils.IconPackManager
 import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.utils.billing.BillingHelper
 import app.pinya.lime.ui.view.adapter.BuyProMenuAdapter
@@ -120,7 +122,7 @@ class SettingsActivity : AppCompatActivity() {
                 requireContext(), ::setLockScreenMenu, ::handleEnablePermissionClick
             )
             buyProMenuAdapter =
-                BuyProMenuAdapter(requireContext(), ::setBuyProMenu, ::handleBuyProClick)
+                BuyProMenuAdapter(requireContext(), ::handleBuyProClick, ::setBuyProMenu)
             notificationAccessMenuAdapter = NotificationAccessMenuAdapter(
                 requireContext(), ::setNotificationAccessMenu, ::handleEnableNotificationAccessClick
             )
@@ -131,6 +133,8 @@ class SettingsActivity : AppCompatActivity() {
                 val appList = RefreshAppList(AppRepo()).invoke()
 
                 setRateAppSettings()
+
+                setGeneralSettings()
 
                 setDateFormatSettings(appList)
                 setTimeFormatSettings(appList)
@@ -171,7 +175,7 @@ class SettingsActivity : AppCompatActivity() {
 
             rateAppButton?.setOnPreferenceChangeListener { _, newValue ->
                 if (newValue as Boolean) {
-                    setVisibility(newValue as Boolean)
+                    setVisibility(newValue)
 
                     val uri: Uri = Uri.parse("market://details?id=${BuildConfig.APPLICATION_ID}")
                     val goToMarket = Intent(Intent.ACTION_VIEW, uri)
@@ -181,18 +185,46 @@ class SettingsActivity : AppCompatActivity() {
                     try {
                         startActivity(goToMarket)
                     } catch (e: ActivityNotFoundException) {
-                        startActivity(
-                            Intent(
-                                Intent.ACTION_VIEW,
-                                Uri.parse("http://play.google.com/store/apps/details?id=${BuildConfig.APPLICATION_ID}")
+                        try {
+                            startActivity(
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse("http://play.google.com/store/apps/details?id=${BuildConfig.APPLICATION_ID}")
+                                )
                             )
-                        )
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
                     }
                 }
 
                 true
             }
 
+        }
+
+        private fun setGeneralSettings() {
+            val iconPack = findPreference("preference_general_icon_pack") as ListPreference?
+            val currentIconPack = Utils.getStringPref(requireContext(), StringPref.GENERAL_ICON_PACK)
+
+            if (iconPack != null) {
+                val iconPackManager = IconPackManager(requireContext())
+
+                val iconPackList = mutableListOf<String>()
+                iconPackList.add("None")
+                iconPackManager.isSupportedIconPacks(true).forEach {
+                    iconPackList.add(it.value.name)
+                }
+
+                iconPack.entries = iconPackList.toTypedArray()
+                iconPack.entryValues = iconPackList.toTypedArray()
+                iconPack.isEnabled = true
+                iconPack.summary = currentIconPack
+                iconPack.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
+                    iconPack.summary = newValue as String
+                    true
+                }
+            }
         }
 
         private fun setDateFormatSettings(appList: MutableList<AppModel>) {
@@ -528,6 +560,11 @@ class SettingsActivity : AppCompatActivity() {
                 true
             }
 
+            val chooseIconPack =
+                findPreference("preference_general_icon_pack") as ListPreference?
+            val chooseIconPackPro =
+                findPreference("preference_general_icon_pack_pro") as Preference?
+
             val hideStatusBar =
                 findPreference("preference_general_hide_status_bar") as SwitchPreference?
             val hideStatusBarPro =
@@ -565,6 +602,9 @@ class SettingsActivity : AppCompatActivity() {
             val drawerShowInGridPro =
                 findPreference("preference_drawer_show_in_grid_pro") as Preference?
 
+            chooseIconPack?.isVisible = isPro
+            chooseIconPackPro?.isVisible = !isPro
+
             hideStatusBar?.isVisible = isPro
             hideStatusBarPro?.isVisible = !isPro
 
@@ -590,6 +630,10 @@ class SettingsActivity : AppCompatActivity() {
             drawerShowInGridPro?.isVisible = !isPro
 
             if (!isPro) {
+                chooseIconPackPro?.setOnPreferenceClickListener {
+                    openBuyProMenu()
+                    true
+                }
                 hideStatusBarPro?.setOnPreferenceClickListener {
                     openBuyProMenu()
                     true

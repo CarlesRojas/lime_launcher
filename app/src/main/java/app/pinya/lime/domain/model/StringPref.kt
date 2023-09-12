@@ -2,6 +2,7 @@ package app.pinya.lime.domain.model
 
 enum class StringPref {
     GENERAL_NOTIFICATION_BADGES,
+    GENERAL_ICON_PACK,
 
     HOME_ALIGNMENT,
     HOME_DOUBLE_TAP_ACTION,
