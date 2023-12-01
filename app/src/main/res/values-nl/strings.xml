@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">Lime</string>
+  <string name="service_accessibility">Lime-toegankelijkheidsservice</string>
+  <string name="service_notifications">Lime-meldingenservice</string>
+  <string name="close_button_description">Sluiten</string>
+  <string name="back_button_description">Terug</string>
+  <string name="settings_button_description">Instellingen</string>
+  <string name="app_icon_description">App-pictogram</string>
+  <string name="addToHome_icon_description">Toevoegen aan startscherm</string>
+  <string name="removeFromHome_icon_description">Verwijderen het startscherm </string>
+  <string name="showApp_icon_description">App-pictogram weergeven</string>
+  <string name="hideApp_icon_description">App-pictogram verbergen</string>
+  <string name="showAppInfo_icon_description">App-infopictogram weergeven</string>
+  <string name="uninstall_icon_description">Icoon verwijderen</string>
+  <string name="moveUp_icon_description">Pictogram omhoog bewegen</string>
+  <string name="moveDown_icon_description">Pictogram naar beneden verplaatsen</string>
+  <string name="renameApp_icon_description">Icoon hernoemen</string>
+  <string name="changeAppIcon_icon_description">Kies App-pictogram Pictogram</string>
+  <string name="loading_icon_description">Pictogram laden</string>
+  <string name="recoverOriginalName_icon_description">Gebruik de originele naam Icoon</string>
+  <string name="recoverOriginalIcon_icon_description">Gebruik origineel pictogram Icoon</string>
+  <string name="reorder_icon_description">Home-apps opnieuw ordenen Icoon</string>
+  <string name="contextMenu_addToHome">Toevoegen aan Thuis</string>
+  <string name="contextMenu_removeFromHome">Verwijderen uit huis</string>
+  <string name="contextMenu_hideApp">App verbergen</string>
+  <string name="contextMenu_showApp">Toon app</string>
+  <string name="contextMenu_appInfo">App informatie</string>
+  <string name="contextMenu_uninstall">Verwijderen</string>
+  <string name="contextMenu_renameApp">Hernoemen</string>
+  <string name="contextMenu_changeAppIcon">Verander icoon</string>
+  <string name="contextMenu_reorder">Home-apps opnieuw ordenen</string>
+  <string name="renameMenu_hint">Hernoem naar</string>
+  <string name="renameMenu_recoverOriginalName">Gebruik originele naam</string>
+  <string name="changeAppIconMenu_title">Kies een pictogrampakket</string>
+  <string name="changeAppIconMenu_hint">Zoekpictogram</string>
+  <string name="changeAppIconMenu_noIconPacks">Download pictogrampakketten uit de winkel om deze functie te gebruiken</string>
+  <string name="changeAppIconMenu_recoverOriginalIcon">Gebruik het originele pictogram</string>
+  <string name="changeAppIconMenu_noSearchResults">Er zijn geen resultaten.</string>
+  <string name="changeAppIconMenu_searchTip">Tip: als u geen pictogram vindt wanneer u zoekt op de naam van de app, probeer dan te zoeken met verwante woorden en zoek een pictogram waarmee u de toepassing kunt identificeren.</string>
+  <string name="reorderMenu_title">Home-apps opnieuw ordenen</string>
+  <string name="drawer_searchHint">Zoekapps</string>
+  <string name="drawer_letter">B</string>
+  <string name="placeholder_time">19:35</string>
+  <string name="placeholder_date">Maandag 23 augustus</string>
+  <!-- Preferences -->
+  <string name="title_activity_settings">Lime Launcher-instellingen</string>
+  <string name="title_activity_settings_pro">Lime Launcher PRO-instellingen</string>
+  <string name="preference_rate_app">Geniet je van Lime Launcher?  Beoordeel ons!</string>
+  <string name="preference_title_general">Algemeen</string>
+  <string name="preference_title_home">Startscherm</string>
+  <string name="preference_title_gestures">Startscherm gebaren</string>
+  <string name="preference_title_drawer">Lade</string>
+  <string name="preference_title_date">Datum</string>
+  <string name="preference_title_time">Tijd</string>
+  <string name="preference_general_show_hidden_apps">Toon verborgen apps</string>
+  <string name="preference_general_hide_status_bar">Verberg status balk</string>
+  <string name="preference_general_notification_badges">Kies het type meldingsbadge</string>
+  <string name="preference_general_change_wallpaper_daily">Verander de achtergrond dagelijks</string>
+  <string name="preference_general_also_change_lockscreen">Wijzig ook het vergrendelscherm</string>
+  <string name="preference_general_is_text_black">Gebruik zwarte tekst</string>
+  <string name="preference_general_dim_wallpaper">Achtergrond dimmen</string>
+  <string name="preference_general_date_time_scale">Datum- en tijdschaal</string>
+  <string name="preference_general_icon_scale">Pictogramsgrote</string>
+  <string name="preference_general_text_scale">Tekstsgrote</string>
+  <string name="preference_general_icon_pack">Kies een pictogrampakket</string>
+  <string name="preference_general_icon_pack_summary">Pictogrampakketten laden...</string>
+  <string name="preference_home_show_icons">Pictogrammen weergeven</string>
+  <string name="preference_home_show_in_grid">Gebruik app-raster</string>
+  <string name="preference_home_show_labels">Labels tonen</string>
+  <string name="preference_home_alignment">Startscherm uitlijning</string>
+  <string name="preference_home_swipe_up_gesture">Veeg gebaaractie omhoog</string>
+  <string name="preference_home_swipe_up_app">Selecteer de veeg-app</string>
+  <string name="preference_home_swipe_up_gesture_description">Dit gebaar werkt alleen op het startscherm.</string>
+  <string name="preference_home_swipe_down_gesture">Veeg gebaaractie naar beneden</string>
+  <string name="preference_home_swipe_down_app">Selecteer de app naar beneden vegen</string>
+  <string name="preference_home_swipe_down_gesture_description">Dit gebaar werkt alleen op het startscherm.</string>
+  <string name="preference_home_double_tap_gesture">Dubbeltikgebaaractie</string>
+  <string name="preference_home_double_tap_app">Selecteer de dubbeltik-app</string>
+  <string name="preference_home_double_tap_gesture_description">Dit gebaar werkt alleen op een lege ruimte op het startscherm.</string>
+  <string name="preference_drawer_show_icons">Pictogrammen weergeven</string>
+  <string name="preference_drawer_show_in_grid">Gebruik app-raster</string>
+  <string name="preference_drawer_show_labels">Labels tonen</string>
+  <string name="preference_drawer_auto_show_keyboard">Toetsenbord automatisch weergeven</string>
+  <string name="preference_drawer_auto_show_keyboard_subtitle">Toon het toetsenbord automatisch bij het betreden van de lade.</string>
+  <string name="preference_drawer_auto_open_apps">Apps automatisch openen</string>
+  <string name="preference_drawer_auto_open_apps_subtitle">Als er tijdens het zoeken slechts één app is die aan de zoekopdracht voldoet, wordt deze automatisch geopend.</string>
+  <string name="preference_drawer_show_search_bar">Zoekbalk tonen</string>
+  <string name="preference_drawer_show_alphabet_filter">Alfabetfilter weergeven</string>
+  <string name="preference_date_visible">Datum weergeven</string>
+  <string name="preference_date_format">Datumnotatie</string>
+  <string name="preference_date_click_app">Kies een app om te openen met een klik</string>
+  <string name="preference_time_visible">Toon Time</string>
+  <string name="preference_time_format">Tijd formaat</string>
+  <string name="preference_time_click_app">Kies een app om te openen met een klik</string>
+  <string name="preference_get_pro">Koop Lime Launcher PRO</string>
+  <string name="preference_get_pro_short">PRO</string>
+  <!-- LOCK SCREEN -->
+  <string name="accessibility_service_description">De toegankelijkheidstoestemming is vereist om dubbeltikken om te vergrendelen in te schakelen.  Alle gegevens die Lime Launcher via deze dienst verkrijgt, verlaten uw apparaat niet.</string>
+  <string name="lock_layout_description">slot</string>
+  <string name="lock_screen_menu_title">Toestemming om het scherm te vergrendelen</string>
+  <string name="lock_screen_menu_disclosure">Schakel de toegankelijkheidsservice van Lime Launcher in de instellingen van je apparaat in om deze functie in te schakelen.
+Houd er rekening mee dat deze service alleen wordt gebruikt om je het scherm van je apparaat uit te laten schakelen door te dubbeltikken of te vegen  gebaren.
+Onze toegankelijkheidsservice verzamelt of deelt geen gegevens.</string>
+  <string name="lock_screen_menu_enable_button">Inschakelen</string>
+  <string name="lock_screen_menu_cancel_button">Annuleren</string>
+  <string name="buy_pro_menu_title">Koop Lime Launcher PRO</string>
+  <string name="buy_pro_menu_disclosure">Upgrade naar Lime Launcher Pro voor meer personalisatieopties!
+- Pas pictogrammen aan met Icon Packs.
+- Verberg de statusbalk om de schermruimte te maximaliseren.
+- Rangschik uw apps in een raster voor gemakkelijke toegang.
+- Aanpassen  bewegingsacties om je meestgebruikte apps eenvoudig te starten.
+- Vergrendel je scherm met een dubbeltik- of veeggebaar (beschikbaar op Android 9 Pie en hoger).
+En meer!  Koop het een keer en geniet er voor altijd van!</string>
+  <string name="buy_pro_menu_enable_button">Wordt professional</string>
+  <string name="buy_pro_menu_cancel_button">Annuleren</string>
+  <string name="notification_access_menu_title">Toegang tot meldingen</string>
+  <string name="notification_access_menu_disclosure">Geef Lime Launcher toegang tot de meldingsservice in de instellingen van je apparaat om deze functie in te schakelen.
+Houd er rekening mee dat deze service alleen wordt gebruikt om je meldingsbadges te tonen naast je apps.
+Lime Launcher doet dat ook  geen gegevens verzamelen of delen.</string>
+  <string name="notification_access_menu_enable_button">Studiebeurs</string>
+  <string name="notification_access_menu_cancel_button">Annuleren</string>
+</resources>
