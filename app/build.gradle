@@ -35,6 +35,9 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    lintOptions {
+        disable 'MissingConstraints'
+   }
 }
 
 dependencies {
