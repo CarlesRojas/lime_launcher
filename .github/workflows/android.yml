@@ -1,4 +1,4 @@
-name: ndroid CI Workflow
+name: Android CI Workflow
 
 on:
   workflow_dispatch:
