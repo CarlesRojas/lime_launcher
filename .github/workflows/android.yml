@@ -9,7 +9,6 @@ on:
 
 env:
   APK_RELEASE_DIRECTORY: app/build/outputs/apk/release
-  AAB_RELEASE_DIRECTORY: app/build/outputs/bundle/release
   BUILD_TOOLS_HOME: /usr/local/lib/android/sdk/build-tools
 
 jobs:
@@ -52,7 +51,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: apk
-          path: ${{env.APK_RELEASE_DIRECTORY}}/Lime-Launcher-release-signed.apk
+          path: ${{env.APK_RELEASE_DIRECTORY}}/Lime-Launcher-release-unsigned.apk
 
       - name: Create Release
         if: startsWith(github.ref, 'refs/tags/v')
