@@ -16,10 +16,13 @@ jobs:
       with:
           java-version: '17'
           distribution: 'temurin'
+    - name: Install Git in container
+      run: |
+          apk update
+          apk add git
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"          
     - name: Make Gradle executable
       run: chmod +x ./gradlew
-    - name: Make workflow excutable
-      run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
     - name: Build with Gradle
       run: ./gradlew build
     - name: Build Debug APK
