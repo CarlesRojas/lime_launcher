@@ -43,7 +43,6 @@ jobs:
           echo "BUILD_TOOLS_PATH=$BUILD_TOOLS_HOME/$BUILD_TOOLS_VERSION" >> $GITHUB_ENV
       - name: Sign APK
         run: |
-          ${{ env.BUILD_TOOLS_PATH }}/zipalign -v 4 $APK_RELEASE_DIRECTORY/Lime-Launcher-release-unsigned.apk \
             $APK_RELEASE_DIRECTORY/Lime-Launcher-release-unsigned-aligned.apk
         continue-on-error: true
       - name: Upload App Package
