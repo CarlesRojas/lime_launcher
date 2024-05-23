@@ -17,6 +17,9 @@ android {
         versionName "2.2.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+    lintOptions {
+        baseline file("lint-baseline.xml")
     }
 
     buildTypes {
