@@ -1,0 +1,79 @@
+name: Android CI
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+    branches:
+      - main
+
+env:
+  APK_RELEASE_DIRECTORY: app/build/outputs/apk/release
+  AAB_RELEASE_DIRECTORY: app/build/outputs/bundle/release
+  BUILD_TOOLS_HOME: /usr/local/lib/android/sdk/build-tools
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions: write-all
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+      - uses: gradle/actions/setup-gradle@v3
+        with:
+          dependency-graph: generate-and-submit
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Run unit tests
+        run: ./gradlew test
+      - name: Build with Gradle
+        run: ./gradlew build
+      - name: Release bundle
+        run: ./gradlew bundleRelease
+
+      - name: Sign AAB
+        run: |
+          echo -n "${{ secrets.SIGNING_KEYSTORE }}" | base64 --decode >> $AAB_RELEASE_DIRECTORY/signingKey.jks
+          jarsigner -keystore $AAB_RELEASE_DIRECTORY/signingKey.jks -storepass ${{ secrets.SIGNING_KEYSTORE_PASSWORD }} \
+            -keypass ${{ secrets.SIGNING_ALIAS_PASSWORD }} $AAB_RELEASE_DIRECTORY/MedTimer-release.aab ${{ secrets.SIGNING_ALIAS }}
+        continue-on-error: true
+      - name: Upload App Bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: aab
+          path: ${{env.AAB_RELEASE_DIRECTORY}}/MedTimer-release.aab
+
+      - name: Setup build tool version variable
+        shell: bash
+        run: |
+          BUILD_TOOLS_VERSION=$(ls $BUILD_TOOLS_HOME | tail -n 1)
+          echo "BUILD_TOOLS_PATH=$BUILD_TOOLS_HOME/$BUILD_TOOLS_VERSION" >> $GITHUB_ENV
+      - name: Sign APK
+        run: |
+          ${{ env.BUILD_TOOLS_PATH }}/zipalign -v 4 $APK_RELEASE_DIRECTORY/MedTimer-release-unsigned.apk \
+            $APK_RELEASE_DIRECTORY/MedTimer-release-unsigned-aligned.apk
+          echo -n "${{ secrets.SIGNING_KEYSTORE }}" | base64 --decode >> $APK_RELEASE_DIRECTORY/signingKey.jks
+          ${{ env.BUILD_TOOLS_PATH }}/apksigner sign --ks $APK_RELEASE_DIRECTORY/signingKey.jks --ks-key-alias ${{ secrets.SIGNING_ALIAS }} \
+            --ks-pass pass:${{ secrets.SIGNING_KEYSTORE_PASSWORD }} --key-pass pass:${{ secrets.SIGNING_ALIAS_PASSWORD }} \
+            --out $APK_RELEASE_DIRECTORY/MedTimer-release-signed.apk \
+            $APK_RELEASE_DIRECTORY/MedTimer-release-unsigned-aligned.apk
+        continue-on-error: true
+      - name: Upload App Package
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk
+          path: ${{env.APK_RELEASE_DIRECTORY}}/MedTimer-release-signed.apk
+
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "app/build/outputs/bundle/release/*.aab,app/build/outputs/apk/release/*.apk"
+          generateReleaseNotes: true
