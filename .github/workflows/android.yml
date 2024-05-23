@@ -1,11 +1,11 @@
 name: ndroid CI Workflow
 
 on:
+  workflow_dispatch:
   push:
+  pull_request:
     branches:
-      - master
-    tags:
-      - 'v*'
+      - main
 
 jobs:
   test:
