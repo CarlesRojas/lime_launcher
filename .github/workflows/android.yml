@@ -16,9 +16,7 @@ jobs:
       with:
           java-version: '17'
           distribution: 'temurin'
-
-    - name: Fix git safe.directory in container 
-      run: mkdir -p /home/runner/work/_temp/_github_home && printf "[safe]\n\tdirectory = /github/workspace" > /home/runner/work/_temp/_github_home/.gitconfig          
+        
     - name: Make Workspace writeable
       run: git config --global --add safe.directory /github/workspace
     - name: Make Gradle executable
