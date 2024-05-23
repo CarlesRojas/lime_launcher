@@ -18,10 +18,6 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-    lintOptions {
-        baseline file("lint-baseline.xml")
-    }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -41,32 +37,32 @@ android {
 }
 
 dependencies {
-    implementation "androidx.core:core-ktx:1.9.0"
-    implementation "androidx.appcompat:appcompat:1.6.1"
-    implementation "com.google.android.material:material:1.8.0"
-    implementation "androidx.constraintlayout:constraintlayout:2.1.4"
+    implementation ("androidx.core:core-ktx:1.9.0")
+    implementation ("androidx.appcompat:appcompat:1.6.1")
+    implementation ("com.google.android.material:material:1.8.0")
+    implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
 
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
-    implementation "androidx.activity:activity-ktx:1.6.1"
-    implementation "androidx.fragment:fragment-ktx:1.5.5"
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
+    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
+    implementation ("androidx.activity:activity-ktx:1.6.1")
+    implementation ("androidx.fragment:fragment-ktx:1.5.5")
 
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
-    implementation "com.google.code.gson:gson:2.10"
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+    implementation ("com.google.code.gson:gson:2.10")
 
-    implementation "com.google.dagger:hilt-android:2.44"
-    kapt "com.google.dagger:hilt-android-compiler:2.44"
-    implementation "androidx.preference:preference:1.2.0"
+    implementation ("com.google.dagger:hilt-android:2.44")
+    kapt ("com.google.dagger:hilt-android-compiler:2.44")
+    implementation ("androidx.preference:preference:1.2.0")
 
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1"
+    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
 
-    implementation "com.github.bosphere.android-fadingedgelayout:fadingedgelayout:1.0.0"
+    implementation ("com.github.bosphere.android-fadingedgelayout:fadingedgelayout:1.0.0")
 
-    implementation 'com.android.billingclient:billing:5.1.0'
-    implementation 'com.android.billingclient:billing-ktx:5.1.0'
+    implementation ("com.android.billingclient:billing:5.1.0")
+    implementation ("com.android.billingclient:billing-ktx:5.1.0")
 
-    implementation 'com.google.android.flexbox:flexbox:3.0.0'
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.0"
+    implementation ("com.google.android.flexbox:flexbox:3.0.0")
+    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
 }
 
 kapt {
