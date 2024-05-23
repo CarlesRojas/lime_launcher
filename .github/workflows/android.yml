@@ -18,6 +18,8 @@ jobs:
           distribution: 'temurin'
     - name: Make Gradle executable
       run: chmod +x ./gradlew
+    - name: Make workflow excutable
+      run: git config --global --add safe.directory /github/workspace
     - name: Build with Gradle
       run: ./gradlew build
     - name: Build Debug APK
