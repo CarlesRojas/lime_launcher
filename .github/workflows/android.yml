@@ -1,4 +1,4 @@
-name: Build & Publish Debug APK
+name: LimeLauncher Build & Publish Debug APK
 
 on:
   push:
