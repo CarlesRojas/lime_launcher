@@ -10,26 +10,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
+    - uses: actions/checkout@v1
+    - name: set up JDK 17
+
+      uses: actions/setup-java@v1
           java-version: '17'
           distribution: 'temurin'
-        
-    - name: Make Workspace writeable
-      run: git config --global --add safe.directory /github/workspace
+
     - name: Make Gradle executable
       run: chmod +x ./gradlew
     - name: Build with Gradle
       run: ./gradlew build
     - name: Build Debug APK
       run: ./gradlew assembleDebug
-    - name: Generate version.txt for Hub release
-      run: ./gradlew generateVersionTxt
     - name: Releasing using Hub
-      uses: valley-fordham/action-release-debugapk@master
+      uses: ShaunLWM/action-release-debugapk@master
       env:
        GITHUB_TOKEN: ${{ secrets.TOKEN }}
        APP_FOLDER: app
-       RELEASE_TITLE: LimeLauncher Build
+       RELEASE_TITLE: LimeLauncher
