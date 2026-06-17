@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="12dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_popup_window"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/mangoPromo_titleBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="16dp"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="14dp"
+                android:contentDescription="@string/mango_promo_screenshot_description"
+                android:src="@drawable/mango_shape" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/montserrat"
+                android:text="@string/mango_promo_title"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+        <HorizontalScrollView
+            android:id="@+id/mangoPromo_screenshots"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:scrollbars="none"
+            app:layout_constraintTop_toBottomOf="@+id/mangoPromo_titleBar">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:layout_width="240dp"
+                    android:layout_height="427dp"
+                    android:layout_marginEnd="8dp"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/mango_promo_screenshot_description"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/mango_screenshot_1"
+                    app:shapeAppearanceOverlay="@style/MangoPromoScreenshotShape" />
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:layout_width="240dp"
+                    android:layout_height="427dp"
+                    android:layout_marginEnd="8dp"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/mango_promo_screenshot_description"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/mango_screenshot_2"
+                    app:shapeAppearanceOverlay="@style/MangoPromoScreenshotShape" />
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:layout_width="240dp"
+                    android:layout_height="427dp"
+                    android:layout_marginEnd="8dp"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/mango_promo_screenshot_description"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/mango_screenshot_3"
+                    app:shapeAppearanceOverlay="@style/MangoPromoScreenshotShape" />
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:layout_width="240dp"
+                    android:layout_height="427dp"
+                    android:layout_marginEnd="8dp"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/mango_promo_screenshot_description"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/mango_screenshot_4"
+                    app:shapeAppearanceOverlay="@style/MangoPromoScreenshotShape" />
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:layout_width="240dp"
+                    android:layout_height="427dp"
+                    android:layout_marginEnd="8dp"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/mango_promo_screenshot_description"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/mango_screenshot_5"
+                    app:shapeAppearanceOverlay="@style/MangoPromoScreenshotShape" />
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:layout_width="240dp"
+                    android:layout_height="427dp"
+                    android:layout_marginEnd="8dp"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/mango_promo_screenshot_description"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/mango_screenshot_6"
+                    app:shapeAppearanceOverlay="@style/MangoPromoScreenshotShape" />
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:layout_width="240dp"
+                    android:layout_height="427dp"
+                    android:layout_marginEnd="8dp"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/mango_promo_screenshot_description"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/mango_screenshot_7"
+                    app:shapeAppearanceOverlay="@style/MangoPromoScreenshotShape" />
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:layout_width="240dp"
+                    android:layout_height="427dp"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/mango_promo_screenshot_description"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/mango_screenshot_8"
+                    app:shapeAppearanceOverlay="@style/MangoPromoScreenshotShape" />
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
+        <TextView
+            android:id="@+id/mangoPromo_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="16dp"
+            android:text="@string/mango_promo_description"
+            android:textColor="@color/white_low"
+            android:textSize="16sp"
+            app:layout_constraintTop_toBottomOf="@+id/mangoPromo_screenshots" />
+
+        <LinearLayout
+            android:id="@+id/mangoPromo_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingTop="24dp"
+            android:paddingEnd="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/mangoPromo_description">
+
+            <LinearLayout
+                android:id="@+id/mangoPromo_dismiss"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:background="@drawable/button_rounded_grey"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:singleLine="true"
+                    android:text="@string/mango_promo_dismiss"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/mangoPromo_cta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_rounded_mango"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:singleLine="true"
+                    android:text="@string/mango_promo_cta"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:background="@android:color/transparent"
+            app:layout_constraintTop_toBottomOf="@+id/mangoPromo_buttons" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

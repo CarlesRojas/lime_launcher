@@ -138,5 +138,12 @@
     <string name="notification_access_menu_enable_button">Grant</string>
     <string name="notification_access_menu_cancel_button">Cancel</string>
 
+    <!-- Mango Launcher promo -->
+    <string name="mango_promo_title">Check out the new Mango Launcher!</string>
+    <string name="mango_promo_description">A brand new launcher, more performant &amp; customizable than ever, packed with new features and improvements.\n\nIf you bought Lime Launcher, reach out and we\'ll send you a promo code to unlock all features of Mango Launcher for free. Limited stock. First come, first served.\n\nLime Launcher will no longer receive updates going forward, but you can keep using it as is forever.</string>
+    <string name="mango_promo_cta">View on Play Store</string>
+    <string name="mango_promo_dismiss">Dismiss</string>
+    <string name="mango_promo_screenshot_description">Mango Launcher screenshot</string>
+    <string name="mango_promo_url">https://play.google.com/store/apps/details?id=app.pinya.mango</string>
 
 </resources>

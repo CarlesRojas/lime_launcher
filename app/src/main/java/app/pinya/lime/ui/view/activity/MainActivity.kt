@@ -50,6 +50,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var reorderMenuAdapter: ReorderMenuAdapter
     private lateinit var buyProMenuAdapter: BuyProMenuAdapter
     private lateinit var changeAppIconAdapter: ChangeAppIconAdapter
+    private lateinit var mangoPromoAdapter: MangoPromoAdapter
+    private var mangoPromoShown = false
 
     private var dailyWallpaper: DailyWallpaper? = null
 
@@ -105,6 +107,7 @@ class MainActivity : AppCompatActivity() {
         reorderMenuAdapter = ReorderMenuAdapter(this, appViewModel)
         buyProMenuAdapter = BuyProMenuAdapter(this, ::handleBuyProClick, null, appViewModel)
         changeAppIconAdapter = ChangeAppIconAdapter(this, appViewModel, iconPacks)
+        mangoPromoAdapter = MangoPromoAdapter(this)
 
         checkForChangesInAppList = CheckForChangesInAppList(this, appViewModel)
 
@@ -149,6 +152,13 @@ class MainActivity : AppCompatActivity() {
         if (!Utils.isMyLauncherDefault(this, packageManager)) askToSetAsDefaultLauncher()
     }
 
+    private fun maybeShowMangoPromo() {
+        if (mangoPromoShown) return
+        if (MangoPromoAdapter.isDismissed(this)) return
+        mangoPromoShown = true
+        viewPager.post { mangoPromoAdapter.showIfNeeded(viewPager) }
+    }
+
     override fun onResume() {
         super.onResume()
         viewPager.setCurrentItem(0, false)
@@ -173,6 +183,8 @@ class MainActivity : AppCompatActivity() {
             prevShowHiddenApps = showHiddenApps
             appViewModel.updateAppList(this)
         }
+
+        maybeShowMangoPromo()
 
         lifecycleScope.launch(Dispatchers.IO) {
             iconPacks.clear()
