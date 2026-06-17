@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 
 class NotificationsHandler(context: Context) {
@@ -17,7 +18,12 @@ class NotificationsHandler(context: Context) {
             NotificationsBroadcasterReceiver(::handleNotificationsChange)
         val intentFilter = IntentFilter()
         intentFilter.addAction(MyNotificationService.intentAction)
-        context.registerReceiver(notificationsBroadcastReceiver, intentFilter)
+        ContextCompat.registerReceiver(
+            context,
+            notificationsBroadcastReceiver,
+            intentFilter,
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
     }
 
 

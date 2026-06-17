@@ -58,8 +58,8 @@
                 android:orientation="horizontal">
 
                 <com.google.android.material.imageview.ShapeableImageView
-                    android:layout_width="240dp"
-                    android:layout_height="427dp"
+                    android:layout_width="140dp"
+                    android:layout_height="249dp"
                     android:layout_marginEnd="8dp"
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/mango_promo_screenshot_description"
@@ -68,8 +68,8 @@
                     app:shapeAppearanceOverlay="@style/MangoPromoScreenshotShape" />
 
                 <com.google.android.material.imageview.ShapeableImageView
-                    android:layout_width="240dp"
-                    android:layout_height="427dp"
+                    android:layout_width="140dp"
+                    android:layout_height="249dp"
                     android:layout_marginEnd="8dp"
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/mango_promo_screenshot_description"
@@ -78,8 +78,8 @@
                     app:shapeAppearanceOverlay="@style/MangoPromoScreenshotShape" />
 
                 <com.google.android.material.imageview.ShapeableImageView
-                    android:layout_width="240dp"
-                    android:layout_height="427dp"
+                    android:layout_width="140dp"
+                    android:layout_height="249dp"
                     android:layout_marginEnd="8dp"
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/mango_promo_screenshot_description"
@@ -88,8 +88,8 @@
                     app:shapeAppearanceOverlay="@style/MangoPromoScreenshotShape" />
 
                 <com.google.android.material.imageview.ShapeableImageView
-                    android:layout_width="240dp"
-                    android:layout_height="427dp"
+                    android:layout_width="140dp"
+                    android:layout_height="249dp"
                     android:layout_marginEnd="8dp"
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/mango_promo_screenshot_description"
@@ -98,8 +98,8 @@
                     app:shapeAppearanceOverlay="@style/MangoPromoScreenshotShape" />
 
                 <com.google.android.material.imageview.ShapeableImageView
-                    android:layout_width="240dp"
-                    android:layout_height="427dp"
+                    android:layout_width="140dp"
+                    android:layout_height="249dp"
                     android:layout_marginEnd="8dp"
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/mango_promo_screenshot_description"
@@ -108,8 +108,8 @@
                     app:shapeAppearanceOverlay="@style/MangoPromoScreenshotShape" />
 
                 <com.google.android.material.imageview.ShapeableImageView
-                    android:layout_width="240dp"
-                    android:layout_height="427dp"
+                    android:layout_width="140dp"
+                    android:layout_height="249dp"
                     android:layout_marginEnd="8dp"
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/mango_promo_screenshot_description"
@@ -118,8 +118,8 @@
                     app:shapeAppearanceOverlay="@style/MangoPromoScreenshotShape" />
 
                 <com.google.android.material.imageview.ShapeableImageView
-                    android:layout_width="240dp"
-                    android:layout_height="427dp"
+                    android:layout_width="140dp"
+                    android:layout_height="249dp"
                     android:layout_marginEnd="8dp"
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/mango_promo_screenshot_description"
@@ -128,8 +128,8 @@
                     app:shapeAppearanceOverlay="@style/MangoPromoScreenshotShape" />
 
                 <com.google.android.material.imageview.ShapeableImageView
-                    android:layout_width="240dp"
-                    android:layout_height="427dp"
+                    android:layout_width="140dp"
+                    android:layout_height="249dp"
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/mango_promo_screenshot_description"
                     android:scaleType="fitCenter"

@@ -37,9 +37,13 @@ class BillingHelper private constructor(
     private var billingServiceConnected = false
 
     init {
+        val pendingPurchasesParams = PendingPurchasesParams.newBuilder()
+            .enableOneTimeProducts()
+            .build()
+
         billingClient = BillingClient.newBuilder(application)
             .setListener(this)
-            .enablePendingPurchases()
+            .enablePendingPurchases(pendingPurchasesParams)
             .build()
 
         connectToBillingService()
