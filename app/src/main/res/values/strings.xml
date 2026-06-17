@@ -140,7 +140,7 @@
 
     <!-- Mango Launcher promo -->
     <string name="mango_promo_title">Check out the new Mango Launcher!</string>
-    <string name="mango_promo_description">Brand new launcher, more performant &amp; customizable than ever, packed with new features.\n\nIf you bought Lime Launcher, reach out and we\'ll send you a promo code (Limited stock).\n\nLime Launcher will no longer receive updates going forward, but you can keep using it as is forever.</string>
+    <string name="mango_promo_description">Brand new launcher, more performant &amp; customizable than ever, packed with new features. If you bought Lime Launcher, reach out and we\'ll send you a promo code (Limited stock).\n\nLime Launcher will no longer receive updates going forward, but you can keep using it as is forever.</string>
     <string name="mango_promo_cta">View on Play Store</string>
     <string name="mango_promo_dismiss">Dismiss</string>
     <string name="mango_promo_screenshot_description">Mango Launcher screenshot</string>

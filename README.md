@@ -18,13 +18,13 @@ Whether you're looking for a launcher that's easy to use or one that simply gets
 ## Screenshots
 
 <div style={{ display: "flex", gap: "1rem" }}>
-   <img src="./storeAssets/screenshot1.png" alt="drawing" width="256"/>
-   <img src="./storeAssets/screenshot2.png" alt="drawing" width="256"/>
-   <img src="./storeAssets/screenshot3.png" alt="drawing" width="256"/>
-   <img src="./storeAssets/screenshot4.png" alt="drawing" width="256"/>
-   <img src="./storeAssets/screenshot5.png" alt="drawing" width="256"/>
-   <img src="./storeAssets/screenshot6.png" alt="drawing" width="256"/>
-   <img src="./storeAssets/screenshot7.png" alt="drawing" width="256"/>
+   <img src="./storeAssets/screenshot1.png" alt="drawing" width="450"/>
+   <img src="./storeAssets/screenshot2.png" alt="drawing" width="450"/>
+   <img src="./storeAssets/screenshot3.png" alt="drawing" width="450"/>
+   <img src="./storeAssets/screenshot4.png" alt="drawing" width="450"/>
+   <img src="./storeAssets/screenshot5.png" alt="drawing" width="450"/>
+   <img src="./storeAssets/screenshot6.png" alt="drawing" width="450"/>
+   <img src="./storeAssets/screenshot7.png" alt="drawing" width="450"/>
 </div>
 
 ## Development
