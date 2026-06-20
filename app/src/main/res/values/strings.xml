@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Lime</string>
 
-    <string name="service_accessibility">Lime Accessibility Service</string>
     <string name="service_notifications">Lime Notifications Service</string>
 
     <string name="close_button_description">Close Button</string>
@@ -119,17 +118,8 @@
     <string name="preference_get_pro_short">PRO</string>
 
 
-    <!-- LOCK SCREEN -->
-    <string name="accessibility_service_description">The accessibility permission is required to enable double tap to lock. Any data acquired by Lime Launcher via this service will not leave your device.</string>
-    <string name="lock_layout_description">lock</string>
-
-    <string name="lock_screen_menu_title">Permission to lock screen</string>
-    <string name="lock_screen_menu_disclosure">Please turn on Lime Launcher\'s accessibility service in your device\'s settings to enable this feature.\n\nPlease note that this service is only used to let you turn off your device\'s screen using the double tap or swipe gestures.\n\nOur accessibility service does not collect or share any data.</string>
-    <string name="lock_screen_menu_enable_button">Enable</string>
-    <string name="lock_screen_menu_cancel_button">Cancel</string>
-
     <string name="buy_pro_menu_title">Get Lime Launcher PRO</string>
-    <string name="buy_pro_menu_disclosure">Upgrade to Lime Launcher Pro for more personalization options!\n\n- Customize icons with Icon Packs.\n- Hide the status bar to maximize screen space.\n- Arrange your apps in a grid for easy access.\n- Customize gesture actions to launch your most-used apps with ease.\n- Lock your screen with a double tap or swipe gesture (available on Android 9 Pie onwards).\n\nAnd more! Purchase it one time and enjoy it forever!</string>
+    <string name="buy_pro_menu_disclosure">Upgrade to Lime Launcher Pro for more personalization options!\n\n- Customize icons with Icon Packs.\n- Hide the status bar to maximize screen space.\n- Arrange your apps in a grid for easy access.\n- Customize gesture actions to launch your most-used apps with ease.\n\nAnd more! Purchase it one time and enjoy it forever!</string>
     <string name="buy_pro_menu_enable_button">Get PRO</string>
     <string name="buy_pro_menu_cancel_button">Cancel</string>
 

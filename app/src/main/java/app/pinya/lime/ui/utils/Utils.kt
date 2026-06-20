@@ -7,7 +7,6 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
-import android.provider.Settings
 import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.View
@@ -192,26 +191,6 @@ class Utils {
             }
 
             return value * scaleFactor
-        }
-
-        fun isAccessServiceEnabled(context: Context): Boolean {
-            val enabled = try {
-                Settings.Secure.getInt(
-                    context.applicationContext.contentResolver,
-                    Settings.Secure.ACCESSIBILITY_ENABLED
-                )
-            } catch (e: Exception) {
-                0
-            }
-            if (enabled == 1) {
-                val enabledServicesString: String? = Settings.Secure.getString(
-                    context.contentResolver,
-                    Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
-                )
-                return enabledServicesString?.contains(context.packageName + "/" + MyAccessibilityService::class.java.name)
-                    ?: false
-            }
-            return false
         }
 
         fun isNotificationServiceEnabled(context: Context): Boolean {

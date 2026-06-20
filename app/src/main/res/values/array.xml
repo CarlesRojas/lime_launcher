@@ -18,7 +18,6 @@
         <item>Expand notifications</item>
         <item>Open app</item>
         <item>Assistant</item>
-        <item>Screen lock</item>
     </string-array>
 
     <string-array name="preference_actions_values">
@@ -26,7 +25,6 @@
         <item>expandNotifications</item>
         <item>openApp</item>
         <item>assistant</item>
-        <item>screenLock</item>
     </string-array>
 
 

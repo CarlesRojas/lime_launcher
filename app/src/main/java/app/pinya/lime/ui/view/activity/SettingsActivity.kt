@@ -22,14 +22,12 @@ import app.pinya.lime.data.repo.AppRepo
 import app.pinya.lime.domain.model.AppModel
 import app.pinya.lime.domain.model.StringPref
 import app.pinya.lime.domain.model.menus.BuyProMenu
-import app.pinya.lime.domain.model.menus.LockScreenMenu
 import app.pinya.lime.domain.model.menus.NotificationAccessMenu
 import app.pinya.lime.domain.usecase.RefreshAppList
 import app.pinya.lime.ui.utils.IconPackManager
 import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.utils.billing.BillingHelper
 import app.pinya.lime.ui.view.adapter.BuyProMenuAdapter
-import app.pinya.lime.ui.view.adapter.LockScreenMenuAdapter
 import app.pinya.lime.ui.view.adapter.NotificationAccessMenuAdapter
 import kotlinx.coroutines.launch
 import java.text.DateFormat
@@ -65,11 +63,9 @@ class SettingsActivity : AppCompatActivity() {
             (requireActivity().application as LimeLauncherApp).appContainer.billingHelper
         }
 
-        private lateinit var lockScreenMenuAdapter: LockScreenMenuAdapter
         private lateinit var buyProMenuAdapter: BuyProMenuAdapter
         private lateinit var notificationAccessMenuAdapter: NotificationAccessMenuAdapter
 
-        private var lockMenu: LockScreenMenu? = null
         private var buyProMenu: BuyProMenu? = null
         private var notificationAccessMenu: NotificationAccessMenu? = null
 
@@ -78,20 +74,6 @@ class SettingsActivity : AppCompatActivity() {
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
             constraintLayout = requireActivity().findViewById(R.id.contextMenuSettings_parent)
-        }
-
-        private fun setLockScreenMenu(newLockMenu: LockScreenMenu?) {
-            lockMenu = newLockMenu
-            lockScreenMenuAdapter.handleLockScreenMenu(lockMenu)
-
-            if (lockMenu == null) {
-                val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
-                setSettingsAccordingToLockScreenAccessibilityStatus(prefs)
-            }
-        }
-
-        private fun handleEnablePermissionClick() {
-            startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
         }
 
         private fun setBuyProMenu(newBuyProMenu: BuyProMenu?) {
@@ -118,9 +100,6 @@ class SettingsActivity : AppCompatActivity() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
 
-            lockScreenMenuAdapter = LockScreenMenuAdapter(
-                requireContext(), ::setLockScreenMenu, ::handleEnablePermissionClick
-            )
             buyProMenuAdapter =
                 BuyProMenuAdapter(requireContext(), ::handleBuyProClick, ::setBuyProMenu)
             notificationAccessMenuAdapter = NotificationAccessMenuAdapter(
@@ -156,7 +135,6 @@ class SettingsActivity : AppCompatActivity() {
 
         override fun onResume() {
             super.onResume()
-            setLockScreenMenu(null)
             setBuyProMenu(null)
             setNotificationAccessMenu(null)
         }
@@ -368,11 +346,6 @@ class SettingsActivity : AppCompatActivity() {
             doubleTapGesture?.setOnPreferenceChangeListener { _, newValue ->
                 val value = newValue as String
                 doubleTapApp?.isEnabled = value == "openApp"
-                val accessServiceDisabled = !Utils.isAccessServiceEnabled(requireContext())
-
-                if (constraintLayout != null && value == "screenLock" && accessServiceDisabled)
-                    setLockScreenMenu(LockScreenMenu(constraintLayout!!))
-
                 true
             }
 
@@ -406,11 +379,6 @@ class SettingsActivity : AppCompatActivity() {
             swipeUpGesture?.setOnPreferenceChangeListener { _, newValue ->
                 val value = newValue as String
                 swipeUpApp?.isEnabled = value == "openApp"
-                val accessServiceDisabled = !Utils.isAccessServiceEnabled(requireContext())
-
-                if (constraintLayout != null && value == "screenLock" && accessServiceDisabled)
-                    setLockScreenMenu(LockScreenMenu(constraintLayout!!))
-
                 true
             }
 
@@ -444,11 +412,6 @@ class SettingsActivity : AppCompatActivity() {
             swipeDownGesture?.setOnPreferenceChangeListener { _, newValue ->
                 val value = newValue as String
                 swipeDownApp?.isEnabled = value == "openApp"
-                val accessServiceDisabled = !Utils.isAccessServiceEnabled(requireContext())
-
-                if (constraintLayout != null && value == "screenLock" && accessServiceDisabled)
-                    setLockScreenMenu(LockScreenMenu(constraintLayout!!))
-
                 true
             }
 
@@ -468,58 +431,6 @@ class SettingsActivity : AppCompatActivity() {
                 swipeDownApp.entryValues = entryValues
             }
         }
-
-        private fun setSettingsAccordingToLockScreenAccessibilityStatus(prefs: SharedPreferences) {
-            val swipeUpGesture =
-                findPreference("preference_home_swipe_up_gesture") as ListPreference?
-            val doubleTapGesture =
-                findPreference("preference_home_double_tap_gesture") as ListPreference?
-            val swipeDownGesture =
-                findPreference("preference_home_swipe_down_gesture") as ListPreference?
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                val accessibilityActive = Utils.isAccessServiceEnabled(requireContext())
-
-                if (!accessibilityActive) {
-                    val lockSelectedOnDoubleTap = prefs.getString(
-                        "preference_home_double_tap_gesture", "none"
-                    ) == "screenLock"
-
-                    val lockSelectedOnSwipeUp = prefs.getString(
-                        "preference_home_swipe_up_gesture", "none"
-                    ) == "screenLock"
-
-                    val lockSelectedOnSwipeDown = prefs.getString(
-                        "preference_home_swipe_down_gesture", "expandNotifications"
-                    ) == "screenLock"
-
-                    if (lockSelectedOnDoubleTap) doubleTapGesture?.value = "none"
-                    if (lockSelectedOnSwipeUp) swipeUpGesture?.value = "none"
-                    if (lockSelectedOnSwipeDown) swipeDownGesture?.value = "expandNotifications"
-                }
-
-            } else {
-                val entries: Array<CharSequence?> = arrayOfNulls(4)
-                val entryValues: Array<CharSequence?> = arrayOfNulls(4)
-
-                entries[0] = "None"
-                entryValues[0] = "none"
-                entries[1] = "Expand notifications"
-                entryValues[1] = "expandNotifications"
-                entries[2] = "Open app"
-                entryValues[2] = "openApp"
-                entries[3] = "Assistant"
-                entryValues[3] = "assistant"
-
-                doubleTapGesture?.entries = entries
-                doubleTapGesture?.entryValues = entryValues
-                swipeUpGesture?.entries = entries
-                swipeUpGesture?.entryValues = entryValues
-                swipeDownGesture?.entries = entries
-                swipeDownGesture?.entryValues = entryValues
-            }
-        }
-
 
         private fun setNotificationBadgesSettings() {
             val notificationBadges =

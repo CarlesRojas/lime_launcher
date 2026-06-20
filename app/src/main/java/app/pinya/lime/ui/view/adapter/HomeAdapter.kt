@@ -5,11 +5,9 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.provider.AlarmClock
 import android.provider.CalendarContract
 import android.view.*
-import android.view.accessibility.AccessibilityEvent
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -98,7 +96,6 @@ class HomeAdapter(
                     "openApp" -> openApp("swipeDown")
                     "expandNotifications" -> expandNotificationBar()
                     "assistant" -> openAssistant()
-                    "screenLock" -> lockScreen()
                 }
             }
 
@@ -107,7 +104,6 @@ class HomeAdapter(
                     "openApp" -> openApp("swipeUp")
                     "expandNotifications" -> expandNotificationBar()
                     "assistant" -> openAssistant()
-                    "screenLock" -> lockScreen()
                 }
             }
 
@@ -163,7 +159,6 @@ class HomeAdapter(
                     "openApp" -> openApp("swipeDown")
                     "expandNotifications" -> expandNotificationBar()
                     "assistant" -> openAssistant()
-                    "screenLock" -> lockScreen()
                 }
             }
 
@@ -172,7 +167,6 @@ class HomeAdapter(
                     "openApp" -> openApp("swipeUp")
                     "expandNotifications" -> expandNotificationBar()
                     "assistant" -> openAssistant()
-                    "screenLock" -> lockScreen()
                 }
             }
 
@@ -340,7 +334,6 @@ class HomeAdapter(
                     "openApp" -> openApp("swipeDown")
                     "expandNotifications" -> expandNotificationBar()
                     "assistant" -> openAssistant()
-                    "screenLock" -> lockScreen()
                 }
             }
 
@@ -349,7 +342,6 @@ class HomeAdapter(
                     "openApp" -> openApp("swipeUp")
                     "expandNotifications" -> expandNotificationBar()
                     "assistant" -> openAssistant()
-                    "screenLock" -> lockScreen()
                 }
             }
 
@@ -358,7 +350,6 @@ class HomeAdapter(
                     "openApp" -> openApp("doubleTap")
                     "expandNotifications" -> expandNotificationBar()
                     "assistant" -> openAssistant()
-                    "screenLock" -> lockScreen()
                 }
             }
 
@@ -388,18 +379,6 @@ class HomeAdapter(
             context.startActivity(intent)
             Utils.vibrate(context)
         } catch (_: Error) {
-        }
-    }
-
-    private fun lockScreen() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && Utils.isAccessServiceEnabled(context)) {
-            Utils.vibrate(context)
-            val lock = layout.findViewById<TextView>(R.id.lock)
-            lock.performClick()
-
-            @Suppress("DEPRECATION") val event =
-                AccessibilityEvent.obtain(AccessibilityEvent.TYPE_VIEW_CLICKED)
-            lock.parent.requestSendAccessibilityEvent(lock, event)
         }
     }
 
@@ -493,8 +472,7 @@ class HomeAdapter(
                         "openApp" -> openApp("swipeDown")
                         "expandNotifications" -> expandNotificationBar()
                         "assistant" -> openAssistant()
-                        "screenLock" -> lockScreen()
-                    }
+                        }
                 }
 
                 override fun onFlingUp() {
@@ -502,8 +480,7 @@ class HomeAdapter(
                         "openApp" -> openApp("swipeUp")
                         "expandNotifications" -> expandNotificationBar()
                         "assistant" -> openAssistant()
-                        "screenLock" -> lockScreen()
-                    }
+                        }
                 }
 
                 override fun onClick() {
@@ -551,8 +528,7 @@ class HomeAdapter(
                         "openApp" -> openApp("swipeDown")
                         "expandNotifications" -> expandNotificationBar()
                         "assistant" -> openAssistant()
-                        "screenLock" -> lockScreen()
-                    }
+                        }
                 }
 
                 override fun onFlingUp() {
@@ -560,8 +536,7 @@ class HomeAdapter(
                         "openApp" -> openApp("swipeUp")
                         "expandNotifications" -> expandNotificationBar()
                         "assistant" -> openAssistant()
-                        "screenLock" -> lockScreen()
-                    }
+                        }
                 }
             })
         }
