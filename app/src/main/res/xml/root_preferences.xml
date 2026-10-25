@@ -4,6 +4,11 @@
     <PreferenceCategory app:title="">
         <Preference
             app:isPreferenceVisible="false"
+            app:key="preference_mango_promo"
+            app:layout="@layout/mango_promo_banner" />
+
+        <Preference
+            app:isPreferenceVisible="false"
             app:key="preference_get_pro"
             app:layout="@layout/get_pro_button" />
 

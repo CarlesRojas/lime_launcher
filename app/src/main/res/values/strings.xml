@@ -135,5 +135,9 @@
     <string name="mango_promo_dismiss">Dismiss</string>
     <string name="mango_promo_screenshot_description">Mango Launcher screenshot</string>
     <string name="mango_promo_url">https://play.google.com/store/apps/details?id=app.pinya.mango</string>
+    <string name="mango_banner_title">Try Mango Launcher</string>
+    <string name="mango_banner_subtitle">The new launcher from the makers of Lime, with themes, widgets and more</string>
+    <!-- Tagged so Play Console's acquisition report shows the installs that came from this banner. -->
+    <string name="mango_banner_url">https://play.google.com/store/apps/details?id=app.pinya.mango&amp;referrer=utm_source%3Dlime%26utm_medium%3Dsettings_banner</string>
 
 </resources>
