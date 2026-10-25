@@ -26,8 +26,9 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 
-    <!-- Settings: AppCompat's own action bar. See values-v35 for the Android 15 edge-to-edge opt-out. -->
-    <style name="Theme.Settings" parent="Theme.AppCompat" />
+    <!-- Settings: the window is edge-to-edge (forced from API 36 on), so the activity lays out its
+         own toolbar under the status bar instead of the window's action bar. -->
+    <style name="Theme.Settings" parent="Theme.AppCompat.NoActionBar" />
 
     <style name="MangoPromoScreenshotShape">
         <item name="cornerFamily">rounded</item>

@@ -12,6 +12,8 @@ import android.provider.Settings
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.*
 import app.pinya.lime.BuildConfig
@@ -51,7 +53,14 @@ class SettingsActivity : AppCompatActivity() {
                 .replace(R.id.settings, SettingsFragment())
                 .commit()
 
+        setSupportActionBar(findViewById(R.id.settings_toolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        // Edge-to-edge window: keep the toolbar and the list clear of the system bars.
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.settings_root)) { root, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
+            root.setPadding(bars.left, bars.top, bars.right, bars.bottom)
+            WindowInsetsCompat.CONSUMED
+        }
 
         if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O)
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
