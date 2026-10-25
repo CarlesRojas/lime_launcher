@@ -29,6 +29,7 @@ import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.utils.billing.BillingHelper
 import app.pinya.lime.ui.view.adapter.BuyProMenuAdapter
 import app.pinya.lime.ui.view.adapter.NotificationAccessMenuAdapter
+import app.pinya.lime.ui.view.preference.MangoPromoPreference
 import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -135,6 +136,15 @@ class SettingsActivity : AppCompatActivity() {
 
         override fun onResume() {
             super.onResume()
+            // Mango, the launcher that follows Lime, heads the settings until it is installed:
+            // checked on every resume, so it is gone when the user comes back from installing it.
+            val mangoPromo = findPreference("preference_mango_promo") as Preference?
+            mangoPromo?.isVisible = !isMangoInstalled()
+            mangoPromo?.setOnPreferenceClickListener {
+                openMangoListing()
+                true
+            }
+
             setBuyProMenu(null)
             setNotificationAccessMenu(null)
         }
@@ -457,12 +467,31 @@ class SettingsActivity : AppCompatActivity() {
             if (!notificationAccessActive) notificationBadges?.value = "none"
         }
 
+        private fun isMangoInstalled(): Boolean = try {
+            requireContext().packageManager.getPackageInfo(MANGO_PACKAGE, 0)
+            true
+        } catch (e: Exception) {
+            false
+        }
+
+        private fun openMangoListing() {
+            try {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.mango_banner_url)))
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+            } catch (e: ActivityNotFoundException) {
+                e.printStackTrace()
+            }
+        }
+
         private fun openBuyProMenu() {
             if (constraintLayout != null) setBuyProMenu(BuyProMenu(constraintLayout!!))
         }
 
         private fun setIsPro(isPro: Boolean = false) {
             requireActivity().setTitle(if (isPro) R.string.title_activity_settings_pro else R.string.title_activity_settings)
+
+            (findPreference("preference_mango_promo") as MangoPromoPreference?)?.isPro = isPro
 
             val getPremiumMainButton = findPreference("preference_get_pro") as Preference?
             getPremiumMainButton?.isVisible = !isPro
@@ -582,6 +611,8 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     companion object {
+        private const val MANGO_PACKAGE = "app.pinya.mango"
+
         fun mapFormat(num: Int): Int {
             return when (num) {
                 0 -> DateFormat.SHORT

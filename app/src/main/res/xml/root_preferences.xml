@@ -2,6 +2,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory app:title="">
+        <app.pinya.lime.ui.view.preference.MangoPromoPreference
+            app:isPreferenceVisible="false"
+            app:key="preference_mango_promo"
+            app:layout="@layout/mango_promo_banner" />
+
         <Preference
             app:isPreferenceVisible="false"
             app:key="preference_get_pro"

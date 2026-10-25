@@ -57,7 +57,7 @@
             android:launchMode="singleTask"
             android:parentActivityName=".ui.view.activity.MainActivity"
             android:stateNotNeeded="true"
-            android:theme="@style/Theme.AppCompat"
+            android:theme="@style/Theme.Settings"
             tools:ignore="LockedOrientationActivity">
             <meta-data
                 android:name="android.app.lib_name"
