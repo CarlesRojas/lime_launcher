@@ -8,10 +8,10 @@ import com.android.billingclient.api.BillingClient.BillingResponseCode
 import com.android.billingclient.api.BillingClient.ProductType
 import com.android.billingclient.api.Purchase.PurchaseState
 import com.android.billingclient.api.QueryProductDetailsParams.Product
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class BillingHelper private constructor(
     application: Application,
@@ -90,16 +90,15 @@ class BillingHelper private constructor(
         val queryProductDetailsParams =
             QueryProductDetailsParams.newBuilder().setProductList(listOf(product))
 
-        val productDetailsResult = withContext(Dispatchers.IO) {
-            billingClient.queryProductDetails(queryProductDetailsParams.build())
+        val (billingResult, detailsList) = suspendCoroutine { continuation ->
+            billingClient.queryProductDetailsAsync(queryProductDetailsParams.build()) { result, details ->
+                continuation.resume(result to details.productDetailsList)
+            }
         }
 
-        when (productDetailsResult.billingResult.responseCode) {
+        when (billingResult.responseCode) {
             BillingResponseCode.OK -> {
-                if (!productDetailsResult.productDetailsList.isNullOrEmpty()) {
-                    val details = productDetailsResult.productDetailsList!![0]
-                    productDetails.postValue(details)
-                }
+                if (detailsList.isNotEmpty()) productDetails.postValue(detailsList[0])
             }
         }
     }
@@ -108,22 +107,15 @@ class BillingHelper private constructor(
         val queryPurchasesParams =
             QueryPurchasesParams.newBuilder().setProductType(ProductType.INAPP)
 
-        val purchasesResult = withContext(Dispatchers.IO) {
-            billingClient.queryPurchasesAsync(queryPurchasesParams.build())
+        val (billingResult, purchasesList) = suspendCoroutine { continuation ->
+            billingClient.queryPurchasesAsync(queryPurchasesParams.build()) { result, purchases ->
+                continuation.resume(result to purchases)
+            }
         }
 
-        when (purchasesResult.billingResult.responseCode) {
-            BillingResponseCode.OK -> {
-                if (purchasesResult.purchasesList.isNotEmpty()) {
-                    val purchase = purchasesResult.purchasesList[0]
-                    handlePurchase(purchase)
-                }
-            }
-            BillingResponseCode.ITEM_ALREADY_OWNED -> {
-                if (purchasesResult.purchasesList.isNotEmpty()) {
-                    val purchase = purchasesResult.purchasesList[0]
-                    handlePurchase(purchase)
-                }
+        when (billingResult.responseCode) {
+            BillingResponseCode.OK, BillingResponseCode.ITEM_ALREADY_OWNED -> {
+                if (purchasesList.isNotEmpty()) handlePurchase(purchasesList[0])
             }
         }
     }
@@ -145,8 +137,10 @@ class BillingHelper private constructor(
                         val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
                             .setPurchaseToken(purchase.purchaseToken)
 
-                        val acknowledgePurchaseResult = withContext(Dispatchers.IO) {
-                            billingClient.acknowledgePurchase(acknowledgePurchaseParams.build())
+                        val acknowledgePurchaseResult = suspendCoroutine { continuation ->
+                            billingClient.acknowledgePurchase(acknowledgePurchaseParams.build()) { result ->
+                                continuation.resume(result)
+                            }
                         }
 
                         when (acknowledgePurchaseResult.responseCode) {
