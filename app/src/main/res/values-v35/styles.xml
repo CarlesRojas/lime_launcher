@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Targeting Android 15 makes every window edge-to-edge, and the settings list then starts
+         under the action bar. Opting out keeps it below the bar, as on every earlier version. -->
+    <style name="Theme.Settings" parent="Theme.AppCompat">
+        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
+    </style>
+
+</resources>

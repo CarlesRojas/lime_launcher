@@ -45,6 +45,17 @@
                 android:text="@string/mango_banner_subtitle"
                 android:textColor="@color/white_low"
                 android:textSize="14sp" />
+
+            <!-- Lime PRO buyers only (MangoPromoPreference.isPro). -->
+            <TextView
+                android:id="@+id/mangoBanner_pro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="@string/mango_banner_pro"
+                android:textColor="#FFB74D"
+                android:textSize="14sp"
+                android:visibility="gone" />
         </LinearLayout>
 
         <ImageView

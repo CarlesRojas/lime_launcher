@@ -26,6 +26,9 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 
+    <!-- Settings: AppCompat's own action bar. See values-v35 for the Android 15 edge-to-edge opt-out. -->
+    <style name="Theme.Settings" parent="Theme.AppCompat" />
+
     <style name="MangoPromoScreenshotShape">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">16dp</item>

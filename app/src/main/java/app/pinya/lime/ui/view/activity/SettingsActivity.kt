@@ -29,6 +29,7 @@ import app.pinya.lime.ui.utils.Utils
 import app.pinya.lime.ui.utils.billing.BillingHelper
 import app.pinya.lime.ui.view.adapter.BuyProMenuAdapter
 import app.pinya.lime.ui.view.adapter.NotificationAccessMenuAdapter
+import app.pinya.lime.ui.view.preference.MangoPromoPreference
 import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -489,6 +490,8 @@ class SettingsActivity : AppCompatActivity() {
 
         private fun setIsPro(isPro: Boolean = false) {
             requireActivity().setTitle(if (isPro) R.string.title_activity_settings_pro else R.string.title_activity_settings)
+
+            (findPreference("preference_mango_promo") as MangoPromoPreference?)?.isPro = isPro
 
             val getPremiumMainButton = findPreference("preference_get_pro") as Preference?
             getPremiumMainButton?.isVisible = !isPro

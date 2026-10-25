@@ -136,7 +136,8 @@
     <string name="mango_promo_screenshot_description">Mango Launcher screenshot</string>
     <string name="mango_promo_url">https://play.google.com/store/apps/details?id=app.pinya.mango</string>
     <string name="mango_banner_title">Thanks for using Lime</string>
-    <string name="mango_banner_subtitle">Lime won\'t get new updates. Its successor, Mango Launcher, is faster and more customizable. Bought Lime PRO? Reach out for a promo code (limited stock).</string>
+    <string name="mango_banner_subtitle">Lime won\'t get new updates. Its successor, Mango Launcher, is faster and more customizable.</string>
+    <string name="mango_banner_pro">Reach out to get a Mango promo code (limited stock).</string>
     <!-- Tagged so Play Console's acquisition report shows the installs that came from this banner. -->
     <string name="mango_banner_url">https://play.google.com/store/apps/details?id=app.pinya.mango&amp;referrer=utm_source%3Dlime%26utm_medium%3Dsettings_banner</string>
 
